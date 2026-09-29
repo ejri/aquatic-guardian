@@ -1,0 +1,112 @@
+<script>
+(function () {
+  "use strict";
+  var U = window.AGU, S = window.AGSims, D = window.AG_DATA, $ = U.$, fmt = U.fmt;
+
+  U.labAquaculture = function () {
+    var A = D.results.aquaculture, REP = D.results.reported;
+
+    /* ---- Camera geometry ---- */
+    var ids = ["c-d", "c-a", "c-ar", "c-v", "c-fps"], rnd = S.rng(3), fishPos = [];
+    for (var k = 0; k < 12; k++) fishPos.push([rnd(), rnd(), rnd() * 6.283]);
+    function cam() {
+      var d = +$("#c-d").value, a = +$("#c-a").value, ar = +$("#c-ar").value, v = +$("#c-v").value, fps = +$("#c-fps").value;
+      $("#c-d-o").textContent = fmt(d, 3) + " m"; $("#c-a-o").textContent = a + "°"; $("#c-ar-o").textContent = fmt(ar, 1) + " m"; $("#c-v-o").textContent = fmt(v, 2) + " m/s"; $("#c-fps-o").textContent = fps + " fps";
+      var Wm = 2 * d * Math.tan(a / 2 * Math.PI / 180), ppm = 1280 / Wm, pxf = v * ppm / fps, whole = ar <= Wm, dwell = whole ? Infinity : Wm / v;
+      var risk = whole && pxf < 15 ? "low" : (dwell < 3 || pxf > 30 ? "high" : "moderate");
+      $("#c-fov").textContent = fmt(Wm * 100, 0); $("#c-px").textContent = fmt(pxf, 1); $("#c-dwell").textContent = whole ? "always" : fmt(dwell, 1);
+      $("#c-verdict").textContent = risk; $("#c-verdict-box").className = "ro " + (risk === "high" ? "bad" : risk === "low" ? "good" : "hot"); $("#c-dwell-box").className = "ro " + (whole ? "good" : dwell < 3 ? "bad" : "");
+      var svg = $("#cam-svg"); while (svg.firstChild) svg.removeChild(svg.firstChild);
+      var N = U.svgNode, ad = ar * 0.5, fh = Wm * 0.5625, sc = Math.min(600 / Math.max(ar, Wm), 196 / Math.max(ad, fh)), cx = 320, cy = 134;
+      var aw = ar * sc, ah = ad * sc, ax = cx - aw / 2, ay = cy - ah / 2, inView = 0;
+      N("rect", { x: ax, y: ay, width: aw, height: ah, rx: 8, fill: "#06303d", stroke: "#2D5563", "stroke-width": 2 }, svg);
+      fishPos.forEach(function (f) { var fx = ax + (0.05 + 0.9 * f[0]) * aw, fy = ay + (0.08 + 0.84 * f[1]) * ah, inside = Math.abs(fx - cx) <= Wm * sc / 2 && Math.abs(fy - cy) <= fh * sc / 2;
+        if (inside) inView++;
+        var g = N("g", { transform: "translate(" + fx + " " + fy + ") rotate(" + (f[2] * 57.3) + ")" }, svg);
+        N("path", { d: "M8 0 L-6 -4 L-6 4 Z", fill: inside ? "#F7B24A" : "#4A6A74" }, g); });
+      N("rect", { x: cx - Wm * sc / 2, y: cy - fh * sc / 2, width: Wm * sc, height: fh * sc, fill: "rgba(158,216,230,.10)", stroke: "#9ED8E6", "stroke-width": 2, "stroke-dasharray": "6 4" }, svg);
+      var t = N("text", { x: 14, y: 22, fill: "#DCEAEE", style: "font:600 13px var(--sans)" }, svg); t.textContent = inView + " of 12 fish in view; camera sees " + fmt(Wm * 100, 0) + " cm of a " + fmt(ar * 100, 0) + " cm arena";
+      var t2 = N("text", { x: 14, y: 248, fill: "#8AA7B0", style: "font:12px var(--sans)" }, svg); t2.textContent = "1280 px image. Risk thresholds are heuristics: fish leaving view in under 3 s, or moving more than 30 px per frame.";
+    }
+    ids.forEach(function (id) { $("#" + id).addEventListener("input", cam); });
+    function preset(v) { ids.forEach(function (id, i) { $("#" + id).value = v[i]; }); cam(); }
+    $("#cam-bad").addEventListener("click", function () { preset([0.265, 70, 2.0, 0.3, 30]); });
+    $("#cam-good").addEventListener("click", function () { preset([1.0, 70, 1.2, 0.3, 30]); });
+    cam();
+    U.chart($("#purity-chart"), { pad: { b: 26 }, x: { min: 0, max: 4, ticks: [1, 2, 3], fmt: function (v) { return REP.purity[v - 1].school + " school"; } }, y: { min: 0, max: 1, ticks: [0, 0.5, 1], label: "Track purity" },
+      series: [{ bars: true, barWidth: 70, color: "#7FE0B0", pts: REP.purity.map(function (p, i) { return [i + 1, p.purity]; }) }] });
+    REP.purity.forEach(function (p, i) { var t = U.svgNode("text", { x: 56 + (568 * (i + 1) / 4), y: 14 + 110 * (1 - p.purity) - 4, "text-anchor": "middle" }, $("#purity-chart")); t.textContent = p.purity.toFixed(3); t.setAttribute("style", "fill:#DCEAEE;font-weight:700"); });
+
+    /* ---- School tracking ---- */
+    var cv = $("#school"), g = cv.getContext("2d"), n = 12, dt = 1 / 30, speed = 0.3, BW = 2.0, BH = 2.0 * cv.height / cv.width;
+    var rs = S.rng(5), th = [], pos = [], obs = [], prev = [], filt = [], sigma = -1, buf = [], hist = 90;
+    for (var i = 0; i < n; i++) { th.push(rs.normal() * 0.3); pos.push([rs() * BW, rs() * BH]); obs.push([0, 0]); prev.push(null); }
+    function ratio() { return Math.pow(10, +$("#s-r").value); }
+    function resetFilters() { sigma = ratio() * speed * dt; filt = pos.map(function (p) { return [new S.KalmanCV(p[0], dt, sigma, 0.5), new S.KalmanCV(p[1], dt, sigma, 0.5)]; }); prev = pos.map(function () { return null; }); buf = []; }
+    resetFilters();
+    $("#s-r").addEventListener("input", function () { $("#s-r-o").textContent = fmt(ratio(), ratio() < 0.1 ? 3 : 2); resetFilters(); chartK(); });
+    $("#s-al").addEventListener("input", function () { $("#s-al-o").textContent = fmt(+$("#s-al").value, 2); buf = []; });
+    $("#s-r-o").textContent = fmt(ratio(), 3); $("#s-al-o").textContent = fmt(+$("#s-al").value, 2);
+    var vt = [], vf = [], vk = [];
+    function step() {
+      var al = +$("#s-al").value, sx = 0, sy = 0;
+      for (var i = 0; i < n; i++) { sx += Math.cos(th[i]); sy += Math.sin(th[i]); }
+      var mean = Math.atan2(sy, sx); vt = []; vf = []; vk = [];
+      for (i = 0; i < n; i++) {
+        var d = Math.atan2(Math.sin(mean - th[i]), Math.cos(mean - th[i]));
+        th[i] += al * d * dt * 5 + rs.normal() * 0.6 * Math.sqrt(dt);
+        var vx = speed * Math.cos(th[i]), vy = speed * Math.sin(th[i]);
+        pos[i][0] += vx * dt; pos[i][1] += vy * dt; vt.push([vx, vy]);
+        var o = [pos[i][0] + sigma * rs.normal(), pos[i][1] + sigma * rs.normal()];
+        vf.push(prev[i] ? [(o[0] - prev[i][0]) / dt, (o[1] - prev[i][1]) / dt] : [vx, vy]); prev[i] = o; obs[i] = o;
+        vk.push([filt[i][0].update(o[0]), filt[i][1].update(o[1])]);
+      }
+      var sample = [S.polarisation(vt), S.polarisation(vf), S.polarisation(vk)];
+      if (sample.every(isFinite)) { buf.push(sample); if (buf.length > hist) buf.shift(); }
+    }
+    function draw() {
+      var W = cv.width, H = cv.height, k = W / BW; g.fillStyle = "#021017"; g.fillRect(0, 0, W, H);
+      g.fillStyle = "#0E2C38"; for (var gx = 20; gx < W; gx += 40) for (var gy = 20; gy < H; gy += 40) g.fillRect(gx, gy, 2, 2);
+      function wrap(v, m) { return ((v % m) + m) % m; }
+      for (var i = 0; i < n; i++) {
+        var x = wrap(pos[i][0], BW) * k, y = wrap(pos[i][1], BH) * k, ox = wrap(obs[i][0], BW) * k, oy = wrap(obs[i][1], BH) * k;
+        g.save(); g.translate(x, y); g.rotate(th[i]); g.fillStyle = "#9ED8E6"; g.beginPath(); g.moveTo(11, 0); g.lineTo(-7, -5); g.lineTo(-4, 0); g.lineTo(-7, 5); g.closePath(); g.fill(); g.restore();
+        g.fillStyle = "#F7B24A"; g.beginPath(); g.arc(ox, oy, 2.2, 0, 7); g.fill();
+        var s = 0.35 * k;
+        g.strokeStyle = "rgba(235,121,88,.9)"; g.lineWidth = 2; g.beginPath(); g.moveTo(ox, oy); g.lineTo(ox + vf[i][0] * s, oy + vf[i][1] * s); g.stroke();
+        g.strokeStyle = "rgba(247,178,74,.95)"; g.beginPath(); g.moveTo(ox, oy); g.lineTo(ox + vk[i][0] * s, oy + vk[i][1] * s); g.stroke();
+      }
+      if (buf.length) { var m = [0, 0, 0]; buf.forEach(function (b) { m[0] += b[0]; m[1] += b[1]; m[2] += b[2]; }); m = m.map(function (v) { return v / buf.length; });
+        $("#s-true").textContent = fmt(m[0], 2); $("#s-fd").textContent = fmt(m[1], 2); $("#s-kf").textContent = fmt(m[2], 2);
+        var ef = Math.abs(m[1] - m[0]), ek = Math.abs(m[2] - m[0]);
+        $("#s-fd-box").className = "ro " + (ef <= ek ? "good" : "bad"); $("#s-kf-box").className = "ro " + (ek < ef ? "good" : "bad"); }
+    }
+    for (var w = 0; w < 30; w++) step(); draw();
+    var acc = 0;
+    U.loop(cv, function (d) { if (U.reduced) return; acc += d; if (acc < 1 / 30) return; acc = 0; step(); draw(); });
+    function chartK() {
+      var sw = A.kalman_sweep, r = ratio();
+      U.chart($("#kal-chart"), { x: { min: 0.01, max: 10, log: true, label: "Localisation noise ÷ motion per frame", fmt: function (v) { return v >= 1 ? v : v.toString(); } }, y: { min: 0, max: 0.75, label: "Polarisation error" },
+        series: [{ pts: sw.map(function (s) { return [s.ratio, s.err_fd]; }), color: "#eb7958", width: 3 }, { pts: sw.map(function (s) { return [s.ratio, s.err_kf]; }), color: "#F7B24A", width: 3 }], vlines: [{ x: r, color: "#fff", dash: "3 3" }] });
+    }
+    chartK();
+
+    /* ---- Yield vs temperature ---- */
+    ["b-f", "b-v", "b-ph", "b-s"].forEach(function (id) { $("#" + id).addEventListener("input", bio); });
+    function bio() {
+      var f = +$("#b-f").value, v = +$("#b-v").value, ph = +$("#b-ph").value, s = +$("#b-s").value;
+      $("#b-f-o").textContent = f + " m³/h"; $("#b-v-o").textContent = v + " m³"; $("#b-ph-o").textContent = fmt(ph, 1); $("#b-s-o").textContent = s + " psu";
+      var T = [], dO = [], nh = [], wf = [], y = [], best = 0, bi = 0;
+      for (var t = 6; t <= 22.001; t += 0.25) { var c = S.carrying(t, s, ph, f, v); T.push(t); dO.push([t, c.limits_kg["do"]]); nh.push([t, c.limits_kg.ammonia]); wf.push([t, c.limits_kg.welfare]); var yy = S.yieldIndex(t, s, ph, f, v); y.push([t, yy]); if (yy > best) { best = yy; bi = T.length - 1; } }
+      var ceil = T[bi], cap = S.carrying(ceil, s, ph, f, v), above = S.carrying(Math.min(22, ceil + 0.5), s, ph, f, v);
+      $("#b-ceil").textContent = fmt(ceil, 2); $("#b-opt").textContent = fmt(S.SPECIES.t_opt, 0); $("#b-bind").textContent = above.binding === "do" ? "oxygen" : above.binding; $("#b-cap").textContent = fmt(cap.capacity_kg, 0);
+      var ymax = v * S.SPECIES.max_density_kg_m3 * 3, nhMin = Math.min.apply(null, nh.map(function (p) { return p[1]; }));
+      $("#b-nh3-l").innerHTML = '<i style="background:#C79BE0"></i>ammonia limit' + (nhMin > ymax ? " (above the chart, not binding here)" : "");
+      U.chart($("#bio-chart"), { x: { min: 6, max: 22, label: "Loop water temperature (°C)" }, y: { min: 0, max: ymax, label: "Fish the system can carry (kg)" }, y2: { min: 0, max: 1.1, label: "Relative yield", fmt: function (q) { return q.toFixed(1); } },
+        series: [{ pts: dO, color: "#9ED8E6", width: 2.5 }, { pts: nh, color: "#C79BE0", width: 2.5 }, { pts: wf, color: "#7FE0B0", width: 2.5, dash: "6 4" }, { pts: y.map(function (p) { return [p[0], best ? p[1] / best : 0]; }), color: "#F7B24A", width: 4, axis: "y2", fill: true, fillOpacity: 0.1 }],
+        vlines: [{ x: ceil, color: "#F7B24A", width: 2, label: "ceiling " + fmt(ceil, 2) + " °C" }, { x: S.SPECIES.t_opt, color: "#9ED8E6", dash: "5 4", label: "growth optimum", dy: 18 }] });
+    }
+    bio();
+  };
+})();
+</script>

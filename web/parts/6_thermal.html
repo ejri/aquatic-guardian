@@ -1,0 +1,124 @@
+<script>
+(function () {
+  "use strict";
+  var U = window.AGU, E = window.AquaticGuardian, S = window.AGSims, D = window.AG_DATA, $ = U.$, fmt = U.fmt;
+  var OMEGA = E.OMEGA_M2;
+  function bind(id, f, unit) { var el = $("#" + id), o = $("#" + id + "-o"); function up() { o.textContent = f(+el.value) + (unit || ""); } el.addEventListener("input", up); up(); return el; }
+
+  U.labThermal = function () {
+    var R = D.results.thermal;
+
+    /* ---- 2-D tidal plume: TVD vs upwind ---- */
+    var nx = 96, ny = 48, dx = 50, A = new S.Transport2D(nx, ny, dx), B = new S.Transport2D(nx, ny, dx), oa = {}, ob = {};
+    var ca = $("#tide-a"), cb = $("#tide-b"), ga = ca.getContext("2d"), gb = cb.getContext("2d"), t = 0, scale = 0.3, frames = 0, paused = U.reduced;
+    var CYC = 2 * Math.PI / OMEGA, pk = { a: 0, b: 0, la: 0, lb: 0, f: 0, lf: 0, n: 0 };
+    var src = { i: 48, j: 12, rate: 0 };
+    bind("t-u", function (v) { return fmt(v, 2); }, " m/s"); bind("t-mw", function (v) { return v; }, " MW"); bind("t-h", function (v) { return v; }, " m");
+    bind("t-k", function (v) { return fmt(v, 1); }, " m²/s"); bind("t-sp", function (v) { return v; }, "× steps");
+    function P() { return { U0: +$("#t-u").value, mw: +$("#t-mw").value, H: +$("#t-h").value, K: +$("#t-k").value, sp: +$("#t-sp").value }; }
+    function dtOf(p) { return Math.min(0.9 * dx / (p.U0 + 0.02), 0.2 * dx * dx / p.K, 90); }
+    function ring(T) { var m = 0, r = 300 / dx; for (var a = 0; a < 48; a++) { var x = src.i + 0.5 + r * Math.cos(a / 48 * 6.283), y = src.j + 0.5 + r * Math.sin(a / 48 * 6.283); if (y < 0) continue;
+      var i = Math.floor(x - 0.5), j = Math.floor(y - 0.5), fx = x - 0.5 - i, fy = y - 0.5 - j, c = T.c;
+      function at(ii, jj) { ii = Math.max(0, Math.min(nx - 1, ii)); jj = Math.max(0, Math.min(ny - 1, jj)); return c[jj * nx + ii]; }
+      var v = at(i, j) * (1 - fx) * (1 - fy) + at(i + 1, j) * fx * (1 - fy) + at(i, j + 1) * (1 - fx) * fy + at(i + 1, j + 1) * fx * fy; if (v > m) m = v; } return m; }
+    function stepAll() { var p = P(), dt = dtOf(p), u = p.U0 * Math.sin(OMEGA * t) + 0.02; src.rate = U.sourceRate(p.mw, p.H, dx);
+      A.step(u, p.K, dt, "tvd", src); B.step(u, p.K, dt, "upwind", src); t += dt;
+      var n = Math.floor(t / CYC); if (n !== pk.n) { pk.la = pk.a; pk.lb = pk.b; pk.lf = pk.f; pk.a = pk.b = pk.f = 0; pk.n = n; }
+      pk.a = Math.max(pk.a, ring(A)); pk.b = Math.max(pk.b, ring(B));
+      if (frames % 4 === 0) { var m = 0; for (var q = 0; q < A.c.length; q++) if (A.c[q] > m) m = A.c[q]; pk.f = Math.max(pk.f, m); } }
+    function draw() {
+      scale = Math.max(0.01, Math.max(pk.f, pk.lf));
+      [[ga, A, oa, ca], [gb, B, ob, cb]].forEach(function (z) {
+        U.renderField(z[0], z[1], 0, 0, z[3].width, z[3].height, scale, z[2]);
+        var sx = z[3].width / nx, sy = z[3].height / ny, g = z[0];
+        g.fillStyle = "#0d1f19"; g.fillRect(0, 0, z[3].width, 3);
+        g.strokeStyle = "rgba(255,255,255,.85)"; g.setLineDash([4, 4]); g.lineWidth = 1.2; g.beginPath();
+        g.ellipse((src.i + 0.5) * sx, (src.j + 0.5) * sy, 300 / dx * sx, 300 / dx * sy, 0, 0, 7); g.stroke(); g.setLineDash([]);
+      });
+      var p = P(), u = p.U0 * Math.sin(OMEGA * t) + 0.02, hrs = (t % (2 * Math.PI / OMEGA)) / 3600;
+      $("#tide-phase").textContent = fmt(hrs, 1) + " h";
+      $("#tide-phase-l").textContent = Math.abs(u) < 0.06 ? "slack water, heat pools" : u > 0 ? "into the cycle, flooding east" : "into the cycle, ebbing west";
+      var ra = Math.max(pk.a, pk.la), rb = Math.max(pk.b, pk.lb);
+      $("#tide-ringa").textContent = fmt(ra, 3); $("#tide-ringb").textContent = fmt(rb, 3);
+      $("#tide-knum").textContent = fmt(E.kNum(p.U0, dx, dtOf(p)), 2); $("#tide-exc").textContent = fmt(2 * p.U0 / OMEGA / 1000, 2);
+      $("#tide-a-r").textContent = "scale 0 to " + fmt(scale, 2) + " °C"; $("#tide-b-r").textContent = rb < ra ? "ring peak " + fmt(100 * (1 - rb / Math.max(ra, 1e-9)), 0) + "% too low" : "";
+    }
+    function reset() { A.reset(); B.reset(); t = 0; scale = 0.01; pk = { a: 0, b: 0, la: 0, lb: 0, f: 0, lf: 0, n: 0 }; var p0 = P(), n0 = Math.ceil(1.2 * CYC / dtOf(p0)); for (var s = 0; s < n0; s++) { frames++; stepAll(); } draw(); }
+    reset();
+    $("#t-reset").addEventListener("click", reset);
+    var pb = $("#t-play"); pb.textContent = paused ? "Play" : "Pause";
+    pb.addEventListener("click", function () { paused = !paused; pb.textContent = paused ? "Play" : "Pause"; });
+    ["t-u", "t-mw", "t-h", "t-k"].forEach(function (id) { $("#" + id).addEventListener("input", function () { if (paused) draw(); }); });
+    U.loop($("#sim-tide"), function () { if (paused) return; var sp = +$("#t-sp").value; for (var s = 0; s < sp; s++) stepAll(); if (++frames % 2 === 0) draw(); });
+
+    /* ---- Near field ---- */
+    ["n-mw", "n-dt0", "n-n", "n-s0", "n-hh"].forEach(function (id) { $("#" + id).addEventListener("input", near); });
+    function near() {
+      var mw = +$("#n-mw").value, dT = +$("#n-dt0").value, n = +$("#n-n").value, s = +$("#n-s0").value, H = +$("#n-hh").value, d = 0.3;
+      $("#n-mw-o").textContent = mw + " MW"; $("#n-dt0-o").textContent = fmt(dT, 1) + " °C"; $("#n-n-o").textContent = n; $("#n-s0-o").textContent = fmt(s, 1) + " m"; $("#n-hh-o").textContent = H + " m";
+      var flow = mw * 1e6 / (E.rhoCp(12, 30) * dT), nf = E.nearField(flow, n, d, s, H, 12, dT, 30, 0.3), sur = E.dilutionAt(flow, n, d, s, H, 12, dT, 30);
+      $("#n-reg").textContent = nf.regime; $("#n-sh").textContent = "= " + fmt(nf.s_over_H, 2); $("#n-s").textContent = fmt(nf.dilution, 1);
+      $("#n-dt").textContent = fmt(nf.delta_t_near_field_k, 2); $("#n-bug").textContent = fmt(dT / sur.total_flow_bug, 2);
+      var svg = $("#near-svg"); while (svg.firstChild) svg.removeChild(svg.firstChild);
+      var N = U.svgNode, top = 26, bot = 318, sy = (bot - top) / H, L = n > 1 ? n * s : d, spread = 0.11, span = L + 2 * spread * H;
+      var sx = Math.min(sy, 660 / span), cx = 360, x0 = cx - (L / 2) * sx;
+      var defs = N("defs", {}, svg), gid = "ng" + Math.random().toString(36).slice(2), gr = N("linearGradient", { id: gid, x1: 0, y1: 1, x2: 0, y2: 0 }, defs);
+      [0, 0.08, 0.2, 0.45, 1].forEach(function (f) { var z = Math.max(0.3, f * H), dz = E.dilutionAt(flow, n, d, s, z, 12, dT, 30), Sz = nf.regime === "line" && z > (s / 2) / spread ? dz.line : dz.point;
+        N("stop", { offset: f, "stop-color": U.rgb(U.cmap(Math.sqrt(1 / Math.max(Sz, 1)))), "stop-opacity": 0.85 }, gr); });
+      N("rect", { x: 0, y: top, width: 720, height: bot - top, fill: "#06303d" }, svg);
+      N("rect", { x: 0, y: bot, width: 720, height: 22, fill: "#0A1A16" }, svg);
+      N("line", { x1: 0, x2: 720, y1: top, y2: top, stroke: "#9ED8E6", "stroke-width": 1.5 }, svg);
+      var drawN = Math.min(n, 30);
+      for (var k = 0; k < drawN; k++) {
+        var px = n > 1 ? x0 + (k + 0.5) * (L / n) * sx : cx, bw = spread * H * sx;
+        N("path", { d: "M" + (px - 2) + " " + bot + " L" + (px - bw) + " " + top + " L" + (px + bw) + " " + top + " L" + (px + 2) + " " + bot + " Z", fill: "url(#" + gid + ")", opacity: nf.regime === "line" ? 0.55 : 0.9 }, svg);
+        N("circle", { cx: px, cy: bot, r: 3.5, fill: "#F7B24A" }, svg);
+      }
+      if (nf.regime !== "point" && n > 1) { var zm = Math.min(H, (s / 2) / spread), ym = bot - zm * sy;
+        N("rect", { x: x0 - spread * H * sx * 0.5, y: top, width: L * sx + spread * H * sx, height: Math.max(0, ym - top), fill: "url(#" + gid + ")", opacity: 0.6 }, svg);
+        var tm = N("text", { x: 708, y: Math.min(bot - 8, ym + 18), "text-anchor": "end", fill: "#DCEAEE", style: "font:12px var(--sans)" }, svg); tm.textContent = "plumes merge ≈ " + fmt(zm, 1) + " m above the bed"; }
+      var t1 = N("text", { x: 12, y: 18, fill: "#DCEAEE", style: "font:600 13px var(--sans)" }, svg); t1.textContent = "Surface: +" + fmt(nf.delta_t_near_field_k, 2) + " °C after " + fmt(nf.dilution, 1) + "× dilution";
+      var t2 = N("text", { x: 708, y: bot + 16, fill: "#8AA7B0", "text-anchor": "end", style: "font:12px var(--sans)" }, svg); t2.textContent = n + " port" + (n > 1 ? "s" : "") + ", " + fmt(flow, 2) + " m³/s total, depth " + H + " m" + (sx < sy * 0.98 ? " (horizontal compressed)" : "");
+    }
+    near();
+
+    /* ---- Numerical diffusion ---- */
+    ["u-dx", "u-u", "u-hr"].forEach(function (id) { $("#" + id).addEventListener("input", schedule); });
+    var pending = false; function schedule() { if (!pending) { pending = true; requestAnimationFrame(function () { pending = false; numerics(); }); } }
+    function numerics() {
+      var dxv = +$("#u-dx").value, u = +$("#u-u").value, hr = +$("#u-hr").value;
+      $("#u-dx-o").textContent = dxv + " m"; $("#u-u-o").textContent = fmt(u, 2) + " m/s"; $("#u-hr-o").textContent = hr + " h";
+      var n = 600, T = hr * 3600, C = Math.min(0.9, Math.max(0.3, u * T / dxv / 12000)), dt = C * dxv / u, steps = Math.round(T / dt); dt = T / steps; C = u * dt / dxv;
+      var c0 = [], x = []; for (var i = 0; i < n; i++) { c0.push(Math.exp(-0.5 * Math.pow((i - n / 2) / 6, 2))); x.push(i * dxv); }
+      var up = S.advect1d(c0, u, 0, dxv, dt, steps, "upwind"), tv = S.advect1d(c0, u, 0, dxv, dt, steps, "tvd");
+      var shift = Math.round(u * T / dxv) % n;
+      function roll(a) { var o = new Array(n); for (var i = 0; i < n; i++) o[i] = a[(i + shift) % n]; return o; }
+      up = roll(up); tv = roll(tv);
+      var kup = S.effectiveK(c0, up, x, T), ktv = S.effectiveK(c0, tv, x, T), kf = E.kNum(u, dxv, dt);
+      $("#num-kup").textContent = fmt(kup, 2); $("#num-kf").textContent = fmt(kf, 2); $("#num-ktvd").textContent = fmt(Math.max(0, ktv), 3); $("#num-cross").textContent = fmt(E.okuboCross(kf) / 1000, 2);
+      var w = 0; for (i = 0; i < n; i++) if (up[i] > 0.01) w = Math.max(w, Math.abs(i - n / 2));
+      w = Math.min(n / 2 - 1, Math.max(20, w + 5));
+      function pts(a) { var o = []; for (var i = n / 2 - w; i <= n / 2 + w; i++) o.push([(i - n / 2) * dxv / 1000, a[i]]); return o; }
+      U.chart($("#num-chart"), { x: { min: -w * dxv / 1000, max: w * dxv / 1000, label: "Distance from the pulse centre (km)" }, y: { min: 0, max: 1.05, label: "Heat (relative)" },
+        series: [{ pts: pts(c0), color: "#9ED8E6", width: 2.5, dash: "5 4" }, { pts: pts(up), color: "#eb7958", width: 2.5, fill: true }, { pts: pts(tv), color: "#F7B24A", width: 2.5 }] });
+      var kc = R.k_curve, ok = kc.scale_m.map(function (s, i) { return [s, kc.okubo[i]]; });
+      U.chart($("#kscale-chart"), { x: { min: 10, max: 20000, log: true, label: "Length scale (m)", fmt: function (v) { return v >= 1000 ? v / 1000 + " km" : v + " m"; } }, y: { min: 0.001, max: 50, log: true, label: "Diffusivity (m²/s)" },
+        series: [{ pts: ok, color: "#9ED8E6", width: 2.5 }], hlines: [{ y: kf, color: "#eb7958", width: 2.5, label: "upwind at " + dxv + " m: " + fmt(kf, 2) + " m²/s", left: true }], points: [{ x: E.okuboCross(kf), y: kf, color: "#fff", r: 5 }], vlines: [{ x: E.okuboCross(kf), color: "#F7B24A", dash: "4 4", label: "crossover " + fmt(E.okuboCross(kf) / 1000, 1) + " km", dy: 22 }] });
+    }
+    numerics();
+
+    /* ---- Safety margin ---- */
+    var mg = R.margin;
+    function margin() {
+      var tA = +$("#m-t").value; $("#m-t-o").textContent = fmt(tA, 1) + " °C";
+      var r = E.screen({ t_ambient_c: tA }), al = r.temperature_rule.allowed_increment_k, ri = r.near_field.delta_t_near_field_k, left = al - ri;
+      $("#m-allow").textContent = fmt(al, 2); $("#m-rise").textContent = fmt(ri, 2); $("#m-left").textContent = fmt(left, 2);
+      $("#m-left-box").className = "ro " + (left < 0.05 ? "bad" : "good"); $("#m-do").textContent = fmt(r.water_quality.do_sat_drop_frac * 100, 0) + "%";
+      U.chart($("#margin-chart"), { x: { min: 6, max: 18, label: "Ambient water temperature (°C)" }, y: { min: 0, max: 3.2, label: "Temperature increment (°C)" },
+        series: [{ pts: mg.map(function (m) { return [m.t_c, m.allowed_k]; }), color: "#9ED8E6", width: 3, fill: true, fillOpacity: 0.08 }, { pts: mg.map(function (m) { return [m.t_c, m.near_field_k]; }), color: "#F7B24A", width: 3 }],
+        vlines: [{ x: tA, color: "#fff", dash: "3 3" }, { x: 16, color: "#eb7958", dash: "6 4", label: "16 °C criterion", dy: 0 }], points: [{ x: tA, y: al, color: "#9ED8E6" }, { x: tA, y: ri, color: "#F7B24A" }] });
+    }
+    $("#m-t").addEventListener("input", margin); margin();
+  };
+})();
+</script>

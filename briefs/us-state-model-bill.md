@@ -16,7 +16,7 @@ From `data/instruments.json`, status as of 2026-09-29.
 
 | Instrument | Type | Legal status | Key dates | Where it bites | What to ask for |
 |---|---|---|---|---|---|
-| AB 93 (data centre water-use disclosure) — California | bill | Vetoed (failed) — **check**: No primary-source link recorded in the repository yet. | 2025-10-11, Vetoed; SB 57 (data centre energy) signed the same day | A reintroduced disclosure bill is the obvious California vehicle. | Reintroduce with the Aquatic Disclosure metric set; apply Once-Through Cooling Policy logic to seawater-cooled data centres. |
+| AB 93 (data centre water-use disclosure) — California | bill | Vetoed (failed) — **check**: Needs a primary-source URL before this status can be treated as verified. No primary-source link recorded in the repository yet. | 2025-10-11, Vetoed; SB 57 (data centre energy) signed the same day | A reintroduced disclosure bill is the obvious California vehicle. | Reintroduce with the Aquatic Disclosure metric set; apply Once-Through Cooling Policy logic to seawater-cooled data centres. |
 
 ## What to ask for
 

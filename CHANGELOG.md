@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0 (2026-09-29)
+- Audience site: home plus Public / Officials / Lab (researchers) / Industry routes in `web/parts/`, deep-water dark for simulations, Barlow Condensed display type, oceanographic heat colour scale; live hero plume; nine Lab simulations in `app/sims.js` with parity tests; notebook findings recomputed via `app/notebook_results.py` → `data/notebook_results.json` (Colab-only findings labelled reported).
+- Screening Tool on Officials and Industry carries the Phase 6 jurisdiction picker again; §316(b) and Fisheries Act flags only where the selected intake rule applies; placeholder jurisdictions never claim a design "passes".
+- Tracker restores `stale_after_days`, `last_checked` and empty-`sources` → `verify: true`; recommendations markers restored for briefs; W-4 remains Published value via LaMotte / Bower & Bidwell (S=34‰).
+
 ## 0.1.0 (2026-09-29)
 - W-4: `data/checks/bower_bidwell_1978.csv` filled from the confirmed LaMotte seawater table (S=34‰, ionic strength 0.701 m), attributed to Bower & Bidwell (1978) pp. 1012–1016; full grid in `data/checks/BOWER_BIDWELL_PROVENANCE.md`.
 - P-3: integral MTT *proxy* CSVs under `benchmarks/visual_plumes/outputs/` (not EPA Visual Plumes); P-3 remains Needs benchmark until real UM3 runs.

@@ -95,3 +95,42 @@ def test_sentience_table_never_merges_life_stages():
     assert len(rows) == 3
     assert {r["tier"] for r in rows} == {1}
     assert [r["n"] for r in rows if r["life_stage"] == "larva"] == [1200]
+
+
+def test_kalman_beats_differencing_only_when_localisation_noise_is_large():
+    """Notebook finding: filtering wins only when sigma_x is large relative to u*dt."""
+    school = tracking.simulate_school(n=12, steps=400, align=0.9, heading_noise=0.6, seed=4)
+    vel, pos, dt = school["vel"], school["pos"], school["dt"]
+    p_true = tracking.polarisation_series(vel)[5:].mean()
+    rng = np.random.default_rng(9)
+    err = {}
+    for ratio in (0.05, 2.0):
+        sx = ratio * 0.3 * dt
+        obs = pos + rng.normal(0, sx, pos.shape)
+        fd = np.diff(obs, axis=0) / dt
+        kf = tracking.kalman_cv(obs, dt, sx, q=0.5)
+        err[ratio] = (abs(tracking.polarisation_series(fd)[5:].mean() - p_true),
+                      abs(tracking.polarisation_series(kf)[6:].mean() - p_true))
+    assert err[2.0][1] < err[2.0][0]          # large noise: Kalman closer to truth
+    assert err[0.05][0] < 0.02                # small noise: differencing already accurate
+
+
+def test_signed_advection_is_mirror_symmetric():
+    from aquatic_guardian import numerics
+    x = np.arange(200)
+    c0 = np.exp(-0.5 * ((x - 60) / 5.0) ** 2)
+    right = numerics.advect_diffuse_1d(c0, 0.3, 0.2, 25.0, 25.0, 100, "tvd")
+    left = numerics.advect_diffuse_1d(c0[::-1], -0.3, 0.2, 25.0, 25.0, 100, "tvd")
+    np.testing.assert_allclose(right, left[::-1], rtol=0, atol=1e-14)
+
+
+def test_interior_yield_optimum_with_welfare_then_oxygen_binding():
+    """At 4 tank volumes per hour the welfare cap binds in cool water and oxygen in
+    warm water, so the yield optimum is interior and below T_opt (placeholders)."""
+    sp = bioenergetics.SpeciesParams()
+    temps = np.arange(6.0, 22.01, 0.25)
+    y = [bioenergetics.yield_index(t, 30, 7.6, 400, 100, sp) for t in temps]
+    i = int(np.argmax(y))
+    assert 0 < i < len(temps) - 1 and temps[i] < sp.t_opt
+    assert bioenergetics.carrying_capacity_kg(8, 30, 7.6, 400, 100, sp)["binding"] == "welfare"
+    assert bioenergetics.carrying_capacity_kg(16, 30, 7.6, 400, 100, sp)["binding"] == "do"

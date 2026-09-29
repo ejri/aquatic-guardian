@@ -32,7 +32,11 @@ def _mc_limiter(r: np.ndarray) -> np.ndarray:
 
 def advect_diffuse_1d(c0: np.ndarray, u: float, k: float, dx: float, dt: float,
                       n_steps: int, scheme: str = "upwind") -> np.ndarray:
-    """Periodic 1-D advection-diffusion, u > 0. scheme = 'upwind' | 'tvd'."""
+    """Periodic 1-D advection-diffusion. scheme = 'upwind' | 'tvd'.
+    Negative u is handled by mirroring, so both directions use identical arithmetic.
+    """
+    if u < 0:
+        return advect_diffuse_1d(np.asarray(c0)[::-1], -u, k, dx, dt, n_steps, scheme)[::-1].copy()
     c = c0.astype(float).copy()
     cfl = u * dt / dx
     if cfl > 1 or k * dt / dx ** 2 > 0.5:

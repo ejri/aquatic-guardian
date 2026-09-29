@@ -4,9 +4,9 @@
     python scripts/screenshots.py
 
 One image per section at 1366 px (desktop) and 390 px (phone), plus the screening
-tool in each mode, dark mode and the 404 page. Google Fonts are allowed to load
-here so the review sees the real typography; tests/test_site.py blocks them.
-Nothing in the published site depends on this script.
+tool in each mode, the hero in each audience path, dark mode and the 404 page.
+Google Fonts are allowed to load here so the review sees the real typography;
+tests/test_site.py blocks them. Nothing in the published site depends on this script.
 """
 from __future__ import annotations
 import sys
@@ -14,7 +14,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs" / "screenshots"
-SECTIONS = ["top", "mission", "framework", "language", "tracker", "tool", "evidence", "source"]
+SECTIONS = ["top", "meter", "mission", "lab", "framework", "language", "tracker", "tool",
+            "notebooks", "evidence", "source"]
+AUDIENCES = ["official", "researcher"]
 WIDTHS = {"desktop": 1366, "mobile": 390}
 
 
@@ -55,6 +57,10 @@ def main() -> int:
                 page.click(f'.modes button[data-mode="{mode}"]')
                 page.wait_for_selector("#results .summary")
                 shoot(page, "#tool", f"{label}-tool-{mode}")
+            for audience in AUDIENCES:
+                page.click(f'.gate-opts button[data-audience="{audience}"]')
+                page.wait_for_selector("#results .summary")
+                shoot(page, "#top", f"{label}-top-{audience}")
             page.goto(notfound)
             page.evaluate("() => document.fonts.ready")
             page.screenshot(path=str(OUT / f"{label}-404.png"), animations="disabled")

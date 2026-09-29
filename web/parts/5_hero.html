@@ -1,0 +1,88 @@
+<script>
+(function () {
+  "use strict";
+  var U = window.AGU, E = window.AquaticGuardian, S = window.AGSims, D = window.AG_DATA, $ = U.$, fmt = U.fmt, esc = U.esc;
+  var OMEGA = E.OMEGA_M2, RHOCP = E.rhoCp(12, 30);
+
+  /* Shared plume renderer: field (Float32Array nx*ny) -> canvas region */
+  U.renderField = function (ctx, T, x0, y0, w, h, scale, off, clear) {
+    var nx = T.nx, ny = T.ny;
+    if (!off.c || off.c.width !== nx) { off.c = document.createElement("canvas"); off.c.width = nx; off.c.height = ny; off.g = off.c.getContext("2d"); off.img = off.g.createImageData(nx, ny); }
+    var d = off.img.data, c = T.c;
+    for (var j = 0; j < ny; j++) for (var i = 0; i < nx; i++) {
+      var q = j * nx + i, v = Math.min(1, c[q] / scale), p = q * 4;
+      var depth = j / ny, br = [8 + 6 * (1 - depth), 38 + 24 * (1 - depth), 52 + 30 * (1 - depth)];
+      var sv = Math.sqrt(v), a = v > 0.002 ? Math.min(1, sv * 1.5) : 0, col = U.cmap(sv);
+      if (clear) { d[p] = col[0]; d[p + 1] = col[1]; d[p + 2] = col[2]; d[p + 3] = Math.round(255 * Math.min(1, sv * 1.6)); continue; }
+      d[p] = br[0] * (1 - a) + col[0] * a; d[p + 1] = br[1] * (1 - a) + col[1] * a; d[p + 2] = br[2] * (1 - a) + col[2] * a; d[p + 3] = 255;
+    }
+    off.g.putImageData(off.img, 0, 0);
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(off.c, x0, y0, w, h);
+  };
+  U.sourceRate = function (mw, depth, dx) { return mw * 1e6 / (RHOCP * depth * dx * dx); };
+
+  /* ---------- HERO ---------- */
+  U.inits.home = function () {
+    var cv = $("#hero-canvas"), ctx = cv.getContext("2d");
+    var nx = 160, ny = 72, dx = 62.5, T = new S.Transport2D(nx, ny, dx), off = {};
+    var src = { i: 104, j: 9, rate: U.sourceRate(27.6, 5, dx) }, U0 = 0.35, K = 1.5, dt = 60, t = 0, scale = 0.1;
+    var rnd = S.rng(7), parts = [];
+    for (var n = 0; n < 650; n++) parts.push([rnd() * nx, rnd() * ny]);
+    function u() { return U0 * Math.sin(OMEGA * t) + 0.02; }
+    function step() { T.step(u(), K, dt, "tvd", src); t += dt;
+      var sd = Math.sqrt(2 * K * dt) / dx, uu = u() * dt / dx;
+      for (var k = 0; k < parts.length; k++) { var p = parts[k]; p[0] += uu + sd * rnd.normal(); p[1] += sd * rnd.normal() * 0.6; if (p[1] < 0) p[1] = -p[1]; if (p[0] < 0 || p[0] >= nx || p[1] >= ny) { p[0] = rnd() * nx; p[1] = rnd() * ny; } } }
+    for (var s = 0; s < 900; s++) step();
+    U.drawCbar($("#hero-cbar"));
+    function size() { var r = cv.getBoundingClientRect(), k = Math.min(1.5, window.devicePixelRatio || 1); cv.width = Math.max(320, Math.round(r.width * k)); cv.height = Math.max(240, Math.round(r.height * k)); }
+    size(); window.addEventListener("resize", size);
+    function draw() {
+      var W = cv.width, H = cv.height, land = Math.round(H * 0.13);
+      U.renderField(ctx, T, 0, land, W, H - land, scale, off);
+      var g = ctx.createLinearGradient(0, 0, 0, land); g.addColorStop(0, "#050d0b"); g.addColorStop(1, "#0d1f19");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(W, 0); ctx.lineTo(W, land);
+      for (var x = W; x >= 0; x -= 24) ctx.lineTo(x, land + 5 * Math.sin(x / 57) + 3 * Math.sin(x / 13));
+      ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = "rgba(158,216,230,.35)"; ctx.lineWidth = 1.5; ctx.stroke();
+      var sx = W / nx, sy = (H - land) / ny;
+      for (var k = 0; k < parts.length; k++) { var p = parts[k], i = p[0] | 0, j = p[1] | 0, v = T.c[j * nx + i] / scale;
+        ctx.fillStyle = v > 0.15 ? U.rgb(U.cmap(Math.min(1, 0.55 + v)), 0.9) : "rgba(190,225,235,.35)"; ctx.fillRect(p[0] * sx, land + p[1] * sy, 1.6, 1.6); }
+      var ox = (src.i + 0.5) * sx, oy = land + (src.j + 0.5) * sy;
+      ctx.strokeStyle = "rgba(255,255,255,.8)"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(ox, oy, 6, 0, 7); ctx.stroke();
+      ctx.fillStyle = "rgba(220,234,238,.85)"; ctx.font = "600 " + Math.round(12 * (cv.width / cv.getBoundingClientRect().width || 1)) + "px Public Sans, system-ui, sans-serif"; ctx.fillText("outfall", ox + 10, oy + 4);
+      var mx = 0; for (var q = 0; q < T.c.length; q++) if (T.c[q] > mx) mx = T.c[q];
+      scale = Math.max(0.02, Math.max(scale * 0.995, mx)); $("#hero-cmax").textContent = fmt(scale, 2) + " °C";
+      var uu = u(), ph = Math.abs(uu) < 0.06 ? "Slack water: heat pools" : uu > 0 ? "Tide flooding east" : "Tide ebbing west";
+      $("#hero-tide").textContent = ph;
+    }
+    draw();
+    var acc = 0;
+    if (!U.reduced) U.loop($(".hero"), function (dts) { acc += dts; if (acc < 1 / 30) return; acc = 0; step(); step(); draw(); });
+  };
+
+  /* ---------- LAB shared ---------- */
+  U.inits.lab = function (sub) {
+    var R = D.results;
+    ["thermal", "monitoring", "aquaculture"].forEach(function (k) {
+      var box = $("#rep-" + k);
+      R.reported[k].forEach(function (f, i) { var d = document.createElement("details"); if (i === 0) d.open = true; d.innerHTML = "<summary>" + esc(f.title) + "</summary><p>" + esc(f.text) + "</p>"; box.appendChild(d); });
+    });
+    $("#handoff-json").textContent = JSON.stringify(R.thermal.handoff_example, null, 2);
+    var rows = D.verification, tally = { "Published value": 0, Simulation: 0, Parity: 0, "Needs outside check": 0, Placeholder: 0 };
+    rows.forEach(function (r) { var s = r[3]; if (/Placeholder/.test(s) && !/Simulation/.test(s)) tally.Placeholder++; else if (/Needs|Out of scope/.test(s)) tally["Needs outside check"]++; else if (/Parity/.test(s)) tally.Parity++; else if (/Simulation/.test(s)) tally.Simulation++; else tally["Published value"]++; });
+    $("#ver-tally").innerHTML = Object.keys(tally).map(function (k) { return '<div class="stat"><b style="font-size:2.4rem">' + tally[k] + "</b><span>" + esc(k.toLowerCase()) + "</span></div>"; }).join("");
+    $("#ver-table").innerHTML = "<thead><tr><th>ID</th><th>What</th><th>Check</th><th>Status</th></tr></thead><tbody>" + rows.map(function (r) { return "<tr><td><code>" + esc(r[0]) + "</code></td><td>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td><td>" + esc(r[3]) + "</td></tr>"; }).join("") + "</tbody>";
+    var bl = $("#brief-links");
+    if (bl && D.briefs) bl.innerHTML = D.briefs.map(function (b) { return '<a href="' + esc(b.url) + '" rel="noopener">' + esc(b.label) + "</a>"; }).join("");
+    var art = $("#lab-art"), ag = art.getContext("2d"), T = new S.Transport2D(96, 64, 62.5);
+    for (var s = 0; s < 500; s++) T.step(0.3 * Math.sin(OMEGA * s * 60) + 0.03, 3, 60, "tvd", { i: 48, j: 22, rate: U.sourceRate(40, 5, 62.5) });
+    var amx = 0; for (var q = 0; q < T.c.length; q++) amx = Math.max(amx, T.c[q]);
+    U.renderField(ag, T, 0, 0, art.width, art.height, amx * 0.8, {}, true);
+    U.labThermal(); U.labMonitoring(); U.labAquaculture();
+    var links = U.$$(".lab-index a");
+    if ("IntersectionObserver" in window) { var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) links.forEach(function (a) { a.classList.toggle("here", a.getAttribute("href") === "#/lab/" + e.target.id); }); }); }, { rootMargin: "-30% 0px -60% 0px" });
+      links.forEach(function (a) { var el = document.getElementById(a.getAttribute("href").split("/").pop()); if (el) io.observe(el); }); }
+  };
+})();
+</script>

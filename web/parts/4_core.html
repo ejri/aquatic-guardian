@@ -1,0 +1,431 @@
+<script>
+(function () {
+  "use strict";
+  var E = window.AquaticGuardian, S = window.AGSims, D = window.AG_DATA;
+  var U = window.AGU = { inits: {}, loops: [], started: {} };
+  var $ = U.$ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = U.$$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var esc = U.esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var fmt = U.fmt = function (x, d) {
+    if (x === null || x === undefined || isNaN(x)) return "n/a";
+    if (!isFinite(x)) return "∞";
+    var a = Math.abs(x); if (d === undefined) d = a >= 100 ? 0 : a >= 10 ? 1 : a >= 1 ? 2 : 3;
+    return x.toLocaleString("en", { minimumFractionDigits: d, maximumFractionDigits: d });
+  };
+  U.reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  U.toast = function (m) { var t = $("#toast"); t.textContent = m; t.classList.add("show"); setTimeout(function () { t.classList.remove("show"); }, 1800); };
+  U.copy = function (text, label) {
+    function fb() { var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {} document.body.removeChild(ta); U.toast(ok ? label + " copied" : "Select the text and copy it manually"); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { U.toast(label + " copied"); }, fb); else fb();
+  };
+  U.md = function (text) {
+    var out = [], list = false;
+    text.split("\n").forEach(function (line) {
+      var t = line.trim(), inl = esc(t.replace(/^- /, "")).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`(.+?)`/g, "<code>$1</code>");
+      if (/^- /.test(t)) { if (!list) { out.push("<ul>"); list = true; } out.push("<li>" + inl + "</li>"); return; }
+      if (list) { out.push("</ul>"); list = false; }
+      if (t) out.push("<p>" + inl + "</p>");
+    });
+    if (list) out.push("</ul>");
+    return out.join("");
+  };
+  /* cmocean-style thermal colormap */
+  var STOPS = [[0, 4, 35, 51], [0.17, 44, 51, 149], [0.33, 116, 73, 146], [0.5, 177, 95, 130], [0.67, 235, 121, 88], [0.83, 251, 180, 61], [1, 232, 250, 91]];
+  U.cmap = function (t) {
+    t = Math.max(0, Math.min(1, t));
+    for (var i = 1; i < STOPS.length; i++) if (t <= STOPS[i][0]) {
+      var a = STOPS[i - 1], b = STOPS[i], f = (t - a[0]) / (b[0] - a[0]);
+      return [a[1] + f * (b[1] - a[1]), a[2] + f * (b[2] - a[2]), a[3] + f * (b[3] - a[3])];
+    }
+    return [232, 250, 91];
+  };
+  U.rgb = function (c, a) { return "rgba(" + (c[0] | 0) + "," + (c[1] | 0) + "," + (c[2] | 0) + "," + (a === undefined ? 1 : a) + ")"; };
+  U.drawCbar = function (cv) { var g = cv.getContext("2d"); for (var x = 0; x < cv.width; x++) { g.fillStyle = U.rgb(U.cmap(x / cv.width)); g.fillRect(x, 0, 1, cv.height); } };
+
+  /* --- small SVG chart helper --- */
+  var NS = "http://www.w3.org/2000/svg";
+  function node(tag, a, parent) { var n = document.createElementNS(NS, tag); for (var k in a) n.setAttribute(k, a[k]); if (parent) parent.appendChild(n); return n; }
+  U.svgNode = node;
+  U.chart = function (svg, o) {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var vb = svg.viewBox.baseVal, W = vb.width, H = vb.height, p = Object.assign({ l: 56, r: o.y2 ? 56 : 16, t: 14, b: 40 }, o.pad || {});
+    var iw = W - p.l - p.r, ih = H - p.t - p.b;
+    function scale(ax, len, flip) {
+      var lo = ax.log ? Math.log10(ax.min) : ax.min, hi = ax.log ? Math.log10(ax.max) : ax.max;
+      return function (v) { var z = ((ax.log ? Math.log10(Math.max(v, 1e-12)) : v) - lo) / (hi - lo); return flip ? p.t + ih * (1 - z) : p.l + iw * z; };
+    }
+    var X = scale(o.x, iw, false), Y = scale(o.y, ih, true), Y2 = o.y2 ? scale(o.y2, ih, true) : null;
+    function ticks(ax) { if (ax.ticks) return ax.ticks; if (ax.log) { var t = [], e0 = Math.floor(Math.log10(ax.min)), e1 = Math.ceil(Math.log10(ax.max)); for (var e = e0; e <= e1; e++) if (Math.pow(10, e) >= ax.min * 0.999 && Math.pow(10, e) <= ax.max * 1.001) t.push(Math.pow(10, e)); return t; }
+      var n = 5, step = (ax.max - ax.min) / n, mag = Math.pow(10, Math.floor(Math.log10(step))), s = [1, 2, 2.5, 5, 10].map(function (m) { return m * mag; }).find(function (m) { return m >= step; }) || step, out = [];
+      for (var v = Math.ceil(ax.min / s) * s; v <= ax.max + 1e-9; v += s) out.push(+v.toFixed(10)); return out; }
+    var g = node("g", {}, svg);
+    ticks(o.x).forEach(function (v) { var x = X(v); node("line", { x1: x, x2: x, y1: p.t, y2: p.t + ih, class: "axis", "stroke-opacity": 0.5 }, g); var t = node("text", { x: x, y: p.t + ih + 16, "text-anchor": "middle" }, g); t.textContent = o.x.fmt ? o.x.fmt(v) : fmt(v); });
+    ticks(o.y).forEach(function (v) { var y = Y(v); node("line", { x1: p.l, x2: p.l + iw, y1: y, y2: y, class: "axis", "stroke-opacity": 0.5 }, g); var t = node("text", { x: p.l - 8, y: y + 4, "text-anchor": "end" }, g); t.textContent = o.y.fmt ? o.y.fmt(v) : fmt(v); });
+    if (o.y2) ticks(o.y2).forEach(function (v) { var t = node("text", { x: p.l + iw + 8, y: Y2(v) + 4, "text-anchor": "start" }, g); t.textContent = o.y2.fmt ? o.y2.fmt(v) : fmt(v); });
+    node("rect", { x: p.l, y: p.t, width: iw, height: ih, fill: "none", class: "axis" }, g);
+    if (o.x.label) { var xl = node("text", { x: p.l + iw / 2, y: H - 6, "text-anchor": "middle" }, g); xl.textContent = o.x.label; }
+    if (o.y.label) { var yl = node("text", { x: 14, y: p.t + ih / 2, "text-anchor": "middle", transform: "rotate(-90 14 " + (p.t + ih / 2) + ")" }, g); yl.textContent = o.y.label; }
+    if (o.y2 && o.y2.label) { var y2l = node("text", { x: W - 12, y: p.t + ih / 2, "text-anchor": "middle", transform: "rotate(90 " + (W - 12) + " " + (p.t + ih / 2) + ")" }, g); y2l.textContent = o.y2.label; }
+    var clip = "c" + Math.random().toString(36).slice(2);
+    var cp = node("clipPath", { id: clip }, svg); node("rect", { x: p.l, y: p.t, width: iw, height: ih }, cp);
+    var plot = node("g", { "clip-path": "url(#" + clip + ")" }, svg);
+    (o.bands || []).forEach(function (b) { node("rect", { x: X(b.x0), y: p.t, width: Math.max(0, X(b.x1) - X(b.x0)), height: ih, fill: b.color, opacity: b.opacity || 0.12 }, plot); });
+    (o.series || []).forEach(function (s) {
+      var YY = s.axis === "y2" ? Y2 : Y;
+      if (s.bars) { s.pts.forEach(function (pt) { var bw = s.barWidth || 20; node("rect", { x: X(pt[0]) - bw / 2 + (s.offset || 0), y: YY(pt[1]), width: bw, height: Math.max(0, YY(o.y.min) - YY(pt[1])), fill: s.color, rx: 3 }, plot); }); return; }
+      var d = s.pts.filter(function (pt) { return isFinite(pt[1]); }).map(function (pt, i) { return (i ? "L" : "M") + X(pt[0]).toFixed(1) + " " + YY(pt[1]).toFixed(1); }).join("");
+      if (s.fill) node("path", { d: d + "L" + X(s.pts[s.pts.length - 1][0]) + " " + YY(o.y.min) + "L" + X(s.pts[0][0]) + " " + YY(o.y.min) + "Z", fill: s.color, opacity: s.fillOpacity || 0.15 }, plot);
+      node("path", { d: d, fill: "none", stroke: s.color, "stroke-width": s.width || 2.2, "stroke-dasharray": s.dash || "", "stroke-linejoin": "round" }, plot);
+    });
+    (o.vlines || []).forEach(function (v) { var x = X(v.x); node("line", { x1: x, x2: x, y1: p.t, y2: p.t + ih, stroke: v.color, "stroke-width": v.width || 1.5, "stroke-dasharray": v.dash || "" }, plot); if (v.label) { var t = node("text", { x: x + 5, y: p.t + 14 + (v.dy || 0), fill: v.color }, svg); t.textContent = v.label; t.setAttribute("style", "fill:" + v.color + ";font-weight:700"); } });
+    (o.hlines || []).forEach(function (h) { var YY = h.axis === "y2" ? Y2 : Y, y = YY(h.y); node("line", { x1: p.l, x2: p.l + iw, y1: y, y2: y, stroke: h.color, "stroke-width": h.width || 1.5, "stroke-dasharray": h.dash || "" }, plot); if (h.label) { var t = node("text", h.left ? { x: p.l + 8, y: y - 6, "text-anchor": "start" } : { x: p.l + iw - 6, y: y - 6, "text-anchor": "end" }, svg); t.textContent = h.label; t.setAttribute("style", "fill:" + h.color + ";font-weight:700"); } });
+    (o.points || []).forEach(function (q) { var YY = q.axis === "y2" ? Y2 : Y; node("circle", { cx: X(q.x), cy: YY(q.y), r: q.r || 5, fill: q.color, stroke: q.stroke || "none", "stroke-width": 2 }, plot); });
+    return { X: X, Y: Y, Y2: Y2 };
+  };
+
+  /* --- animation manager: only visible sims run --- */
+  U.loop = function (el, tick) {
+    var L = { el: el, tick: tick, vis: false, route: el.closest("[data-route]").getAttribute("data-route") };
+    U.loops.push(L);
+    if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { es.forEach(function (e) { L.vis = e.isIntersecting; }); }).observe(el); else L.vis = true;
+    return L;
+  };
+  var last = 0;
+  function frame(ts) {
+    var dt = Math.min(0.05, (ts - last) / 1000 || 0.016); last = ts;
+    U.loops.forEach(function (L) { if (L.vis && L.route === U.route && !L.paused) L.tick(dt); });
+    requestAnimationFrame(frame);
+  }
+
+  /* --- router --- */
+  function go() {
+    var h = (location.hash || "#/").replace(/^#\/?/, "").split("/"), r = h[0] || "home", sub = h[1] || "";
+    if (!document.querySelector('[data-route="' + r + '"]')) r = "home";
+    U.route = r;
+    $$("[data-route]").forEach(function (el) { el.classList.toggle("on", el.getAttribute("data-route") === r); });
+    $$("nav.primary a").forEach(function (a) { if (a.getAttribute("data-nav") === r) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+    if (!U.started[r] && U.inits[r]) { U.started[r] = true; U.inits[r](sub); }
+    if (U.onRoute[r]) U.onRoute[r](sub);
+    var target = sub && document.getElementById(sub);
+    if (target) setTimeout(function () { target.scrollIntoView({ behavior: U.reduced ? "auto" : "smooth", block: "start" }); }, 30);
+    else window.scrollTo(0, 0);
+    document.title = { home: "Aquatic Guardian: AI's heat, the water, and the animals in it", public: "Follow the water · Aquatic Guardian", officials: "Policy toolkit · Aquatic Guardian", lab: "Lab · Aquatic Guardian", industry: "Design and disclosure · Aquatic Guardian", about: "About · Aquatic Guardian" }[r];
+  }
+  U.onRoute = {};
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-scroll]"); if (b) { var t = document.getElementById(b.getAttribute("data-scroll")); if (t) t.scrollIntoView({ behavior: U.reduced ? "auto" : "smooth" }); }
+    var n = e.target.closest("[data-go]"); if (n) location.hash = "#/" + n.getAttribute("data-go");
+  });
+  document.addEventListener("keydown", function (e) { if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-go]")) { e.preventDefault(); location.hash = "#/" + e.target.getAttribute("data-go"); } });
+  U.start = function () { window.addEventListener("hashchange", go); go(); requestAnimationFrame(frame); };
+
+  /* ================= SCREENING TOOL (shared by officials and industry) ================= */
+  var FIELDS = [
+    { g: "Facility", k: "it_load_mw", l: "IT load", u: "MW", t: "n", min: 0.5, max: 2000, step: 0.5 },
+    { g: "Facility", k: "cooling_type", l: "Cooling design", t: "s", o: [["once_through", "Once-through water, or submerged"], ["hybrid", "Hybrid (part water, part air)"], ["closed_loop_air", "Closed loop to air"]] },
+    { g: "Facility", k: "delta_t_k", l: "Cooling-water temperature rise", u: "°C", t: "n", min: 0.5, max: 25, step: 0.5 },
+    { g: "Facility", k: "pue", l: "PUE", t: "n", min: 1, max: 3, step: 0.01 },
+    { g: "Facility", k: "reuse_pct", l: "Heat recovered before discharge", u: "%", t: "n", min: 0, max: 100, step: 1, h: "Energy reuse factor (ISO/IEC 30134-6). Reuse after discharge does not count." },
+    { g: "Facility", k: "aquaculture_reuse", l: "Recovered heat goes to aquaculture", t: "c" },
+    { g: "Facility", k: "cooling_fraction_pct", l: "Share of intake used for cooling", u: "%", t: "n", min: 0, max: 100, step: 1, tech: true },
+    { g: "Receiving water", k: "water_type", l: "Water body", t: "s", o: [["marine", "Coastal sea"], ["estuarine", "Estuary or tidal river"], ["fresh", "River or lake"]] },
+    { g: "Receiving water", k: "t_ambient_c", l: "Summer maximum water temperature", u: "°C", t: "n", min: 0, max: 32, step: 0.5 },
+    { g: "Receiving water", k: "s_psu", l: "Salinity", u: "psu", t: "n", min: 0, max: 40, step: 0.5 },
+    { g: "Receiving water", k: "ph", l: "pH", t: "n", min: 6, max: 9, step: 0.1 },
+    { g: "Receiving water", k: "depth_m", l: "Depth at the outfall", u: "m", t: "n", min: 1, max: 300, step: 1 },
+    { g: "Receiving water", k: "u_peak_ms", l: "Peak tidal current", u: "m/s", t: "n", min: 0.01, max: 3, step: 0.01, h: "Use a NOAA CO-OPS or DFO/CHS station, not a guess." },
+    { g: "Outfall", k: "n_ports", l: "Diffuser ports", t: "n", min: 1, max: 200, step: 1 },
+    { g: "Outfall", k: "port_diameter_m", l: "Port diameter", u: "m", t: "n", min: 0.05, max: 3, step: 0.05 },
+    { g: "Outfall", k: "port_spacing_m", l: "Port spacing", u: "m", t: "n", min: 0.5, max: 200, step: 0.5 },
+    { g: "Rules", k: "jurisdiction", l: "Jurisdiction", t: "s",
+      o: (D.jurisdictions || []).map(function (j) { return [j.id, j.label]; }),
+      h: function (s) { var j = E.jurisdiction(s.jurisdiction); return j.note + " Temperature rule status: " + j.temperature_status + (j.temperature_source ? " (" + j.temperature_source + ")" : ", no source transcribed") + ", as of " + j.status_as_of + ". Intake rule: " + j.intake_label + "."; } },
+    { g: "Rules", k: "temperature_rule", l: "Temperature rule", t: "s", h: "Set by the jurisdiction above. Change it only to screen against a different rule.", o: [["wa_marine", "Washington marine (WAC 173-201A-210)"], ["ca_new_coastal", "California Thermal Plan, new coastal"], ["custom", "Permit-specific increment"]] },
+    { g: "Rules", k: "wa_category", l: "Washington marine class", t: "s", show: function (f) { return f.temperature_rule === "wa_marine"; }, o: [["extraordinary", "Extraordinary (13 °C)"], ["excellent", "Excellent (16 °C)"], ["good", "Good (19 °C)"], ["fair", "Fair (22 °C)"]] },
+    { g: "Rules", k: "custom_increment_k", l: "Allowed increment", u: "°C", t: "n", min: 0.1, max: 10, step: 0.1, show: function (f) { return f.temperature_rule === "custom"; } },
+    { g: "Model grid", k: "grid_dx_m", l: "Far-field grid spacing", u: "m", t: "n", min: 1, max: 1000, step: 1, tech: true },
+    { g: "Model grid", k: "grid_dt_s", l: "Time step", u: "s", t: "n", min: 0.1, max: 600, step: 0.1, tech: true }
+  ];
+  function Tool(root, mode) {
+    this.root = root; this.mode = mode; this.id = "t" + Math.random().toString(36).slice(2, 7);
+    this.state = { it_load_mw: 24, cooling_type: "once_through", delta_t_k: 8, pue: 1.15, reuse_pct: 0, aquaculture_reuse: false, cooling_fraction_pct: 100,
+      water_type: "marine", t_ambient_c: 12, s_psu: 30, ph: 8.0, depth_m: 20, u_peak_ms: 0.3, n_ports: 10, port_diameter_m: 0.3, port_spacing_m: 4,
+      jurisdiction: E.DEFAULTS.jurisdiction, temperature_rule: E.jurisdiction(E.DEFAULTS.jurisdiction).temperature_rule,
+      wa_category: "excellent", custom_increment_k: 1.0, grid_dx_m: 25, grid_dt_s: 10 };
+    root.innerHTML = '<form novalidate class="light"></form><div class="tool-out" aria-live="polite"></div>';
+    this.form = root.firstChild; this.out = root.lastChild;
+    var self = this;
+    this.form.addEventListener("input", function (e) {
+      var k = e.target.getAttribute("data-k"); if (!k) return;
+      self.state[k] = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+      if (k === "jurisdiction") self.state.temperature_rule = E.jurisdiction(self.state.jurisdiction).temperature_rule;
+      if (k === "jurisdiction" || k === "temperature_rule") {
+        self.renderForm();
+        var n = self.form.querySelector('[data-k="' + k + '"]'); if (n) n.focus();
+      }
+      self.run();
+    });
+    this.renderForm(); this.run();
+  }
+  Tool.prototype.renderForm = function () {
+    var self = this, groups = {}, order = [];
+    FIELDS.forEach(function (f) { if (f.tech && self.mode !== "technical") return; if (f.show && !f.show(self.state)) return; if (!groups[f.g]) { groups[f.g] = []; order.push(f.g); } groups[f.g].push(f); });
+    var h = "";
+    order.forEach(function (g) {
+      h += "<fieldset><legend>" + esc(g) + "</legend>";
+      groups[g].forEach(function (f) {
+        var id = self.id + "-" + f.k, lab = esc(f.l) + (f.u ? " (" + esc(f.u) + ")" : "");
+        if (f.t === "c") { h += '<div class="field check"><input type="checkbox" id="' + id + '" data-k="' + f.k + '"' + (self.state[f.k] ? " checked" : "") + '><label for="' + id + '">' + lab + "</label></div>"; return; }
+        h += '<div class="field"><label for="' + id + '">' + lab + "</label>";
+        if (f.t === "s") h += '<select id="' + id + '" data-k="' + f.k + '"' + (f.h ? ' aria-describedby="' + id + '-h"' : "") + '>' + f.o.map(function (o) { return '<option value="' + o[0] + '"' + (self.state[f.k] === o[0] ? " selected" : "") + ">" + esc(o[1]) + "</option>"; }).join("") + "</select>";
+        else h += '<input type="number" inputmode="decimal" id="' + id + '" data-k="' + f.k + '" min="' + f.min + '" max="' + f.max + '" step="' + f.step + '" value="' + esc(self.state[f.k]) + '"' + (f.h ? ' aria-describedby="' + id + '-h"' : "") + ">";
+        if (f.h) h += '<small id="' + id + '-h">' + esc(typeof f.h === "function" ? f.h(self.state) : f.h) + "</small>";
+        h += "</div>";
+      });
+      h += "</fieldset>";
+    });
+    this.form.innerHTML = h;
+  };
+  Tool.prototype.inputs = function () {
+    var s = this.state, n = function (k) { return parseFloat(s[k]); };
+    var v = { it_load_mw: n("it_load_mw"), cooling_type: s.cooling_type, delta_t_k: n("delta_t_k"), pue: n("pue"), reuse_fraction: n("reuse_pct") / 100,
+      aquaculture_reuse: !!s.aquaculture_reuse, cooling_fraction: n("cooling_fraction_pct") / 100, water_type: s.water_type, t_ambient_c: n("t_ambient_c"),
+      s_psu: n("s_psu"), ph: n("ph"), depth_m: n("depth_m"), u_peak_ms: n("u_peak_ms"), n_ports: Math.round(n("n_ports")), port_diameter_m: n("port_diameter_m"),
+      port_spacing_m: n("port_spacing_m"), jurisdiction: s.jurisdiction, temperature_rule: s.temperature_rule, wa_category: s.wa_category, custom_increment_k: n("custom_increment_k"),
+      grid_dx_m: n("grid_dx_m"), grid_dt_s: n("grid_dt_s") };
+    var bad = []; for (var k in v) if (typeof v[k] === "number" && !isFinite(v[k])) bad.push(k.replace(/_/g, " "));
+    if (v.reuse_fraction < 0 || v.reuse_fraction > 1) bad.push("heat recovered");
+    if (v.n_ports < 1) bad.push("ports");
+    return { v: v, bad: bad };
+  };
+  U.disclosure = function (r) {
+    var i = r.inputs, h = 8760;
+    var code = /^[a-z]{2}-[a-z]{2}$/.test(r.jurisdiction.id) ? r.jurisdiction.id.toUpperCase() : "UNSET";
+    return { schema_version: "0.1.0", facility: { id: "UNSET", jurisdictions: [code], siting: "UNSET", it_capacity_mw: i.it_load_mw, pue: i.pue, cooling_type: i.cooling_type, location: { water_type: i.water_type } },
+      reporting_period: { start: "UNSET", end: "UNSET" },
+      thermal: { heat_rejected_mwh: Math.round(r.heat_rejected_mw * h), heat_to_water_mwh: Math.round(r.heat_to_water_mw * h), heat_reused_mwh: Math.round(r.heat_reused_mw * h), erf: i.reuse_fraction, discharge_delta_t_k: { max: i.delta_t_k },
+        mixing_zone: { criterion_c: r.temperature_rule.criterion_c, criterion_basis: r.temperature_rule.basis, model: "aquatic_guardian " + E.version + " screening" } },
+      intake: { design_intake_m3s: +r.flow_m3s.toFixed(4), cooling_fraction: i.cooling_fraction }, biology: { impingement: [], entrainment: [] },
+      provenance: { prepared_by: "UNSET", method: "design-value screening", tool_versions: ["aquatic_guardian " + E.version + " (browser)"], independently_verified: false, screening_only: true } };
+  };
+  function conditions(r) {
+    var i = r.inputs, rule = r.temperature_rule, jr = r.jurisdiction, c = [];
+    var placeholderRule = jr.temperature_status === "placeholder";
+    c.push("<b>Temperature.</b> The increase above ambient at the edge of the mixing zone shall not exceed " + fmt(rule.allowed_increment_k, 2) + " °C (" + esc(rule.basis) + (jr.temperature_source ? "; " + esc(jr.temperature_source) : "") + "), evaluated at slack water, an ambient temperature of " + fmt(i.t_ambient_c, 1) + " °C and the maximum discharge flow of " + fmt(r.flow_m3s, 3) + " m³/s." + (placeholderRule ? " No published numeric limit is transcribed for " + esc(jr.label) + " in this repository; the figure above is the value entered for screening, not a cited standard." : ""));
+    if (r.flow_m3s > 0) {
+      if (jr.intake_rule === "us_cwa_316b") {
+        c.push("<b>Intake.</b> Maximum through-screen design velocity 0.15 m/s (0.5 ft/s), requiring at least " + fmt(r.intake_316b.min_screen_open_area_m2, 1) + " m² of open screen area at " + fmt(r.flow_m3s, 3) + " m³/s (" + fmt(r.intake_316b.design_intake_mgd, 1) + " MGD). Impingement and entrainment reported by taxon, life stage and sentience tier, with eggs and larvae as separate rows. Source: " + esc(jr.intake_source) + ".");
+      } else if (jr.intake_rule === "ca_fisheries_act") {
+        c.push("<b>Intake.</b> Works and water withdrawals must not harmfully alter fish habitat; heated discharge can be a deleterious substance (" + esc(jr.intake_source) + "). Report impingement and entrainment by taxon and life stage. Design flow " + fmt(r.flow_m3s, 3) + " m³/s (" + fmt(r.intake_316b.design_intake_mgd, 1) + " MGD); US 2 MGD arithmetic shown for comparison only.");
+      } else {
+        c.push("<b>Intake.</b> No cooling-water intake rule is transcribed for " + esc(jr.label) + ". Design flow " + fmt(r.flow_m3s, 3) + " m³/s (" + fmt(r.intake_316b.design_intake_mgd, 1) + " MGD). The US 2 MGD / 0.15 m/s figures are shown for comparison only and are not asserted as requirements here.");
+      }
+    }
+    c.push("<b>Shutdown.</b> Planned shutdowns ramp the discharge temperature rise down at no more than [1] °C per [hour] in cold months; mortality within [500] m of the outfall reported within 24 hours.");
+    c.push("<b>Chemicals.</b> Mass of each biocide, antifouling agent, corrosion inhibitor and coolant reported; no copper-based antifouling in critical habitat; no PFAS coolants.");
+    c.push("<b>Monitoring.</b> Continuous temperature at the outfall, the mixing-zone edge and a reference site; summer dissolved oxygen at the edge; detection-corrected occupancy surveys; data published within 90 days.");
+    c.push("<b>Reopener.</b> Exceedance on more than [N] days a season, or a detection-corrected decline of a focal taxon, requires a heat-reduction plan within 30 days, which may include shifting compute to other sites.");
+    if (i.aquaculture_reuse && i.reuse_fraction > 0) c.push("<b>Aquaculture.</b> Recovered heat counts toward reuse targets only if each farmed species is kept to [named welfare standard], with stocking density, mortality and stunning method reported.");
+    return c;
+  }
+  function plain(r) {
+    var i = r.inputs, nf = r.near_field, jr = r.jurisdiction, s = [];
+    s.push("This facility rejects about <b>" + fmt(r.heat_rejected_mw, 1) + " MW</b> of heat, of which <b>" + fmt(r.heat_to_water_mw, 1) + " MW</b> goes into the water.");
+    if (r.flow_m3s > 0) {
+      var ir = jr.intake_rule, tail;
+      if (ir === "us_cwa_316b") tail = r.intake_316b.likely_applicable ? "enough that US cooling-intake rules would likely apply." : "below the 2 MGD US intake threshold.";
+      else if (ir === "ca_fisheries_act") tail = "enough that Fisheries Act habitat and deleterious-substance rules need a look; the US 2 MGD figure is for comparison only.";
+      else tail = (r.intake_316b.design_intake_mgd > 2 ? "above" : "below") + " the US 2 MGD cooling-intake threshold, shown only for comparison: no intake rule for " + esc(jr.label) + " is on file here.";
+      s.push("Carrying it takes about <b>" + fmt(r.flow_m3s * 1000, 0) + " litres a second</b>, " + tail);
+      if (nf) {
+        var placeholderRule = jr.temperature_status === "placeholder";
+        s.push("At slack water the discharge is diluted about <b>" + fmt(nf.dilution, nf.dilution < 10 ? 1 : 0) + " times</b> by the surface, a rise of <b>" + fmt(nf.delta_t_near_field_k, 2) + " °C</b>. " +
+          (placeholderRule
+            ? "No published limit is on file for " + esc(jr.label) + ", so the " + fmt(r.temperature_rule.allowed_increment_k, 2) + " °C allowance is the figure you entered: the rise " + (nf.meets_rule ? "is below it" : "is above it") + ", which is arithmetic rather than a compliance finding."
+            : "The rule for " + esc(jr.label) + " allows " + fmt(r.temperature_rule.allowed_increment_k, 2) + " °C, so this design " + (nf.meets_rule ? "<b>passes the screen</b>." : "<b>fails the screen</b> and needs a redesign or a full study.")));
+      }
+    } else s.push("It rejects heat to air, so there is no cooling-water intake or thermal discharge to screen.");
+    return s.join(" ");
+  }
+  Tool.prototype.run = function () {
+    var inp = this.inputs(), out = this.out, self = this;
+    if (inp.bad.length) { out.innerHTML = '<div class="err">Check: ' + esc(inp.bad.join(", ")) + ". Each needs a number within its range.</div>"; return; }
+    var r; try { r = E.screen(inp.v); } catch (e) { out.innerHTML = '<div class="err">' + esc(e.message) + ". Adjust the value and results update.</div>"; return; }
+    var nf = r.near_field, h = '<p class="res-summary">' + plain(r) + "</p>";
+    h += '<div class="res-nums"><div class="h"><b>' + fmt(r.heat_to_water_mw, 1) + ' MW</b><span>heat to water</span></div><div><b>' + fmt(r.flow_m3s, 2) + ' m³/s</b><span>cooling flow (' + fmt(r.intake_316b.design_intake_mgd, 1) + ' MGD)</span></div>' +
+      (nf ? '<div class="h"><b>' + fmt(nf.delta_t_near_field_k, 2) + ' °C</b><span>screening rise</span></div>' : "") + '<div><b>' + fmt(r.temperature_rule.allowed_increment_k, 2) + ' °C</b><span>allowed</span></div><div><b>' + fmt(r.tidal_excursion_m / 1000, 1) + ' km</b><span>tidal excursion</span></div><div><b>' + fmt(r.water_quality.nh3_frac_ratio, 2) + '×</b><span>toxic ammonia at discharge</span></div></div>';
+    if (nf) { var mx = Math.max(nf.delta_t_near_field_k, r.temperature_rule.allowed_increment_k) * 1.25;
+      h += '<div class="gauge" role="img" aria-label="Rise ' + fmt(nf.delta_t_near_field_k, 2) + ' against allowed ' + fmt(r.temperature_rule.allowed_increment_k, 2) + '"><div class="gauge-t"><div class="gauge-f" style="width:' + (100 * nf.delta_t_near_field_k / mx).toFixed(1) + '%"></div><div class="gauge-m" style="left:' + (100 * r.temperature_rule.allowed_increment_k / mx).toFixed(1) + '%"></div></div><div class="gauge-l"><span>Screening rise (bar)</span><span>Allowed (line)</span></div></div>'; }
+    if (r.flags.length) h += "<h3>What this triggers</h3><ul class='flags'>" + r.flags.map(function (f) { return "<li><span class='sev " + f.severity + "'>" + { high: "Action", caution: "Caution", info: "Note" }[f.severity] + "</span><span>" + esc(f.text) + "</span></li>"; }).join("") + "</ul>";
+    if (r.reporting.length) h += "<h3>Animals and welfare: what must be reported</h3><ul>" + r.reporting.map(function (x) { return "<li>" + esc(x.charAt(0).toUpperCase() + x.slice(1)) + "</li>"; }).join("") + "</ul>";
+    if (this.mode === "official") h += '<h3 style="margin-top:1.4rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap">Draft permit conditions <button type="button" class="btn acc sm" data-a="cond">Copy conditions</button></h3><ol class="conditions">' + conditions(r).map(function (c) { return "<li>" + c + "</li>"; }).join("") + "</ol>";
+    h += '<h3 style="margin-top:1.4rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap">Aquatic Disclosure Record <button type="button" class="btn acc sm" data-a="json">Copy JSON</button></h3><pre class="json" tabindex="0">' + esc(JSON.stringify(U.disclosure(r), null, 2)) + "</pre>";
+    if (this.mode === "technical" && nf) { var rows = [["Reduced gravity g′", fmt(nf.g_prime, 4) + " m/s²"], ["Regime (s/H " + fmt(nf.s_over_H, 2) + ")", nf.regime], ["Jet velocity", fmt(nf.jet_velocity_ms, 2) + " m/s"], ["Dilution, point envelope", fmt(nf.dilution_point, 1)], ["Dilution, line plume", fmt(nf.dilution_line, 1)], ["Jet-dominated", nf.jet_dominated ? "yes" : "no"], ["Upwind numerical diffusion", fmt(r.numerics.k_num_upwind_m2s, 2) + " m²/s"], ["Okubo at 1 km", fmt(r.numerics.k_okubo_1km_m2s, 2) + " m²/s"], ["Numerics exceed ocean below", fmt(r.numerics.crossover_scale_m / 1000, 2) + " km"], ["Estuary 1% volume test", fmt(r.tidal_volume_check.fraction * 100, 3) + "%"], ["DO saturation ambient / discharge", fmt(r.water_quality.do_sat_ambient_mg_l, 2) + " / " + fmt(r.water_quality.do_sat_discharge_mg_l, 2) + " mg/L"]];
+      h += "<h3 style='margin-top:1.4rem'>Technical detail</h3><div class='scroll'><table><tbody>" + rows.map(function (x) { return "<tr><td>" + esc(x[0]) + "</td><td style='text-align:right'>" + esc(x[1]) + "</td></tr>"; }).join("") + "</tbody></table></div>"; }
+    h += '<p class="caveat" style="margin-top:1.2rem">Screening only: slack-water, unstratified near field; no far-field transport; no species thresholds. Not legal advice. Engine ' + esc(E.version) + ", tested against the Python library.</p>";
+    out.innerHTML = h;
+    var cb = out.querySelector('[data-a="cond"]'); if (cb) cb.addEventListener("click", function () { U.copy(conditions(r).map(function (c, n) { return (n + 1) + ". " + c.replace(/<[^>]+>/g, ""); }).join("\n\n"), "Conditions"); });
+    out.querySelector('[data-a="json"]').addEventListener("click", function () { U.copy(JSON.stringify(U.disclosure(r), null, 2), "JSON"); });
+  };
+  U.Tool = Tool;
+
+  /* ================= PUBLIC ================= */
+  U.inits["public"] = function () {
+    var step = 0, mw = 24;
+    var STEPS = [
+      function (r) { return { t: "1. The intake", big: fmt(r.flow_m3s * 1000, 0) + " litres a second", body: "The intake pulls in seawater, and whatever lives in it. Fish and crabs too big to pass the screen can be pinned against it. Eggs, larvae and plankton small enough to pass go through the heat exchanger. At " + fmt(r.intake_316b.design_intake_mgd, 0) + " million gallons a day, this intake is " + fmt(r.intake_316b.design_intake_mgd / 2, 1) + " times the size at which US law regulates intakes at power plants and factories." }; },
+      function (r) { return { t: "2. The heat", big: "+" + fmt(r.inputs.delta_t_k, 0) + " °C", body: "Inside, the water carries away " + fmt(r.heat_to_water_mw, 1) + " MW of heat from the servers. It leaves " + fmt(r.inputs.delta_t_k, 0) + " °C warmer, holding " + fmt(r.water_quality.do_sat_drop_frac * 100, 0) + "% less oxygen at the very moment animals in it need more. The toxic form of ammonia rises " + fmt(r.water_quality.nh3_frac_ratio, 1) + " times." }; },
+      function (r) { var nf = r.near_field; return { t: "3. The plume", big: fmt(nf.delta_t_near_field_k, 2) + " °C", body: "The warm water leaves through a diffuser on the seabed and rises as it mixes, diluting about " + fmt(nf.dilution, 0) + " times by the surface. That leaves a rise of " + fmt(nf.delta_t_near_field_k, 2) + " °C where the screening rule allows " + fmt(r.temperature_rule.allowed_increment_k, 2) + " °C, so this design " + (nf.meets_rule ? "stays under the screening increment." : "exceeds the screening increment and needs a redesign or a full study.") + " Fish gather at warm outfalls and can be chilled when a facility shuts down." }; },
+      function (r) { return { t: "4. The tide", big: fmt(r.tidal_excursion_m / 1000, 1) + " km", body: "Each flood and ebb carries the warm water about " + fmt(r.tidal_excursion_m / 1000, 1) + " km along the coast and back. At slack tide it pools around the outfall. That is when the rise is highest, and when regulators judge compliance." }; }
+    ];
+    function render() {
+      var r = E.screen({ it_load_mw: mw });
+      var s = STEPS[step](r);
+      $("#xsec-text").innerHTML = "<h3>" + esc(s.t) + '</h3><p class="big">' + esc(s.big) + '</p><p class="serif" style="margin-top:.8rem">' + esc(s.body) + "</p>";
+      $$(".hot-btn").forEach(function (b) { b.setAttribute("aria-pressed", +b.getAttribute("data-step") === step ? "true" : "false"); });
+      $$("#steps-nav button").forEach(function (b) { b.setAttribute("aria-pressed", +b.getAttribute("data-step") === step ? "true" : "false"); });
+      var k = Math.max(0.55, Math.min(1.9, Math.sqrt(mw / 24)));
+      $("#plume").setAttribute("transform", "translate(880 364) scale(" + k.toFixed(3) + " 1) translate(-880 -364)");
+      $("#p-mw-o").textContent = mw + " MW";
+    }
+    $("#p-mw").addEventListener("input", function (e) { mw = +e.target.value; render(); });
+    document.addEventListener("click", function (e) { var b = e.target.closest("[data-step]"); if (b && b.closest("[data-route='public']")) { step = +b.getAttribute("data-step"); render(); } });
+    document.addEventListener("keydown", function (e) { if ((e.key === "Enter" || e.key === " ") && e.target.matches(".hot-btn")) { e.preventDefault(); step = +e.target.getAttribute("data-step"); render(); } });
+    render();
+    var off = 0, fin = $("#flowdash-in"), fout = $("#flowdash-out");
+    if (!U.reduced) U.loop($("#xsec"), function (dt) { off -= dt * 40; fin.setAttribute("stroke-dashoffset", off.toFixed(1)); fout.setAttribute("stroke-dashoffset", off.toFixed(1)); });
+    var dl = inst().filter(function (x) { return x.deadline; })[0];
+    if (dl) { var days = Math.ceil((new Date(dl.deadline + "T23:59:59Z") - new Date()) / 86400000); $("#pub-countdown").textContent = days >= 0 ? days + " days left" : "Closed"; }
+    var LET = {
+      us: "Dear [Representative],\n\nI am writing about the AI data centres being planned near our coast and rivers. Many are cooled with seawater or river water, drawing in fish, crabs and larvae and returning the water warmer.\n\nThe AI Data Center Moratorium Act (S.4214 / H.R.9442) already asks the Department of Energy to report data centres' \"thermal outputs\", but does not define them. Please support amendments that require facilities to report heat discharged to water, intake flow, and the animals killed at intakes, counted by species and life stage.\n\nModel text is published openly by Aquatic Guardian.\n\nSincerely,\n[Name]\n[Address]",
+      eu: "Dear [MEP],\n\nThe Commission is consulting on binding minimum performance standards for data centres until 14 December 2026. Current EU reporting measures freshwater use, but not heat discharged to seas and rivers, or the animals drawn into cooling intakes.\n\nI ask you to support indicators for heat discharged to surface water and for intake flow and impingement, and to ensure the Cloud and AI Development Act's acceleration zones are screened under the Water Framework and Habitats Directives before designation.\n\nYours sincerely,\n[Name]\n[Address]",
+      ca: "Dear [MLA / MP],\n\nBC Hydro now allocates power to AI data centres competitively and scores environmental impact. That score does not yet cover cooling water, or the fish and crabs affected by intakes and warm discharges.\n\nPlease support adding an aquatic-impact criterion to the next call for power, developed with First Nations, and federal guidance that heated cooling water falls under section 36 of the Fisheries Act.\n\nSincerely,\n[Name]\n[Address]",
+      uk: "Dear [MP],\n\nData centres are now Critical National Infrastructure. Some are cooled with seawater or river water, affecting fish and crustaceans that UK law recognises as sentient under the Animal Welfare (Sentience) Act 2022.\n\nI ask you to request that the Animal Sentience Committee review data-centre siting, cooling and heat-reuse policy for its effects on these animals.\n\nYours sincerely,\n[Name]\n[Address]"
+    };
+    function letter() { $("#letter").value = LET[$("#letter-j").value]; }
+    $("#letter-j").addEventListener("change", letter); letter();
+    $("#copy-letter").addEventListener("click", function () { U.copy($("#letter").value, "Letter"); });
+  };
+
+  /* ================= OFFICIALS ================= */
+  function inst() { return D.instruments.instruments; }
+  U.inst = inst;
+  function dateText(d) { return new Date(d + "T12:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
+  U.inits.officials = function (sub) {
+    var cur = 0;
+    var jur = $("#jur");
+    D.policy.forEach(function (g, i) {
+      var items = inst().filter(function (x) { return x.doc === g.path; });
+      var next = items.map(function (x) { return x.deadline || null; }).filter(Boolean)[0];
+      var b = document.createElement("button");
+      b.type = "button"; b.setAttribute("role", "tab"); b.id = "jt-" + g.key; b.setAttribute("aria-controls", "doc");
+      b.innerHTML = esc(g.label) + "<small>" + g.clauses.length + " clause" + (g.clauses.length === 1 ? "" : "s") + (next ? ", deadline " + dateText(next) : "") + "</small>";
+      b.addEventListener("click", function () { show(i); });
+      jur.appendChild(b);
+    });
+    jur.addEventListener("keydown", function (e) { var n = D.policy.length, k = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0; if (!k) return; e.preventDefault(); show((cur + k + n) % n); jur.children[cur].focus(); });
+    function show(i) {
+      cur = i; var g = D.policy[i];
+      $$("#jur button").forEach(function (b, j) { b.setAttribute("aria-selected", j === i ? "true" : "false"); b.tabIndex = j === i ? 0 : -1; });
+      $("#doc").setAttribute("aria-labelledby", "jt-" + g.key);
+      var h = '<div class="status">' + U.md(g.intro) + "</div>";
+      g.clauses.forEach(function (c, k) { h += '<div class="clause"><div class="clause-h"><h3>' + esc(c.heading.replace(/^[A-Z]\d?\.\s*/, "")) + '</h3><button type="button" class="btn acc sm" data-c="' + k + '">Copy</button></div><div class="clause-t">' + esc(c.text) + "</div></div>"; });
+      h += '<p class="small muted">Source: <code>' + esc(g.path) + "</code>, CC BY 4.0.</p>";
+      $("#doc").innerHTML = h;
+      var items = inst().filter(function (x) { return x.doc === g.path; });
+      var today = new Date();
+      var ev = []; items.forEach(function (x) { x.dates.forEach(function (d) { if (new Date(d.date) >= today) ev.push({ d: d.date, e: d.event, n: x.name }); }); });
+      ev.sort(function (a, b) { return a.d < b.d ? -1 : 1; });
+      var b = '<div class="card"><h3>What is live</h3><ul>' + items.map(function (x) { return "<li><b>" + esc(x.name) + '</b><br><span class="pill ' + esc(x.stage) + '">' + esc(x.status) + "</span>" + (x.verify ? '<span class="chk" title="' + esc(x.verify_note || "") + '">check</span>' : "") + "</li>"; }).join("") + "</ul></div>";
+      b += '<div class="card"><h3>What to ask for</h3><ul>' + items.map(function (x) { return "<li>" + esc(x.action) + "</li>"; }).join("") + "</ul></div>";
+      if (ev.length) b += '<div class="card"><h3>Coming up</h3><ul>' + ev.map(function (x) { return "<li><b>" + dateText(x.d) + "</b>: " + esc(x.e) + "</li>"; }).join("") + "</ul></div>";
+      b += '<div class="card"><h3>Screen a proposal</h3><p class="small">Get draft permit conditions with a facility\'s own numbers.</p><button type="button" class="btn acc sm" data-scroll="off-tool">Open the screening tool</button></div>';
+      $("#brief").innerHTML = b;
+    }
+    $("#doc").addEventListener("click", function (e) { var b = e.target.closest("[data-c]"); if (!b) return; var g = D.policy[cur], c = g.clauses[+b.getAttribute("data-c")]; U.copy(c.text + "\n\nSource: Aquatic Guardian, " + g.path + " (CC BY 4.0)", "Clause"); });
+    U.onRoute.officials = function (s) { var i = D.policy.findIndex(function (g) { return g.key === s || (s === "eu" && g.key === "eu"); }); if (i >= 0) { show(i); setTimeout(function () { $("#off-lang").scrollIntoView(); }, 40); } };
+    show(0);
+    timeline(); tracker();
+    new Tool($('[data-tool="official"]'), "official");
+    $("#recs").innerHTML = D.recommendations.map(function (r) { return "<tr><td>" + esc(r[1]) + "</td><td>" + esc(r[2]) + "</td><td>" + esc(r[3]) + "</td><td><b>" + esc(r[4]) + "</b></td></tr>"; }).join("");
+  };
+  function tracker() {
+    var unsourced = inst().filter(function (x) { return !(x.sources && x.sources.length); }).length;
+    var note = $("#tracker-note");
+    if (note) note.textContent = unsourced
+      ? unsourced + " of these rows have no primary-source link yet, so treat their status and dates as needing a check before you rely on them."
+      : "Every row has a primary-source link.";
+    $("#tracker tbody").innerHTML = inst().map(function (x) {
+      return "<tr><td><b>" + esc(x.name) + "</b><div class='small muted'>" + esc(x.jurisdiction) + "</div></td>"
+        + "<td><span class='pill " + esc(x.stage) + "'>" + esc(x.status) + "</span>" + (x.verify ? "<span class='chk'>check</span><div class='small muted'>" + esc(x.verify_note || "") + "</div>" : "") + "</td>"
+        + "<td>" + esc(x.hook) + "</td><td>" + esc(x.action) + "</td>"
+        + "<td class='small muted'>" + esc(x.last_checked || "—") + "</td></tr>";
+    }).join("");
+  }
+  function timeline() {
+    var svg = $("#tl"), sel = $("#tl-filter"), juris = [];
+    inst().forEach(function (x) { if (juris.indexOf(x.jurisdiction) < 0) juris.push(x.jurisdiction); });
+    juris.forEach(function (j) { var o = document.createElement("option"); o.value = j; o.textContent = j; sel.appendChild(o); });
+    var t0 = new Date("2025-01-01").getTime(), t1 = new Date("2029-06-30").getTime(), COL = { enacted: "var(--ok)", adopted: "var(--gold)", proposed: "var(--gold)", consultation: "var(--warn)", programme: "var(--accent)", failed: "var(--muted)", standard: "var(--accent)" };
+    function draw() {
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      var show = sel.value === "all" ? juris : [sel.value], lane = 34, top = 34, H = top + show.length * lane + 24;
+      svg.setAttribute("viewBox", "0 0 1000 " + H);
+      var X = function (d) { return 170 + 810 * (new Date(d).getTime() - t0) / (t1 - t0); };
+      for (var y = 2025; y <= 2029; y++) { var x = X(y + "-01-01"); U.svgNode("line", { x1: x, x2: x, y1: 20, y2: H - 10, stroke: "var(--line)" }, svg); var t = U.svgNode("text", { x: x + 4, y: 16 }, svg); t.textContent = y; }
+      show.forEach(function (j, li) {
+        var yy = top + li * lane + lane / 2; var lt = U.svgNode("text", { x: 0, y: yy + 4 }, svg); lt.textContent = j.length > 24 ? j.slice(0, 23) + "…" : j;
+        U.svgNode("line", { x1: 170, x2: 980, y1: yy, y2: yy, stroke: "var(--line)", "stroke-dasharray": "2 4" }, svg);
+        inst().filter(function (x) { return x.jurisdiction === j; }).forEach(function (x) {
+          x.dates.forEach(function (d) {
+            var g = U.svgNode("g", { class: "ev", tabindex: 0, role: "button", "aria-label": x.name + ": " + d.event + ", " + dateText(d.date) }, svg);
+            U.svgNode("circle", { cx: X(d.date), cy: yy, r: 7, fill: COL[x.stage] || "var(--accent)" }, g);
+            function det() { $("#tl-detail").innerHTML = "<b>" + dateText(d.date) + "</b>, " + esc(x.name) + ": " + esc(d.event) + ". <span class='pill " + esc(x.stage) + "'>" + esc(x.status) + "</span>"; }
+            g.addEventListener("click", det); g.addEventListener("focus", det);
+          });
+        });
+      });
+      var now = X(new Date().toISOString().slice(0, 10)); U.svgNode("line", { x1: now, x2: now, y1: 22, y2: H - 8, stroke: "var(--warn)", "stroke-width": 2 }, svg);
+      var tt = U.svgNode("text", { x: now + 5, y: H - 12 }, svg); tt.textContent = "today"; tt.setAttribute("style", "fill:var(--warn);font-weight:700");
+    }
+    sel.addEventListener("change", draw); draw();
+  }
+
+  /* ================= INDUSTRY ================= */
+  U.inits.industry = function () {
+    function compare() {
+      var mw = parseFloat($("#ic-mw").value), t = parseFloat($("#ic-t").value), w = $("#ic-w").value;
+      if (!(mw > 0) || !isFinite(t)) { $("#compare").innerHTML = '<div class="err">Enter an IT load above 0 MW and a water temperature.</div>'; return; }
+      var designs = [["once_through", "Once-through", "Seawater or river water passes through once and returns warmer."], ["hybrid", "Hybrid", "Part of the heat goes to water, part to air. Assumes half to water."], ["closed_loop_air", "Closed loop", "Heat goes to air through dry coolers. PUE may be higher; enter your own in the full screening."]];
+      var rs = designs.map(function (d) { return E.screen({ it_load_mw: mw, t_ambient_c: t, water_type: w, cooling_type: d[0] }); });
+      var maxFlow = Math.max.apply(null, rs.map(function (r) { return r.flow_m3s; })) || 1;
+      var score = rs.map(function (r) { return r.flags.filter(function (f) { return f.severity === "high"; }).length * 1000 + r.heat_to_water_mw; });
+      var best = score.indexOf(Math.min.apply(null, score));
+      $("#compare").innerHTML = rs.map(function (r, i) {
+        var nf = r.near_field;
+        return '<div class="opt' + (i === best ? " best" : "") + '"><h3>' + designs[i][1] + '</h3><p class="small muted">' + designs[i][2] + '</p><div class="small">Cooling flow</div><div class="bar"><i style="width:' + (100 * r.flow_m3s / maxFlow).toFixed(0) + '%"></i></div><dl>' +
+          "<dt>Heat to water</dt><dd>" + fmt(r.heat_to_water_mw, 1) + " MW</dd><dt>Cooling flow</dt><dd>" + fmt(r.flow_m3s, 2) + " m³/s</dd><dt>US intake rules likely</dt><dd>" + (r.intake_316b.likely_applicable ? "Yes" : "No") + "</dd><dt>Screening rise</dt><dd>" + (nf ? fmt(nf.delta_t_near_field_k, 2) + " °C" : "none") + "</dd><dt>Action flags</dt><dd>" + r.flags.filter(function (f) { return f.severity === "high"; }).length + "</dd><dt>Reporting items</dt><dd>" + r.reporting.length + "</dd></dl>" + (i === best ? '<p class="small" style="margin:.7rem 0 0;color:var(--ok);font-weight:700">Lowest regulatory exposure</p>' : "") + "</div>";
+      }).join("");
+      trade(mw, t, w);
+    }
+    function trade(mw, t, w) {
+      var pts = [], rise = [], allow = null;
+      for (var dT = 2; dT <= 15.001; dT += 0.5) { var r = E.screen({ it_load_mw: mw, t_ambient_c: t, water_type: w, delta_t_k: dT }); pts.push([dT, r.flow_m3s]); rise.push([dT, r.near_field.delta_t_near_field_k]); allow = r.temperature_rule.allowed_increment_k; }
+      var fmax = Math.max.apply(null, pts.map(function (p) { return p[1]; })) * 1.1, rmax = Math.max(allow * 1.3, Math.max.apply(null, rise.map(function (p) { return p[1]; })) * 1.15);
+      U.chart($("#trade-chart"), { x: { min: 2, max: 15, label: "Temperature rise across the heat exchanger (°C)" }, y: { min: 0, max: fmax, label: "Cooling flow (m³/s)" }, y2: { min: 0, max: rmax, label: "Surface rise (°C)" },
+        series: [{ pts: pts, color: "var(--accent)", width: 3 }, { pts: rise, color: "var(--gold)", width: 3, axis: "y2" }], hlines: [{ y: allow, axis: "y2", color: "var(--warn)", dash: "6 4", label: "allowed " + fmt(allow, 2) + " °C" }] });
+    }
+    ["#ic-mw", "#ic-t", "#ic-w"].forEach(function (s) { $(s).addEventListener("input", compare); });
+    compare();
+    new Tool($('[data-tool="technical"]'), "technical");
+    function reuse() {
+      var erf = +$("#r-erf").value / 100, mw = parseFloat($("#ic-mw").value) || 40;
+      var a = E.screen({ it_load_mw: mw }), b = E.screen({ it_load_mw: mw, reuse_fraction: erf });
+      $("#r-erf-o").textContent = Math.round(erf * 100) + "%";
+      $("#reuse-nums").innerHTML = '<div class="h"><b>' + fmt(b.heat_reused_mw, 1) + ' MW</b><span>heat put to use</span></div><div><b>' + fmt(b.heat_to_water_mw, 1) + ' MW</b><span>still to water (was ' + fmt(a.heat_to_water_mw, 1) + ')</span></div><div><b>' + fmt(b.flow_m3s, 2) + ' m³/s</b><span>cooling flow (was ' + fmt(a.flow_m3s, 2) + ')</span></div>';
+    }
+    $("#r-erf").addEventListener("input", reuse); reuse();
+  };
+})();
+</script>

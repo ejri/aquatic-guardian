@@ -1,0 +1,70 @@
+<script>
+(function () {
+  "use strict";
+  var U = window.AGU, S = window.AGSims, D = window.AG_DATA, $ = U.$, fmt = U.fmt, esc = U.esc;
+
+  U.labMonitoring = function () {
+    var M = D.results.monitoring, SH = [0, 0.5, 1, 1.5, 2], DC = [0, 0.1, 0.2, 0.3];
+
+    /* ---- Occupancy confound ---- */
+    function dots(svg, occ, det, from) {
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      for (var k = 0; k < 150; k++) {
+        var o = occ[from + k] === "1", d = +det[from + k], cx = 14 + (k % 15) * 19.3, cy = 14 + Math.floor(k / 15) * 19.6;
+        if (!o) U.svgNode("circle", { cx: cx, cy: cy, r: 5, fill: "#1A3a46" }, svg);
+        else if (d > 0) U.svgNode("circle", { cx: cx, cy: cy, r: 6.5, fill: "#F7B24A" }, svg);
+        else U.svgNode("circle", { cx: cx, cy: cy, r: 5.5, fill: "none", stroke: "#F7B24A", "stroke-width": 2 }, svg);
+      }
+    }
+    function occ() {
+      var si = +$("#o-sh").value, di = +$("#o-dc").value, sh = SH[si], dc = DC[di];
+      $("#o-sh-o").textContent = sh ? "+" + sh + " SD" : "none"; $("#o-dc-o").textContent = dc ? Math.round(dc * 100) + " points" : "none";
+      var g = M.grid.filter(function (x) { return x.shift === sh && Math.abs(x.decline - dc) < 1e-9; })[0];
+      dots($("#occ-ref"), g.sample.occupied, g.sample.detections, 0); dots($("#occ-imp"), g.sample.occupied, g.sample.detections, 150);
+      $("#occ-imp-cap").textContent = sh ? "turbidity +" + sh + " SD" : "same clarity";
+      var nd = g.naive_ref - g.naive_imp, cd = g.psi_ref - g.psi_imp;
+      $("#o-naive").textContent = fmt(nd * 100, 0) + " pts"; $("#o-corr").textContent = fmt(cd * 100, 0) + " pts"; $("#o-rate").textContent = fmt(g.detect_rate * 100, 0) + "%";
+      U.chart($("#occ-chart"), { x: { min: 0, max: 4, ticks: [1, 3], fmt: function (v) { return v === 1 ? "Naive (detections only)" : "Corrected for detection"; } }, y: { min: 0, max: 0.8, label: "Occupancy", fmt: function (v) { return Math.round(v * 100) + "%"; } },
+        series: [{ bars: true, barWidth: 60, offset: -34, color: "#9ED8E6", pts: [[1, g.naive_ref], [3, g.psi_ref]] }, { bars: true, barWidth: 60, offset: 34, color: "#F7B24A", pts: [[1, g.naive_imp], [3, g.psi_imp]] }],
+        hlines: [{ y: 0.6, color: "#9ED8E6", dash: "5 4", label: "true, reference 60%" }, { y: 0.6 - dc, color: "#F7B24A", dash: "2 4", label: dc ? "true, outfall " + Math.round((0.6 - dc) * 100) + "%" : "" }] });
+      var f;
+      if (dc === 0 && nd > 0.08) f = "<b>No animal has left.</b> Occupancy is 60% in both zones, but murkier water hides animals from the camera, so a naive analysis reports " + (/^(8|11|18)/.test(fmt(nd * 100, 0)) ? "an " : "a ") + fmt(nd * 100, 0) + "-point decline at the outfall. The detection-corrected model flags a significant decline in only " + fmt(g.detect_rate * 100, 0) + "% of runs.";
+      else if (dc === 0) f = "<b>Same water, same animals.</b> With little extra turbidity both analyses agree there is no impact.";
+      else f = "<b>A real decline of " + Math.round(dc * 100) + " points.</b> The naive analysis reports " + fmt(nd * 100, 0) + " points, mixing real loss with lost visibility. The corrected model estimates " + fmt(cd * 100, 0) + " points and detects the decline in " + fmt(g.detect_rate * 100, 0) + "% of runs" + (sh >= 1.5 ? "; power drops as turbidity rises, which is itself a finding to report." : ".");
+      $("#occ-finding").innerHTML = f;
+    }
+    ["o-sh", "o-dc"].forEach(function (id) { $("#" + id).addEventListener("input", occ); }); occ();
+
+    /* ---- Imaging ---- */
+    var W = 320, H = 200, BD = [0.40, 0.10, 0.07], BB = [0.33, 0.09, 0.06], BINF = [0.04, 0.22, 0.28];
+    var alb = new Float32Array(W * H * 3), rel = new Float32Array(W * H), noise = new Float32Array(W * H * 3), rnd = S.rng(11);
+    for (var q = 0; q < noise.length; q++) noise[q] = 0.01 * rnd.normal();
+    function fish(cx, cy, len, rf) { for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+      var dx = (x - cx) / (len / 2), dy = (y - cy) / (len / 5.5), inBody = dx * dx + dy * dy <= 1, tx = (x - (cx + len / 2)) / (len / 4), inTail = tx >= 0 && tx <= 1 && Math.abs(y - cy) <= tx * len / 5;
+      if (inBody || inTail) { var p = y * W + x, stripe = Math.sin(x / 3.5) > 0.6 ? 0.8 : 1; alb[p * 3] = 0.72 * stripe; alb[p * 3 + 1] = 0.74 * stripe; alb[p * 3 + 2] = 0.78 * stripe; rel[p] = rf; } } }
+    for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) { var p = y * W + x;
+      if (y > H * 0.68) { var g = 0.85 + 0.15 * Math.sin(x * 0.7 + y * 1.3) * Math.sin(x * 0.13); alb[p * 3] = 0.62 * g; alb[p * 3 + 1] = 0.55 * g; alb[p * 3 + 2] = 0.42 * g; rel[p] = 0.9 + 2.2 * (1 - (y - H * 0.68) / (H * 0.32)); }
+      else rel[p] = -1; }
+    fish(120, 102, 110, 1.0); fish(245, 70, 56, 1.6); fish(270, 125, 36, 2.3);
+    var go = $("#img-obs").getContext("2d"), gr = $("#img-rest").getContext("2d"), io = go.createImageData(W, H), ir = gr.createImageData(W, H);
+    function img() {
+      var tb = +$("#i-tb").value, z = +$("#i-z").value; $("#i-tb-o").textContent = "×" + fmt(tb, 2); $("#i-z-o").textContent = fmt(z, 2) + " m";
+      var bd = BD.map(function (b) { return b * tb; }), bb = BB.map(function (b) { return b * tb; });
+      for (var p = 0; p < W * H; p++) { var zz = rel[p] < 0 ? 30 : rel[p] * z, flag = false;
+        for (var c = 0; c < 3; c++) { var I = S.imgForward(alb[p * 3 + c], zz, bd[c], bb[c], BINF[c]) + noise[p * 3 + c], r = S.imgInvert(I, zz, bd[c], bb[c], BINF[c], 0.1);
+          io.data[p * 4 + c] = Math.max(0, Math.min(255, 255 * Math.pow(Math.max(I, 0), 0.75))); ir.data[p * 4 + c] = Math.max(0, Math.min(255, 255 * Math.pow(Math.max(r.J, 0), 0.9))); if (c === 1 && !r.recoverable && rel[p] >= 0) flag = true; }
+        if (flag && ((p % W) + ((p / W) | 0)) % 8 < 3) { ir.data[p * 4] = 235; ir.data[p * 4 + 1] = 90; ir.data[p * 4 + 2] = 70; }
+        io.data[p * 4 + 3] = 255; ir.data[p * 4 + 3] = 255; }
+      go.putImageData(io, 0, 0); gr.putImageData(ir, 0, 0);
+      var tg = Math.exp(-bd[1] * z), tr = Math.exp(-bd[0] * z);
+      $("#img-t").textContent = "transmittance " + fmt(tg, 3) + " green, " + fmt(tr, 4) + " red";
+      $("#img-g").textContent = tg < 0.1 ? "unrecoverable: flagged, not scored absent" : tr < 0.1 ? "red lost (noise ×" + fmt(1 / tr, 0) + "); green usable" : "noise amplified ×" + fmt(1 / tr, 1);
+    }
+    ["i-tb", "i-z"].forEach(function (id) { $("#" + id).addEventListener("input", img); }); img();
+    var h = "<caption class=\"small muted\" style=\"caption-side:top;text-align:left;padding:.6rem .75rem\">Conditioning table from the notebook: transmittance t (top) and noise gain 1/t (below); red cells are unrecoverable (t &lt; 0.1). Illustrative β values.</caption><thead><tr><th>Water (β<sub>D</sub>, m⁻¹)</th>" + M.conditioning[0].rows.map(function (r) { return "<th>" + r.z_m + " m</th>"; }).join("") + "</tr></thead><tbody>";
+    M.conditioning.forEach(function (w) { h += "<tr><td>" + esc(w.water) + " (" + w.beta_d + ")</td>" + w.rows.map(function (r) {
+      return '<td style="background:' + (r.recoverable ? "rgba(127,224,176," + (0.08 + 0.25 * r.t) + ")" : "rgba(255,142,110,.22)") + '"><b>' + (r.t < 0.001 ? r.t.toExponential(0) : r.t) + "</b><br><span class='small muted'>×" + (r.gain > 9999 ? r.gain.toExponential(0) : r.gain) + "</span></td>"; }).join("") + "</tr>"; });
+    $("#cond-table").innerHTML = h + "</tbody>";
+  };
+})();
+</script>

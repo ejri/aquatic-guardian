@@ -2,214 +2,639 @@
 <a class="skip" href="#main">Skip to content</a>
 <header class="site">
   <div class="wrap">
-    <a class="brand" href="#top"><b>Aquatic Guardian</b><span>a Sentient Futures project</span></a>
-    <nav class="primary" aria-label="Sections">
-      <a href="#mission">Why it matters</a>
-      <a href="#framework">Framework</a>
-      <a href="#language">Model language</a>
-      <a href="#tracker">Tracker</a>
-      <a href="#tool">Screening tool</a>
-      <a href="#evidence">Evidence</a>
-      <a href="#source">Open source</a>
+    <a class="brand" href="#/" aria-label="Aquatic Guardian home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#082029" stroke="#1A3a46"/><path d="M5 18c3-2.6 5.5-2.6 8.2 0s5.4 2.6 8.3 0 4.7-2 5.5-1.3" fill="none" stroke="#9ED8E6" stroke-width="2" stroke-linecap="round"/><path d="M16 5c2.6 3.2 3.8 5.4 3.8 7.2a3.8 3.8 0 0 1-7.6 0c0-1.8 1.2-4 3.8-7.2z" fill="#F7B24A"/></svg>
+      <span><b>Aquatic Guardian</b><small>a Sentient Futures project</small></span>
+    </a>
+    <nav class="primary" aria-label="Audiences">
+      <a href="#/public" data-nav="public">For the public</a>
+      <a href="#/officials" data-nav="officials">For officials</a>
+      <a href="#/lab" data-nav="lab">For researchers</a>
+      <a href="#/industry" data-nav="industry">For industry</a>
+      <a href="#/about" data-nav="about">About</a>
     </nav>
   </div>
 </header>
 
 <main id="main">
-<section class="hero" id="top">
-  <div class="wrap">
-    <p class="hero-sentence">
-      A <label class="visually-hidden" for="h-mw">IT load in megawatts</label><input id="h-mw" type="number" inputmode="decimal" min="1" max="999" step="1" value="24"> megawatt AI data centre cooled with seawater draws <output id="h-flow">0.84</output> cubic metres of water every second and sends it back <label class="visually-hidden" for="h-dt">temperature rise in degrees Celsius</label><input id="h-dt" type="number" inputmode="decimal" min="1" max="20" step="1" value="8"> °C warmer.
-    </p>
-    <p class="hero-follow">That is <output id="h-mgd">19</output> million US gallons a day, <output id="h-ratio">10</output> times the threshold at which US rules for cooling-water intakes at power plants and factories begin to apply. No data-centre reporting rule yet counts the fish, crabs and larvae drawn in with it.</p>
-    <div class="actions">
-      <a class="btn solid" href="#tool">Screen a facility</a>
-      <a class="btn ghost" href="#language">Find model language for your jurisdiction</a>
-    </div>
-    <p class="hero-note">Figures assume a PUE of 1.15 and once-through cooling. Change the numbers above; the full screening tool below uses the same verified engine.</p>
-  </div>
-</section>
 
-<section class="block" id="mission">
-  <div class="wrap split">
-    <div class="prose">
-      <h2>AI's footprint reaches animals through water</h2>
-      <p class="serif">Almost every watt a data centre draws leaves as heat. Where that heat is carried away by seawater, a river or a lake, or where the servers sit in the water itself, it reaches animals directly: fish and crabs pinned against intake screens, larvae drawn through heat exchangers, warm plumes that pull animals in and then chill them when a facility shuts down.</p>
-      <p class="serif">Governments are writing data-centre rules now, mostly about electricity prices, grids and communities. Aquatic Guardian gives them a ready-made module for the water and the animals: definitions, metrics, permit conditions and model clauses that fit the instruments already on the table.</p>
-      <p class="serif">Sentient Futures works on field building for the welfare of all sentient beings as AI reshapes the world. This project applies that mission to the physical side of AI. Compute governance usually means chips and training runs; here it means the heat and water of the buildings that run them, and the animals, many of them sentient, that live in that water. Aquatic Guardian grew out of the Sentient Futures fellowship, extending the Phase 1 report <a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Governing the Ocean Server Farm</a> into a framework, a toolkit and a public app.</p>
+<!-- ================= HOME ================= -->
+<div data-route="home">
+  <section class="hero deep" aria-label="Introduction">
+    <canvas id="hero-canvas" width="960" height="540" aria-hidden="true"></canvas>
+    <div class="hero-live" aria-live="off">
+      <span class="chip" id="hero-tide">Tide: flooding</span>
+      <span class="chip" id="hero-heat">27.6 MW into the surface layer</span>
+      <canvas class="cbar" id="hero-cbar" width="180" height="8" aria-hidden="true"></canvas>
+      <span class="cbar-l"><span>0</span><span>warming above ambient</span><span id="hero-cmax">0.1 °C</span></span>
     </div>
-    <div>
-      <div class="fact"><strong>485 to ~950 TWh</strong><span>Projected data-centre electricity use, 2025 to 2030 (IEA, April 2026). Nearly all of it ends up as heat.</span></div>
-      <div class="fact"><strong>24 MW</strong><span>HiCloud's underwater data centre off Shanghai's Lingang area, commercial since May 2026.</span></div>
-      <div class="fact"><strong>None yet</strong><span>No data-centre disclosure rule in the US, the EU or British Columbia defines heat discharged to water or counts animals at intakes (September 2026).</span></div>
-      <div class="fact"><strong>Fishes, cephalopods, decapods</strong><span>Recognised as sentient in UK law since 2022, and within the "realistic possibility" of consciousness under the 2024 New York Declaration.</span></div>
-    </div>
-  </div>
-</section>
-
-<section class="block" id="framework">
-  <div class="wrap">
-    <h2>The framework</h2>
-    <p class="lede">Version 0.1, a public consultation draft. It adds to existing regulation rather than replacing it: every requirement names the instrument it attaches to.</p>
-    <ul class="principles">
-      <li><b>Heat in water is pollution before it is a resource</b>UNCLOS counts the introduction of energy as marine pollution, and Canada's Fisheries Act already treats heated water as potentially deleterious.</li>
-      <li><b>Reuse only counts before discharge</b>Heat recovered from the cooling loop is reuse. Warm water released to a bay is discharge, whatever happens to it afterwards.</li>
-      <li><b>Critical conditions, not averages</b>Mixing zones are judged at slack water and summer-maximum temperatures, as regulators already do for power plants.</li>
-      <li><b>Count individuals as well as populations</b>Animals affected at intakes are reported by taxon, life stage and sentience evidence, never folded into a single score.</li>
-      <li><b>Honest uncertainty</b>Screening results are labelled as screening. Species values nobody has reviewed are marked as placeholders and cannot support a decision.</li>
-      <li><b>Indigenous rights first</b>Siting near Indigenous waters requires consultation to the applicable legal standard, including UNDRIP-aligned laws and treaty fishing rights.</li>
-    </ul>
-
-    <ol class="layers" aria-label="The five layers, in order">
-      <li><h3>Disclosure</h3><p>Operators publish a machine-readable Aquatic Disclosure Record each period: heat to water, discharge temperature rise, intake flow and screen velocity, animals impinged and entrained by taxon and life stage, chemicals, noise, cables and freshwater use.</p><p class="attach">Attaches to: DOE reporting in S.4214/H.R.9442, EU Delegated Regulation 2024/1364, state disclosure bills, BC Hydro applications.</p></li>
-      <li><h3>Assessment</h3><p>Before approval, a thermal study at critical design conditions with a recognised model, an intake assessment, a receptor assessment covering protected and sentient taxa, and cumulative climate effects.</p><p class="attach">Attaches to: NPDES and §316(a) demonstrations, Fisheries Act authorisations, EU EIA and Habitats Directive assessments, CADA acceleration-zone designation.</p></li>
-      <li><h3>Permit conditions</h3><p>Closed-loop cooling by default, a numeric temperature increment at a defined mixing-zone edge, a 0.15 m/s screen velocity, cold-shock ramp-down, chemical limits and a reopener.</p><p class="attach">Attaches to: NPDES permits, BC Environmental Management Act authorisations, member-state water permits.</p></li>
-      <li><h3>Monitoring</h3><p>Continuous temperature, summer oxygen, intake sampling by taxon and life stage, and occupancy surveys corrected for detection probability, published within 90 days.</p><p class="attach">Attaches to: permit monitoring and reporting requirements.</p></li>
-      <li><h3>Adaptive management</h3><p>Exceedances, cold-shock events or detection-corrected declines trigger a reopener or load reduction. Data centres can shift compute to another site in minutes, which makes this far more practical than it ever was for power plants.</p><p class="attach">Attaches to: permit reopeners, the EU 2028 rating review, BC's two-year allocation windows.</p></li>
-    </ol>
-
-    <h3 style="margin-top:1rem">Which facilities are covered</h3>
-    <div class="scroll" style="margin-top:.75rem" role="region" aria-label="Coverage tiers" tabindex="0">
-      <table>
-        <thead><tr><th scope="col">Tier</th><th scope="col">Facilities</th><th scope="col">Layers</th></tr></thead>
-        <tbody>
-          <tr><td>A. Disclosure</td><td>500 kW IT or more, withdrawing or discharging surface water or seawater, or sited in, on or under water (matches the EU reporting floor)</td><td>1</td></tr>
-          <tr><td>B. Assessment</td><td>Tier A with design intake above 2 MGD (0.088 m³/s), more than 3 MW of heat to water, or near protected habitat</td><td>1 to 5</td></tr>
-          <tr><td>C. Enhanced</td><td>Submerged or floating facilities, estuaries and enclosed bays, and any facility supplying heat to aquaculture</td><td>1 to 5, plus decommissioning assurance, baseline surveys and welfare standards</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="src" style="margin-top:1rem">Full text: <code>policy/FRAMEWORK.md</code> in the repository. Licensed CC BY 4.0.</p>
-  </div>
-</section>
-
-<section class="block" id="language">
-  <div class="wrap">
-    <h2>Model language</h2>
-    <p class="lede">Clauses drafted to drop into the bills, permits, rating schemes and funding agreements that exist today. Copy them, adapt the bracketed values, and cite the repository.</p>
-    <div class="tabs" role="tablist" aria-label="Jurisdiction" id="lang-tabs"></div>
-    <div id="lang-panel" role="tabpanel" tabindex="0"></div>
-  </div>
-</section>
-
-<section class="block" id="tracker">
-  <div class="wrap">
-    <h2>Policy tracker</h2>
-    <p class="lede">The instruments this framework is designed to attach to, their status, and what to ask for. Status as of <span id="as-of"></span>.</p>
-    <div id="tracker-note"></div>
-    <div id="deadline"></div>
-    <div class="filters">
-      <label for="f-stage">Show</label>
-      <select id="f-stage">
-        <option value="all">All instruments</option>
-        <option value="open">Open opportunities (proposed, consultation, programme)</option>
-        <option value="enacted">In force</option>
-      </select>
-      <label for="f-juris">Jurisdiction</label>
-      <select id="f-juris"><option value="all">All</option></select>
-    </div>
-    <div class="scroll" role="region" aria-label="Policy tracker" tabindex="0">
-      <table id="tracker-table">
-        <thead><tr><th scope="col">Instrument</th><th scope="col">Status</th><th scope="col">Last checked</th><th scope="col">Key dates</th><th scope="col">Hook</th><th scope="col">What to ask for</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <p class="src" style="margin-top:1rem">Items marked "check" still need something confirmed: either sources disagree, or no primary-source link is recorded yet. "Last checked" is when a person last compared the entry with its source. Corrections are welcome as pull requests to <code>data/instruments.json</code> with a primary-source link.</p>
-  </div>
-</section>
-
-<section class="block" id="tool">
-  <div class="wrap">
-    <h2>Screening tool</h2>
-    <p class="lede">Estimate a facility's heat and water footprint, which rules it is likely to trigger, and what it would have to report. Everything runs in your browser; nothing you enter is sent anywhere.</p>
-    <div class="modes" role="group" aria-label="Level of detail">
-      <button type="button" data-mode="public" aria-pressed="true">Public</button>
-      <button type="button" data-mode="official" aria-pressed="false">Officials</button>
-      <button type="button" data-mode="technical" aria-pressed="false">Technical</button>
-    </div>
-    <div class="tool">
-      <form id="tool-form" novalidate></form>
-      <div class="results" id="results" aria-live="polite"></div>
-    </div>
-  </div>
-</section>
-
-<section class="block" id="evidence">
-  <div class="wrap">
-    <h2>How the numbers were checked</h2>
-    <p class="lede">Every equation in the toolkit has a test that reproduces a published value or demonstrates the property on synthetic data with a known answer. The browser engine is tested against the Python reference on 200 random facilities.</p>
-    <div class="tally">
-      <div><strong>119</strong><span>automated checks, all passing in v0.1</span></div>
-      <div><strong>6</strong><span>corrections to the earlier models</span></div>
-      <div><strong>4</strong><span>items awaiting outside benchmark or text check</span></div>
-      <div><strong>All</strong><span>species welfare parameters still placeholders</span></div>
-    </div>
-    <div class="split">
-      <div>
-        <h3>Corrections adopted</h3>
-        <ol class="corrections">
-          <li><b>Per-port and per-length fluxes.</b> Using total diffuser flow in a point-plume law understates dilution by N<sup>2/3</sup>, a factor of 4.6 for ten ports.</li>
-          <li><b>Tidal excursion.</b> Excursion is 2U/ω per half-cycle. The earlier 10.7 km implies a 0.75 m/s current, typical of straits rather than open coast.</li>
-          <li><b>Numerical diffusion.</b> First-order upwind at 25 m adds more mixing than the ocean does at any scale below about 3 km, so the old model under-predicted peak temperatures near the outfall.</li>
-          <li><b>Critical conditions.</b> Compliance is tested at slack water and summer maximum temperature, not at a mean current.</li>
-          <li><b>Ammonia.</b> Seawater speciation needs a salinity correction; US saltwater criteria date from 1989 and Canada has no marine guideline.</li>
-          <li><b>Heat reuse.</b> Reuse is practical only before discharge. Heat in open water is a regulated load, not a resource.</li>
-        </ol>
-      </div>
-      <div>
-        <h3>What still needs experts</h3>
-        <p>Near-field dilution coefficients need a benchmark against Visual Plumes UM3 or NRFIELD. The seawater ammonia correction needs checking against the primary table. Only Washington and California carry a transcribed temperature rule; for British Columbia, the EU and Oregon the tool uses the increment you enter, which cannot show that a design complies. Species temperature thresholds and welfare parameters need species specialists and a fish-health veterinarian. Site currents must come from station data, and every tracker entry still needs a primary-source link.</p>
-        <p>The tool does not model stratified trapping, bottom attachment or far-field transport. Use it to scope a question, not to answer a permit.</p>
-        <p class="src">Full register: <code>docs/VERIFICATION.md</code>.</p>
+    <div class="wrap">
+      <h1>AI's heat has to go <em>somewhere.</em></h1>
+      <p class="lede">More and more of it goes into the sea. Aquatic Guardian is an open toolkit for governing what data centres do to water, and to the fish, crabs and larvae that live in it.</p>
+      <div class="row">
+        <a class="btn glow" href="#/public">See what happens in the water</a>
+        <a class="btn line" href="#/lab">Run the simulations</a>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="block" id="source">
-  <div class="wrap split">
-    <div>
-      <h2>Open source</h2>
-      <p class="serif">The framework, model language, schemas, Python library, notebooks integration and this website live in one repository, so the policy text, the app and the research notebooks all use the same verified functions.</p>
-      <p class="serif">Code is Apache-2.0. Policy text and documentation are CC BY 4.0. The disclosure schema is CC0, so an agency can adopt it without conditions.</p>
-      <h3 style="margin-top:1.5rem">Use it in Colab</h3>
-<pre class="tree" tabindex="0"><code>!pip -q install "git+https://github.com/ejri/aquatic-guardian.git@v0.1.0"
+  <section class="deep" aria-labelledby="doors-h">
+    <h2 class="vh" id="doors-h">Choose your starting point</h2>
+    <div class="doors">
+      <a class="door" href="#/public">
+        <svg class="art" viewBox="0 0 120 64" aria-hidden="true"><path d="M8 34c14-16 38-16 54 0-16 16-40 16-54 0z" fill="#9ED8E6"/><path d="M62 34l14-11v22z" fill="#9ED8E6"/><circle cx="22" cy="31" r="2.6" fill="#03121A"/><g fill="#F7B24A"><circle cx="92" cy="18" r="2.2"/><circle cx="102" cy="30" r="1.8"/><circle cx="88" cy="44" r="2"/><circle cx="108" cy="48" r="1.5"/></g></svg>
+        <span class="who">For the public</span>
+        <span class="promise">What a seawater-cooled data centre does to the water and the animals in it, in plain language.</span>
+        <ul><li>Follow the water, step by step</li><li>Who lives there, and why they count</li><li>What you can do this month</li></ul>
+        <span class="go">Start here</span>
+      </a>
+      <a class="door" href="#/officials">
+        <svg class="art" viewBox="0 0 120 64" aria-hidden="true"><rect x="20" y="4" width="54" height="56" rx="4" fill="#0E2C38" stroke="#9ED8E6" stroke-width="2"/><g stroke="#9ED8E6" stroke-width="2.4" stroke-linecap="round"><path d="M30 18h34M30 27h34M30 36h22"/></g><circle cx="80" cy="44" r="14" fill="#F7B24A"/><path d="M73 44l5 5 9-10" fill="none" stroke="#1b1100" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="who">For officials</span>
+        <span class="promise">Model clauses for the bills, permits and rating schemes already on your desk, with deadlines.</span>
+        <ul><li>Your jurisdiction's insertion points</li><li>Timeline of every live instrument</li><li>Screen a proposal, draft conditions</li></ul>
+        <span class="go">Open the toolkit</span>
+      </a>
+      <a class="door" href="#/lab">
+        <svg class="art" viewBox="0 0 120 64" aria-hidden="true"><path d="M6 58C30 58 38 12 60 12s30 46 54 46" fill="none" stroke="#9ED8E6" stroke-width="2.4"/><path d="M6 58C34 58 44 30 60 30s26 28 54 28" fill="none" stroke="#eb7958" stroke-width="2.4"/><path d="M6 58C38 58 50 44 60 44s22 14 54 14" fill="none" stroke="#F7B24A" stroke-width="2.4"/></svg>
+        <span class="who">For researchers</span>
+        <span class="promise">Results from the three Colab notebooks, with live simulations you can break yourself.</span>
+        <ul><li>Tidal plume, near field, numerics</li><li>Detection, imaging, tracking</li><li>Yield versus temperature</li></ul>
+        <span class="go">Enter the lab</span>
+      </a>
+      <a class="door" href="#/industry">
+        <svg class="art" viewBox="0 0 120 64" aria-hidden="true"><rect x="6" y="14" width="34" height="38" rx="3" fill="#0E2C38" stroke="#9ED8E6" stroke-width="2"/><g stroke="#9ED8E6" stroke-width="2"><path d="M12 24h22M12 32h22M12 40h22"/></g><path d="M40 26h14c4 0 4 6 8 6s4-6 8-6 4 6 8 6 4-6 8-6h18" fill="none" stroke="#F7B24A" stroke-width="3" stroke-linecap="round"/><path d="M40 42h74" stroke="#9ED8E6" stroke-width="3" stroke-linecap="round"/></svg>
+        <span class="who">For industry</span>
+        <span class="promise">Compare cooling designs before you file, and produce the disclosure record regulators will ask for.</span>
+        <ul><li>Once-through, hybrid or closed loop</li><li>The temperature-rise trade-off</li><li>Machine-readable disclosure</li></ul>
+        <span class="go">Compare designs</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="nums-h">
+    <div class="wrap">
+      <h2 class="section" id="nums-h">The water side of AI, in five numbers</h2>
+      <div class="numbers" style="margin-top:2rem">
+        <div class="stat"><b>~950 TWh</b><span>Projected data-centre electricity use in 2030, double 2025 (IEA, April 2026). Nearly all of it ends up as heat.</span></div>
+        <div class="stat"><b>24 L/s</b><span>Seawater needed per megawatt to carry that heat away at a 10 °C rise.</span></div>
+        <div class="stat"><b>~4 MW</b><span>Roughly where a once-through facility crosses the 2 MGD US cooling-intake threshold.</span></div>
+        <div class="stat"><b>24 MW</b><span>HiCloud's underwater data centre off Shanghai, commercial since May 2026.</span></div>
+        <div class="stat"><b>None</b><span>Data-centre reporting rules in the US, EU or BC that yet count the animals drawn into intakes (September 2026).</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band deep" aria-labelledby="sys-h">
+    <div class="wrap grid2 wide-right">
+      <div>
+        <h2 class="section" id="sys-h">Three models, one system</h2>
+        <p class="lede">The research runs as three linked Colab notebooks. They pass validated JSON to each other, and the website, the policy text and the screening tool all run on the same tested library.</p>
+        <p class="muted">Select a model to see its results.</p>
+      </div>
+      <div class="system">
+        <svg viewBox="0 0 640 330" role="img" aria-labelledby="sys-t">
+          <title id="sys-t">Thermal-Tidal feeds Aquatic Monitoring and Aquaculture Vision; Aquaculture returns a loop-temperature ceiling to Thermal-Tidal</title>
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0l10 5-10 5z" fill="#F7B24A"/></marker></defs>
+          <g class="node" data-go="lab/thermal" tabindex="0" role="link" aria-label="Thermal-Tidal results"><rect x="20" y="115" width="200" height="100" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/><text x="40" y="150" fill="#F7B24A" style="font:800 22px var(--display)">Thermal-Tidal</text><text x="40" y="176" fill="#8AA7B0" style="font:13px var(--sans)">plumes, tides, mixing zones</text><text x="40" y="196" fill="#8AA7B0" style="font:13px var(--sans)">Workstream D</text></g>
+          <g class="node" data-go="lab/monitoring" tabindex="0" role="link" aria-label="Aquatic Monitoring results"><rect x="420" y="20" width="200" height="100" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/><text x="440" y="55" fill="#9ED8E6" style="font:800 22px var(--display)">Aquatic Monitoring</text><text x="440" y="81" fill="#8AA7B0" style="font:13px var(--sans)">detection-corrected occupancy</text><text x="440" y="101" fill="#8AA7B0" style="font:13px var(--sans)">Workstream A</text></g>
+          <g class="node" data-go="lab/aquaculture" tabindex="0" role="link" aria-label="Aquaculture Vision results"><rect x="420" y="210" width="200" height="100" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/><text x="440" y="245" fill="#9ED8E6" style="font:800 22px var(--display)">Aquaculture Vision</text><text x="440" y="271" fill="#8AA7B0" style="font:13px var(--sans)">tracking and bioenergetics</text><text x="440" y="291" fill="#8AA7B0" style="font:13px var(--sans)">Workstream B</text></g>
+          <path d="M220 150 C300 150 330 70 418 70" fill="none" stroke="#F7B24A" stroke-width="2.5" marker-end="url(#ah)"/>
+          <path d="M220 180 C300 180 330 250 418 250" fill="none" stroke="#F7B24A" stroke-width="2.5" marker-end="url(#ah)"/>
+          <path d="M418 290 C300 300 180 290 150 218" fill="none" stroke="#9ED8E6" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ah)"/>
+          <text x="258" y="92" fill="#DCEAEE" style="font:12px var(--mono)">plume, DO, NH₃ fields</text>
+          <text x="262" y="236" fill="#DCEAEE" style="font:12px var(--mono)">loop inlet temperature</text>
+          <text x="196" y="318" fill="#9ED8E6" style="font:12px var(--mono)">recommended ceiling returned</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="why-h">
+    <div class="wrap grid2">
+      <div>
+        <h2 class="section" id="why-h">Why this is a Sentient Futures project</h2>
+      </div>
+      <div class="serif">
+        <p>Sentient Futures works on the welfare of all sentient beings as AI reshapes the world. Most AI governance is about chips, models and training runs. This project follows the physical side of AI: the buildings that run it, the heat they reject, and the water that carries that heat to animals.</p>
+        <p>Fishes, octopuses and crabs are recognised as sentient in UK law and fall within the "realistic possibility" of consciousness set out in the 2024 New York Declaration. Yet the laws now being written for data centres count megawatts, litres and jobs, not animals. Aquatic Guardian gives governments a ready-made way to count them.</p>
+        <p><a href="#/about">About the project and Phase 1</a></p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= PUBLIC ================= -->
+<div data-route="public">
+  <section class="pagehead deep">
+    <svg class="art-bg" viewBox="0 0 600 400" aria-hidden="true"><defs><linearGradient id="pw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E2C38"/><stop offset="1" stop-color="#03121A"/></linearGradient></defs><rect width="600" height="400" fill="url(#pw)" opacity=".0"/><g fill="none" stroke-width="2"><path d="M0 120c60-20 120-20 180 0s120 20 180 0 120-20 240 0" stroke="#1A3a46"/><path d="M0 170c60-20 120-20 180 0s120 20 180 0 120-20 240 0" stroke="#1A3a46"/></g><path d="M300 330c30-60 70-90 120-100 60-12 110 10 140 40" fill="none" stroke="#eb7958" stroke-width="3" opacity=".8"/><path d="M300 330c40-50 80-70 130-76 60-8 100 8 130 30" fill="none" stroke="#F7B24A" stroke-width="3" opacity=".8"/><g fill="#9ED8E6" opacity=".8"><path d="M120 260c18-20 48-20 68 0-20 20-50 20-68 0z"/><path d="M188 260l16-12v24z"/></g></svg>
+    <div class="wrap">
+      <p class="kicker">For the public</p>
+      <h1>Follow the water.</h1>
+      <p class="lede">A data centre cooled by the sea borrows an enormous river of seawater, warms it and gives it back. Here is what happens at each step, and to whom.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="row" style="justify-content:space-between;margin-bottom:1rem">
+        <div class="row">
+          <label for="p-mw" class="small" style="font-weight:700">Size of the data centre</label>
+          <input id="p-mw" type="range" min="2" max="200" step="1" value="24" style="width:min(22rem,60vw)" aria-describedby="p-mw-o">
+          <output id="p-mw-o" style="font-family:var(--display);font-weight:800;font-size:1.6rem">24 MW</output>
+        </div>
+        <span class="small muted">Assumes seawater once-through cooling, PUE 1.15, 8 °C rise.</span>
+      </div>
+      <div class="xsec">
+        <svg id="xsec" viewBox="0 0 1200 520" role="img" aria-labelledby="xsec-t">
+          <title id="xsec-t">Cross-section: a coastal data centre draws seawater through an offshore intake, warms it, and discharges it through a diffuser, where a warm plume rises and is carried by the tide.</title>
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#061B24"/><stop offset="1" stop-color="#0B2A36"/></linearGradient>
+            <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0D4A5E"/><stop offset="1" stop-color="#031820"/></linearGradient>
+            <radialGradient id="plumeg" cx="0.5" cy="1" r="1"><stop offset="0" stop-color="#fbb43d" stop-opacity=".95"/><stop offset=".45" stop-color="#eb7958" stop-opacity=".55"/><stop offset="1" stop-color="#b15f82" stop-opacity="0"/></radialGradient>
+            <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0l10 5-10 5z" fill="#DCEAEE"/></marker><linearGradient id="surfplume" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#b15f82" stop-opacity="0"/><stop offset=".45" stop-color="#eb7958" stop-opacity=".6"/><stop offset="1" stop-color="#b15f82" stop-opacity="0"/></linearGradient>
+          </defs>
+          <rect width="1200" height="150" fill="url(#sky)"/>
+          <rect y="150" width="1200" height="370" fill="url(#sea)"/>
+          <path d="M0 150 L330 150 C360 150 380 190 400 230 L1200 470 L1200 520 L0 520 Z" fill="#0A1A16"/>
+          <path d="M400 230 C520 270 700 320 1200 470" fill="none" stroke="#2A4638" stroke-width="3"/>
+          <path d="M0 150 L330 150 C360 150 380 190 400 230" fill="none" stroke="#2A4638" stroke-width="3"/>
+          <!-- data centre -->
+          <g><rect x="90" y="62" width="200" height="88" rx="4" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/>
+            <g fill="#F7B24A" opacity=".85"><rect x="108" y="78" width="26" height="8" rx="2"/><rect x="108" y="94" width="26" height="8" rx="2"/><rect x="108" y="110" width="26" height="8" rx="2"/><rect x="146" y="78" width="26" height="8" rx="2"/><rect x="146" y="94" width="26" height="8" rx="2"/><rect x="146" y="110" width="26" height="8" rx="2"/></g>
+            <path d="M200 84h18c5 0 5 10 10 10s5-10 10-10 5 10 10 10 5-10 10-10h16" fill="none" stroke="#eb7958" stroke-width="3" stroke-linecap="round"/>
+            <path d="M200 120h72" stroke="#9ED8E6" stroke-width="3" stroke-linecap="round"/>
+            <text x="100" y="54" fill="#8AA7B0" style="font:600 13px var(--sans)">Data centre and heat exchanger</text></g>
+          <!-- pipes -->
+          <path d="M272 120 C330 120 345 175 385 222 C440 250 520 268 600 280" fill="none" stroke="#6B8E99" stroke-width="7" stroke-linecap="round"/>
+          <path d="M272 90 C360 90 380 190 425 232 C560 290 760 350 880 366" fill="none" stroke="#6B8E99" stroke-width="7" stroke-linecap="round"/>
+          <path id="flowdash-in" d="M600 280 C520 268 440 250 385 222 C345 175 330 120 272 120" fill="none" stroke="#9ED8E6" stroke-width="2.5" stroke-dasharray="6 10"/>
+          <path id="flowdash-out" d="M272 90 C360 90 380 190 425 232 C560 290 760 350 880 366" fill="none" stroke="#F7B24A" stroke-width="2.5" stroke-dasharray="6 10"/>
+          <!-- intake screen -->
+          <g transform="translate(0 -74)"><rect x="592" y="330" width="26" height="38" rx="3" fill="#0B2530" stroke="#9ED8E6" stroke-width="2"/><path d="M598 332v34M605 332v34M612 332v34M594 342h22M594 352h22M594 362h22" stroke="#9ED8E6" stroke-width="1"/>
+            <g fill="#DCEAEE"><path d="M622 338c6-5 13-5 18 0-5 5-12 5-18 0z"/><path d="M640 338l5-4v8z"/><path d="M628 358c5-4 11-4 15 0-4 4-10 4-15 0z"/></g>
+            <g fill="#9ED8E6" id="intake-larvae"><circle cx="650" cy="346" r="1.6"/><circle cx="662" cy="340" r="1.4"/><circle cx="672" cy="352" r="1.6"/><circle cx="684" cy="344" r="1.3"/></g></g>
+          <!-- diffuser + plume -->
+          <g id="plume">
+            <path d="M840 364 C850 300 860 230 820 152 L980 152 C920 230 930 300 920 364 Z" fill="url(#plumeg)"/>
+            <rect id="surfplume-r" x="700" y="150" width="420" height="16" fill="url(#surfplume)"/>
+          </g>
+          <g fill="#6B8E99"><rect x="836" y="362" width="92" height="9" rx="4"/></g>
+          <g fill="#F7B24A"><circle cx="846" cy="361" r="3"/><circle cx="866" cy="361" r="3"/><circle cx="886" cy="361" r="3"/><circle cx="906" cy="361" r="3"/></g>
+          <!-- animals -->
+          <g fill="#9ED8E6" opacity=".9" transform="translate(0 -48)"><path d="M470 250c10-8 22-8 30 0-8 8-20 8-30 0z"/><path d="M500 250l8-6v12z"/><path d="M500 272c10-8 22-8 30 0-8 8-20 8-30 0z"/><path d="M530 272l8-6v12z"/><path d="M455 280c10-8 22-8 30 0-8 8-20 8-30 0z"/><path d="M485 280l8-6v12z"/></g>
+          <g stroke="#E89B6C" stroke-width="3" fill="#E89B6C" transform="translate(-60 -76)"><ellipse cx="740" cy="382" rx="16" ry="9"/><path d="M726 388l-10 8M730 390l-6 10M754 388l10 8M750 390l6 10M728 376l-10-10M752 376l10-10" fill="none"/></g>
+          <g fill="#C79BE0" transform="translate(0 -40)"><path d="M1040 440c0-16 22-16 22 0v8h-22z"/><path d="M1042 448q-4 16-10 14M1048 448q-2 18-6 18M1054 448q2 18 6 18M1060 448q6 16 10 14" stroke="#C79BE0" stroke-width="3" fill="none"/></g>
+          <g fill="#F7B24A" id="plume-larvae" opacity=".9"><circle cx="880" cy="300" r="1.8"/><circle cx="895" cy="260" r="1.5"/><circle cx="870" cy="230" r="1.6"/><circle cx="905" cy="200" r="1.4"/><circle cx="860" cy="185" r="1.5"/></g>
+          <!-- tide arrow -->
+          <g id="tidearrow"><path d="M1000 136 H1170" stroke="#DCEAEE" stroke-width="2.5" marker-end="url(#ah2)"/><text x="1170" y="124" text-anchor="end" fill="#DCEAEE" style="font:600 13px var(--sans)">the tide carries warm water along the coast</text></g>
+          <!-- hotspots, in the order the water travels -->
+          <g class="hot-btn" data-step="0" tabindex="0" role="button" aria-label="Step 1: intake"><circle class="ring" cx="605" cy="226" r="17"/><text x="600" y="232">1</text></g>
+          <g class="hot-btn" data-step="1" tabindex="0" role="button" aria-label="Step 2: heat exchanger"><circle class="ring" cx="60" cy="106" r="17"/><text x="55" y="112">2</text></g>
+          <g class="hot-btn" data-step="2" tabindex="0" role="button" aria-label="Step 3: outfall plume"><circle class="ring" cx="960" cy="330" r="17"/><text x="955" y="336">3</text></g>
+          <g class="hot-btn" data-step="3" tabindex="0" role="button" aria-label="Step 4: tide"><circle class="ring" cx="1160" cy="190" r="17"/><text x="1155" y="196">4</text></g>
+        </svg>
+        <div class="xsec-panel">
+          <div class="xsec-text" id="xsec-text" aria-live="polite"></div>
+          <div class="xsec-side">
+            <p class="small muted" style="margin:0 0 .4rem">Step through the water's journey</p>
+            <div class="steps-nav" id="steps-nav">
+              <button type="button" data-step="0">1 Intake</button><button type="button" data-step="1">2 Heat</button><button type="button" data-step="2">3 Plume</button><button type="button" data-step="3">4 Tide</button>
+            </div>
+            <p class="small muted" style="margin-top:1rem">Numbers are screening estimates from the same engine officials use, at slack water. Real sites need a full study.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2 class="section">Who lives there, and why they count</h2>
+      <p class="lede" style="margin-bottom:2rem">The law usually protects populations. But animals feel harm as individuals, and the evidence that many of these animals can feel is now strong. So the framework asks operators to count them.</p>
+      <div class="beings">
+        <div class="being t1"><svg viewBox="0 0 80 50" aria-hidden="true"><path d="M6 25c14-16 36-16 50 0-14 16-36 16-50 0z" fill="currentColor"/><path d="M56 25l16-12v24z" fill="currentColor"/><circle cx="18" cy="22" r="2.4" fill="var(--surface)"/></svg><div class="tier">Recognised in UK law</div><b>Fishes</b><p>Salmon, herring, rockfish. Most intake and outfall harm lands here.</p></div>
+        <div class="being t1"><svg viewBox="0 0 80 50" aria-hidden="true"><path d="M28 24c0-20 26-20 26 0v6H28z" fill="currentColor"/><path d="M30 30q-8 14-16 12M36 30q-4 16-10 16M42 30q0 17 0 17M48 30q4 16 10 16M52 30q8 14 16 12" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/></svg><div class="tier">Recognised in UK law</div><b>Octopuses and squid</b><p>Cephalopod molluscs, with some of the strongest evidence among invertebrates.</p></div>
+        <div class="being t1"><svg viewBox="0 0 80 50" aria-hidden="true"><ellipse cx="40" cy="28" rx="18" ry="11" fill="currentColor"/><path d="M24 34l-12 9M28 37l-8 11M56 34l12 9M52 37l8 11M26 22l-12-12M54 22l12-12" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/></svg><div class="tier">Recognised in UK law</div><b>Crabs, lobsters, shrimp</b><p>Decapod crustaceans, often pinned against intake screens.</p></div>
+        <div class="being t2"><svg viewBox="0 0 80 50" aria-hidden="true"><path d="M20 40c0-16 14-26 28-20s12 20 2 22z" fill="currentColor"/><path d="M50 42c6 0 14-2 20 0" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg><div class="tier">Realistic possibility</div><b>Other invertebrates</b><p>Snails and other crustaceans. Reported as a precaution and a research priority.</p></div>
+        <div class="being tx"><svg viewBox="0 0 80 50" aria-hidden="true"><g fill="currentColor"><circle cx="18" cy="20" r="6"/><circle cx="36" cy="30" r="5"/><circle cx="54" cy="18" r="6"/><circle cx="64" cy="36" r="4"/></g><circle cx="18" cy="20" r="2" fill="var(--surface)"/><circle cx="54" cy="18" r="2" fill="var(--surface)"/></svg><div class="tier">Unresolved, counted separately</div><b>Eggs and larvae</b><p>Most animals drawn through a cooling system. Whether they can feel is unknown, so they get their own line.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <h2 class="section">What you can do</h2>
+      <div class="actions3" style="margin-top:1.5rem">
+        <div class="act"><span class="countdown" id="pub-countdown">76 days</span><h3>Comment on the EU's new data-centre rules</h3><p class="small">The consultation on binding minimum standards closes on 14 December 2026. Anyone can respond. Ask for heat discharged to water and animals at intakes to be counted.</p><a class="btn acc sm" href="#/officials/eu">Read the draft response</a></div>
+        <div class="act" style="grid-column:span 1">
+          <h3>Write to your representative</h3>
+          <label for="letter-j" class="small">Where you live</label>
+          <select id="letter-j"><option value="us">United States</option><option value="eu">European Union</option><option value="ca">Canada (British Columbia)</option><option value="uk">United Kingdom</option></select>
+          <textarea class="letter" id="letter" aria-label="Letter to your representative"></textarea>
+          <button type="button" class="btn acc sm" id="copy-letter">Copy the letter</button>
+        </div>
+        <div class="act"><h3>Ask three questions about any new data centre</h3><ol class="small" style="padding-left:1.1rem"><li>Will it cool with seawater, river or lake water, or with air?</li><li>How much water will it draw each second, and how will animals be kept out of the intake?</li><li>Will it publish how warm its discharge is and what its intake kills?</li></ol><a class="btn line sm" href="#/industry" style="color:var(--accent)">See how designs compare</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap grid2">
+      <h2 class="section">Questions people ask</h2>
+      <div>
+        <details class="faq"><summary>Is anyone actually doing this?</summary><p>Yes. HiCloud's 24 MW underwater data centre off Shanghai began commercial operation in May 2026, following its Hainan facility. Microsoft ran an underwater trial in Scotland from 2018 to 2020. Coastal data centres that cool with seawater are more common still.</p></details>
+        <details class="faq"><summary>Isn't reusing waste heat a good thing?</summary><p>Only if it happens before the water goes back to sea, and only if the reuse itself doesn't cause harm. Warm water released into a bay is discharge, not reuse. Heat sent to fish farms can mean more animals kept in poor conditions, so the framework asks for a welfare standard first.</p></details>
+        <details class="faq"><summary>Why count individual animals?</summary><p>Because that is how harm is felt. US power plants already count the organisms their intakes kill. The framework asks data centres to do the same, and to report fishes, octopuses and crabs separately from eggs and larvae.</p></details>
+        <details class="faq"><summary>Is this against AI?</summary><p>No. It asks that AI's physical footprint be measured and managed like any other industry's. Data centres can move computing between sites in minutes, which makes protecting water easier for them than it ever was for power plants.</p></details>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= OFFICIALS ================= -->
+<div data-route="officials">
+  <section class="pagehead deep">
+    <svg class="art-bg" viewBox="0 0 600 400" aria-hidden="true"><g transform="rotate(-6 300 200)"><rect x="210" y="50" width="250" height="310" rx="10" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/><rect x="180" y="70" width="250" height="310" rx="10" fill="#082029" stroke="#1A3a46" stroke-width="2"/><g stroke="#2D5563" stroke-width="6" stroke-linecap="round"><path d="M210 120h180M210 150h180M210 180h140M210 230h180M210 260h160M210 290h100"/></g><circle cx="390" cy="330" r="34" fill="#F7B24A"/><path d="M375 330l10 10 20-22" fill="none" stroke="#1b1100" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+    <div class="wrap">
+      <p class="kicker">For officials and legislative staff</p>
+      <h1>Clauses ready for the bill on your desk.</h1>
+      <p class="lede">Aquatic Guardian attaches to instruments that already exist. Choose your jurisdiction to see what is live, what to ask for and the text to use.</p>
+      <div class="jump"><button type="button" data-scroll="off-lang">Model language</button><button type="button" data-scroll="off-timeline">Timeline</button><button type="button" data-scroll="off-tool">Screen a proposal</button><button type="button" data-scroll="off-framework">The framework</button><button type="button" data-scroll="off-recs">Recommendations</button></div>
+    </div>
+  </section>
+
+  <section class="block" id="off-lang">
+    <div class="wrap">
+      <div class="jur" role="tablist" aria-label="Jurisdiction" id="jur"></div>
+      <div class="grid2 wide-left">
+        <div class="doc" id="doc" role="tabpanel" tabindex="0"></div>
+        <aside class="brief" id="brief" aria-label="Brief for this jurisdiction"></aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="off-timeline">
+    <div class="wrap">
+      <h2 class="section">Every live instrument, on one timeline</h2>
+      <p class="lede" style="margin-bottom:1.3rem">Select an event for details. The line marks today.</p>
+      <p class="small muted" id="tracker-note" style="margin-bottom:1rem"></p>
+      <div class="row" style="margin-bottom:.8rem"><label for="tl-filter" class="small">Show</label><select id="tl-filter"><option value="all">All jurisdictions</option></select></div>
+      <div class="timeline"><svg id="tl" viewBox="0 0 1000 300" role="img" aria-label="Timeline of instruments"></svg><div class="tl-legend"><span><i style="background:var(--ok)"></i>in force</span><span><i style="background:var(--gold)"></i>proposed or adopted, not yet in force</span><span><i style="background:var(--warn)"></i>open consultation</span><span><i style="background:var(--accent)"></i>programme or standard</span><span><i style="background:var(--muted)"></i>failed</span></div></div>
+      <p class="tl-detail" id="tl-detail" aria-live="polite">Select a point on the timeline.</p>
+      <div class="scroll" style="margin-top:1rem"><table id="tracker"><thead><tr><th>Instrument</th><th>Status</th><th>Hook for this framework</th><th>What to ask for</th><th>Last checked</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="block" id="off-tool">
+    <div class="wrap">
+      <h2 class="section">Screen a proposal</h2>
+      <p class="lede" style="margin-bottom:1.5rem">Enter a proposed facility's design values. You get the rules it likely triggers, draft permit conditions with its numbers filled in, and a disclosure record to request.</p>
+      <div class="tool" data-tool="official"></div>
+    </div>
+  </section>
+
+  <section class="block" id="off-framework">
+    <div class="wrap">
+      <h2 class="section">The framework in five layers</h2>
+      <p class="lede" style="margin-bottom:1.8rem">Each layer produces the evidence the next one needs, and each names the instrument it plugs into.</p>
+      <div class="pipeline">
+        <div class="stage"><h3>Disclosure</h3><p>A published, machine-readable record: heat to water, temperature rise, intake flow, animals by taxon and life stage, chemicals, noise, cables.</p><div class="att">S.4214/H.R.9442 DOE reporting, EU 2024/1364, BC Hydro applications</div></div>
+        <div class="stage"><h3>Assessment</h3><p>Thermal study at critical conditions, intake assessment, receptors including sentient taxa, cumulative climate effects.</p><div class="att">§316(a), Fisheries Act, EU EIA and Habitats, CADA zones</div></div>
+        <div class="stage"><h3>Permit conditions</h3><p>Closed loop by default, a numeric increment at the mixing-zone edge, 0.15 m/s screens, cold-shock ramp-down, chemical limits.</p><div class="att">NPDES, BC EMA, member-state water permits</div></div>
+        <div class="stage"><h3>Monitoring</h3><p>Continuous temperature, summer oxygen, intake sampling, detection-corrected surveys, published within 90 days.</p><div class="att">Permit monitoring terms</div></div>
+        <div class="stage"><h3>Adaptive management</h3><p>Exceedances or declines trigger a reopener or load reduction. Data centres can shift computing in minutes.</p><div class="att">Reopeners, EU 2028 review, BC allocation windows</div></div>
+      </div>
+      <div class="scroll" style="margin-top:1.6rem"><table><thead><tr><th>Coverage tier</th><th>Facilities</th><th>Layers</th></tr></thead><tbody>
+        <tr><td><b>A. Disclosure</b></td><td>500 kW IT or more that withdraws or discharges surface water or seawater, or sits in, on or under water</td><td>1</td></tr>
+        <tr><td><b>B. Assessment</b></td><td>Tier A above 2 MGD intake, more than 3 MW of heat to water, or near protected habitat</td><td>1 to 5</td></tr>
+        <tr><td><b>C. Enhanced</b></td><td>Submerged or floating, estuaries and enclosed bays, any heat supplied to aquaculture</td><td>1 to 5 plus decommissioning assurance, baselines, welfare standards</td></tr>
+      </tbody></table></div>
+    </div>
+  </section>
+
+  <section class="block" id="off-recs">
+    <div class="wrap">
+      <h2 class="section">Recommendations, by deadline</h2>
+      <div class="scroll" style="margin-top:1.2rem"><table><thead><tr><th>Who</th><th>Instrument</th><th>Ask</th><th>Timing</th></tr></thead><tbody id="recs"></tbody></table></div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= LAB ================= -->
+<div data-route="lab" class="deep">
+  <section class="pagehead">
+    <canvas class="art-bg" id="lab-art" width="600" height="400" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <p class="kicker">For researchers and mentees</p>
+      <h1>The notebooks, running live.</h1>
+      <p class="lede">Results from the Thermal-Tidal, Aquatic Monitoring and Aquaculture Vision notebooks, recomputed with the tested library, plus simulations you can push until they break.</p>
+      <div class="jump"><button type="button" data-scroll="lab-thermal">Thermal-Tidal</button><button type="button" data-scroll="lab-monitoring">Aquatic Monitoring</button><button type="button" data-scroll="lab-aquaculture">Aquaculture Vision</button><button type="button" data-scroll="lab-verify">Verification</button></div>
+    </div>
+  </section>
+  <section class="block">
+    <div class="wrap lab">
+      <nav class="lab-index" aria-label="Lab contents">
+        <h4>Thermal-Tidal</h4><a href="#/lab/sim-tide">Tidal plume</a><a href="#/lab/sim-near">Near field</a><a href="#/lab/sim-num">Numerical diffusion</a><a href="#/lab/sim-margin">Safety margin</a>
+        <h4>Aquatic Monitoring</h4><a href="#/lab/sim-occ">Turbidity confound</a><a href="#/lab/sim-img">Underwater imaging</a>
+        <h4>Aquaculture Vision</h4><a href="#/lab/sim-cam">Camera geometry</a><a href="#/lab/sim-school">School tracking</a><a href="#/lab/sim-bio">Yield and temperature</a>
+        <h4>Evidence</h4><a href="#/lab/lab-verify">Verification</a><a href="#/lab/lab-repo">Use the code</a>
+      </nav>
+      <div>
+        <!-- THERMAL -->
+        <article class="nb" id="lab-thermal">
+          <div class="nb-head">
+            <div><p class="nb-num">Notebook 1, Workstream D</p><h2>Thermal-Tidal</h2><p class="lede">How warm water from a diffuser mixes near the outfall, how the tide carries it, and whether the rise stays inside the allowed increment at the edge of the mixing zone.</p></div>
+            <div class="reported" id="rep-thermal"><h4>Found and fixed in the Colab runs</h4></div>
+          </div>
+          <div class="stack">
+            <div class="inst" id="sim-tide">
+              <div class="inst-head"><h3>Tidal plume, two schemes side by side</h3><span class="tag">2-D far field in the buoyant surface layer, 50 m grid, open boundaries</span></div>
+              <div class="inst-body">
+                <div class="inst-view">
+                  <div class="dual">
+                    <figure><canvas id="tide-a" width="480" height="240"></canvas><figcaption><span><b>Flux-limited (TVD)</b></span><span id="tide-a-r"></span></figcaption></figure>
+                    <figure><canvas id="tide-b" width="480" height="240"></canvas><figcaption><span><b>First-order upwind</b></span><span id="tide-b-r"></span></figcaption></figure>
+                  </div>
+                  <div class="readouts">
+                    <div class="ro"><b id="tide-phase">0.0 h</b><span id="tide-phase-l">tide, flooding</span></div>
+                    <div class="ro hot"><b id="tide-ringa">0</b><span>peak rise on 300 m ring per tide, TVD (°C)</span></div>
+                    <div class="ro bad"><b id="tide-ringb">0</b><span>same ring, upwind (°C)</span></div>
+                    <div class="ro"><b id="tide-knum">0</b><span>upwind numerical diffusion (m²/s)</span></div>
+                    <div class="ro"><b id="tide-exc">0</b><span>excursion per half-cycle (km)</span></div>
+                  </div>
+                </div>
+                <div class="inst-ctrl">
+                  <div class="ctl"><label for="t-u">Peak tidal current <output id="t-u-o"></output></label><input type="range" id="t-u" min="0.05" max="1.0" step="0.05" value="0.35"></div>
+                  <div class="ctl"><label for="t-mw">Heat to water <output id="t-mw-o"></output></label><input type="range" id="t-mw" min="2" max="150" step="1" value="28"></div>
+                  <div class="ctl"><label for="t-h">Surface layer depth <output id="t-h-o"></output></label><input type="range" id="t-h" min="2" max="40" step="1" value="5"></div>
+                  <div class="ctl"><label for="t-k">Ocean mixing (Okubo, ~3 km) <output id="t-k-o"></output></label><input type="range" id="t-k" min="0.1" max="8" step="0.1" value="2"></div>
+                  <div class="ctl"><label for="t-sp">Simulation speed <output id="t-sp-o"></output></label><input type="range" id="t-sp" min="1" max="12" step="1" value="4"></div>
+                  <div class="row"><button type="button" class="btn glow sm" id="t-play">Pause</button><button type="button" class="btn line sm" id="t-reset">Restart</button></div>
+                  <div class="legend"><span><i style="background:linear-gradient(90deg,#2c3395,#eb7958,#e8fa5b)"></i>warming above ambient</span><span><i style="background:#fff"></i>300 m mixing-zone ring</span></div>
+                </div>
+              </div>
+              <p class="finding"><b>What to look for.</b> Both panels use identical physics. The upwind panel smears the plume wider and understates the peak at the mixing-zone ring, because the scheme adds about 3 m²/s of mixing of its own at this grid, more than the ocean supplies at these scales. The notebook measured about 2.1 m²/s of it at 25 m. Watch the ring at slack water, when heat pools; that is when compliance is judged. Buoyant warm water stays near the surface, so the surface-layer depth sets how strong the far-field rise is.</p>
+            </div>
+
+            <div class="inst" id="sim-near">
+              <div class="inst-head"><h3>Near field: how the diffuser dilutes the heat</h3><span class="tag">stagnant, unstratified asymptotes, Fischer et al. (1979); regime test Tian et al. (2004)</span></div>
+              <div class="inst-body">
+                <div class="inst-view"><svg id="near-svg" viewBox="0 0 720 340" style="width:100%;height:auto;display:block;background:#021017;border-radius:8px" role="img" aria-label="Diffuser plumes rising through the water column"></svg>
+                  <div class="readouts">
+                    <div class="ro"><b id="n-reg">line</b><span>regime (s/H <span id="n-sh"></span>)</span></div>
+                    <div class="ro hot"><b id="n-s">0</b><span>dilution at the surface</span></div>
+                    <div class="ro hot"><b id="n-dt">0</b><span>rise at the surface (°C)</span></div>
+                    <div class="ro bad"><b id="n-bug">0</b><span>what the old bug would report (°C)</span></div>
+                  </div>
+                </div>
+                <div class="inst-ctrl">
+                  <div class="ctl"><label for="n-mw">Heat to water <output id="n-mw-o"></output></label><input type="range" id="n-mw" min="2" max="150" step="1" value="28"></div>
+                  <div class="ctl"><label for="n-dt0">Discharge temperature rise <output id="n-dt0-o"></output></label><input type="range" id="n-dt0" min="2" max="15" step="0.5" value="8"></div>
+                  <div class="ctl"><label for="n-n">Ports <output id="n-n-o"></output></label><input type="range" id="n-n" min="1" max="30" step="1" value="10"></div>
+                  <div class="ctl"><label for="n-s0">Port spacing <output id="n-s0-o"></output></label><input type="range" id="n-s0" min="1" max="40" step="0.5" value="4"></div>
+                  <div class="ctl"><label for="n-hh">Depth <output id="n-hh-o"></output></label><input type="range" id="n-hh" min="5" max="60" step="1" value="20"></div>
+                </div>
+              </div>
+              <p class="finding"><b>Notebook finding.</b> The cell used total diffuser flow in a law that needs the flow of one port. That understates dilution by N<sup>2/3</sup>: 4.6-fold for ten ports, so the red number above is what a regulator would have been shown.</p>
+            </div>
+
+            <div class="inst" id="sim-num">
+              <div class="inst-head"><h3>Numerical diffusion, measured</h3><span class="tag">1-D pulse, pure advection; same solver as the Python library</span></div>
+              <div class="inst-body">
+                <div class="inst-view"><svg class="chart" id="num-chart" viewBox="0 0 640 300" style="width:100%;height:auto" role="img" aria-label="Pulse after advection, exact versus upwind versus TVD"></svg>
+                  <div class="legend"><span><i style="background:#9ED8E6"></i>exact (no mixing)</span><span><i style="background:#eb7958"></i>first-order upwind</span><span><i style="background:#F7B24A"></i>flux-limited (TVD)</span></div>
+                  <div class="readouts">
+                    <div class="ro bad"><b id="num-kup">0</b><span>upwind, measured (m²/s)</span></div>
+                    <div class="ro"><b id="num-kf">0</b><span>formula |u|Δx/2 (1−C)</span></div>
+                    <div class="ro good"><b id="num-ktvd">0</b><span>TVD, measured (m²/s)</span></div>
+                    <div class="ro"><b id="num-cross">0</b><span>scale where numerics beat the ocean (km)</span></div>
+                  </div>
+                  <svg class="chart" id="kscale-chart" viewBox="0 0 640 240" style="width:100%;height:auto;margin-top:1rem" role="img" aria-label="Physical diffusivity versus scale compared with numerical diffusion"></svg>
+                </div>
+                <div class="inst-ctrl">
+                  <div class="ctl"><label for="u-dx">Grid spacing <output id="u-dx-o"></output></label><input type="range" id="u-dx" min="5" max="200" step="5" value="25"></div>
+                  <div class="ctl"><label for="u-u">Current <output id="u-u-o"></output></label><input type="range" id="u-u" min="0.05" max="1" step="0.05" value="0.3"></div>
+                  <div class="ctl"><label for="u-hr">Elapsed time <output id="u-hr-o"></output></label><input type="range" id="u-hr" min="1" max="12" step="1" value="4"></div>
+                  <p class="small muted">The lower chart compares numerical diffusion with Okubo's (1971) scale-dependent ocean diffusivity. Where the flat line sits above the curve, the model is mixing more than the sea does.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="inst" id="sim-margin">
+              <div class="inst-head"><h3>The binding constraint is the safety margin</h3><span class="tag">Washington marine rule, WAC 173-201A-210, "excellent" class</span></div>
+              <div class="inst-body">
+                <div class="inst-view"><svg class="chart" id="margin-chart" viewBox="0 0 640 280" style="width:100%;height:auto" role="img" aria-label="Allowed increment and screening rise versus ambient temperature"></svg>
+                  <div class="legend"><span><i style="background:#9ED8E6"></i>allowed increment at the mixing-zone edge</span><span><i style="background:#F7B24A"></i>screening rise, default 24 MW design</span></div>
+                  <div class="readouts"><div class="ro"><b id="m-allow">0</b><span>allowed (°C)</span></div><div class="ro hot"><b id="m-rise">0</b><span>screening rise (°C)</span></div><div class="ro" id="m-left-box"><b id="m-left">0</b><span>margin left (°C)</span></div><div class="ro"><b id="m-do">0</b><span>less oxygen at discharge</span></div></div>
+                </div>
+                <div class="inst-ctrl"><div class="ctl"><label for="m-t">Ambient water temperature <output id="m-t-o"></output></label><input type="range" id="m-t" min="6" max="18" step="0.5" value="12"></div>
+                  <p class="small muted">As summer warms the water, the rule allows less and less. The plume's footprint barely changes, but the headroom disappears, and once ambient reaches the 16 °C criterion only 0.3 °C is allowed.</p></div>
+              </div>
+            </div>
+            <div class="reported"><h4>Handoff sent to the other two notebooks (validated JSON)</h4><pre class="json" id="handoff-json" tabindex="0"></pre></div>
+          </div>
+        </article>
+
+        <!-- MONITORING -->
+        <article class="nb" id="lab-monitoring">
+          <div class="nb-head">
+            <div><p class="nb-num">Notebook 2, Workstream A</p><h2>Aquatic Monitoring</h2><p class="lede">Camera and survey data can only show where animals were detected, not where they were. This notebook corrects occupancy for detection, and checks when underwater images can be trusted at all.</p></div>
+            <div class="reported" id="rep-monitoring"><h4>Found and fixed in the Colab runs</h4></div>
+          </div>
+          <div class="stack">
+            <div class="inst" id="sim-occ">
+              <div class="inst-head"><h3>Turbidity masquerading as impact</h3><span class="tag">150 sites per zone, 4 surveys, 12 replicates per setting; MacKenzie et al. (2002)</span></div>
+              <div class="inst-body">
+                <div class="inst-view">
+                  <div class="dual"><figure><svg id="occ-ref" viewBox="0 0 300 210" style="width:100%;height:auto;background:#021017;border-radius:8px" role="img" aria-label="Reference zone sites"></svg><figcaption><b>Reference zone</b><span>clear water</span></figcaption></figure>
+                    <figure><svg id="occ-imp" viewBox="0 0 300 210" style="width:100%;height:auto;background:#021017;border-radius:8px" role="img" aria-label="Outfall zone sites"></svg><figcaption><b>Outfall zone</b><span id="occ-imp-cap">murkier water</span></figcaption></figure></div>
+                  <div class="legend"><span><i style="background:#F7B24A;height:10px;width:10px;border-radius:50%"></i>animals present and seen</span><span><i style="background:transparent;border:2px solid #F7B24A;height:10px;width:10px;border-radius:50%"></i>present but never seen</span><span><i style="background:#1A3a46;height:10px;width:10px;border-radius:50%"></i>absent</span></div>
+                  <div class="legend"><span><i style="background:#9ED8E6;height:10px"></i>reference zone</span><span><i style="background:#F7B24A;height:10px"></i>outfall zone</span><span><i style="background:transparent;border-top:2px dashed #9ED8E6"></i>true occupancy</span></div>
+                  <svg class="chart" id="occ-chart" viewBox="0 0 640 230" style="width:100%;height:auto;margin-top:.8rem" role="img" aria-label="Naive versus corrected occupancy"></svg>
+                </div>
+                <div class="inst-ctrl">
+                  <div class="ctl"><label for="o-sh">Extra turbidity at the outfall <output id="o-sh-o"></output></label><input type="range" id="o-sh" min="0" max="4" step="1" value="3"></div>
+                  <div class="ctl"><label for="o-dc">Real decline in occupancy <output id="o-dc-o"></output></label><input type="range" id="o-dc" min="0" max="3" step="1" value="0"></div>
+                  <div class="readouts"><div class="ro bad"><b id="o-naive">0</b><span>apparent decline, naive</span></div><div class="ro good"><b id="o-corr">0</b><span>decline, detection-corrected</span></div><div class="ro"><b id="o-rate">0</b><span>runs flagging a significant decline</span></div></div>
+                </div>
+              </div>
+              <p class="finding" id="occ-finding"></p>
+            </div>
+
+            <div class="inst" id="sim-img">
+              <div class="inst-head"><h3>When can a camera see?</h3><span class="tag">revised image formation model, Akkaynak and Treibitz (2018, 2019); illustrative coefficients</span></div>
+              <div class="inst-body">
+                <div class="inst-view">
+                  <div class="dual"><figure><canvas id="img-obs" width="320" height="200"></canvas><figcaption><b>What the camera records</b><span id="img-t"></span></figcaption></figure>
+                    <figure><canvas id="img-rest" width="320" height="200"></canvas><figcaption><b>Restored</b><span id="img-g"></span></figcaption></figure></div>
+                  <div class="scroll" style="margin-top:1rem"><table id="cond-table"></table></div>
+                </div>
+                <div class="inst-ctrl">
+                  <div class="ctl"><label for="i-tb">Turbidity <output id="i-tb-o"></output></label><input type="range" id="i-tb" min="1" max="8" step="0.25" value="2"></div>
+                  <div class="ctl"><label for="i-z">Distance to the fish <output id="i-z-o"></output></label><input type="range" id="i-z" min="0.5" max="15" step="0.25" value="4"></div>
+                  <p class="small muted">Restoring an image divides by transmittance, so sensor noise is multiplied by 1/t. Below t = 0.1 the frame is flagged unrecoverable (hatched) and fed back as low detection probability, not as an absence.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- AQUACULTURE -->
+        <article class="nb" id="lab-aquaculture">
+          <div class="nb-head">
+            <div><p class="nb-num">Notebook 3, Workstream B</p><h2>Aquaculture Vision</h2><p class="lede">Tracking fish schools on camera, and asking how warm a contained farm can run on data-centre heat before oxygen, ammonia or welfare limits bind. The answer goes back to Thermal-Tidal as a loop-temperature ceiling.</p></div>
+            <div class="reported" id="rep-aquaculture"><h4>Found in the Colab runs</h4></div>
+          </div>
+          <div class="stack">
+            <div class="inst" id="sim-cam">
+              <div class="inst-head"><h3>Camera geometry: why 12 fish became 205 tracks</h3><span class="tag">heuristic thresholds, labelled as such</span></div>
+              <div class="inst-body">
+                <div class="inst-view"><svg id="cam-svg" viewBox="0 0 640 260" style="width:100%;height:auto;display:block;background:#021017;border-radius:8px" role="img" aria-label="Camera field of view over the arena"></svg>
+                  <div class="readouts"><div class="ro"><b id="c-fov">0</b><span>field of view (cm)</span></div><div class="ro hot"><b id="c-px">0</b><span>pixels a fish moves per frame</span></div><div class="ro" id="c-dwell-box"><b id="c-dwell">0</b><span>seconds a fish stays in view</span></div><div class="ro" id="c-verdict-box"><b id="c-verdict">ok</b><span>track fragmentation risk</span></div></div>
+                  <p class="small muted" style="margin:1rem 0 .2rem">Reported track purity after correcting geometry and arena size (Colab run)</p>
+                  <svg class="chart" id="purity-chart" viewBox="0 0 640 150" style="width:100%;height:auto;margin-top:1rem" role="img" aria-label="Reported track purity after the fix"></svg>
+                </div>
+                <div class="inst-ctrl">
+                  <div class="row" style="margin-bottom:1rem"><button type="button" class="btn line sm" id="cam-bad">Notebook, before fix</button><button type="button" class="btn glow sm" id="cam-good">Whole arena in view</button></div>
+                  <div class="ctl"><label for="c-d">Camera distance <output id="c-d-o"></output></label><input type="range" id="c-d" min="0.1" max="3" step="0.005" value="0.265"></div>
+                  <div class="ctl"><label for="c-a">Lens field of view <output id="c-a-o"></output></label><input type="range" id="c-a" min="30" max="120" step="1" value="70"></div>
+                  <div class="ctl"><label for="c-ar">Arena width <output id="c-ar-o"></output></label><input type="range" id="c-ar" min="0.3" max="5" step="0.1" value="2"></div>
+                  <div class="ctl"><label for="c-v">Fish speed <output id="c-v-o"></output></label><input type="range" id="c-v" min="0.05" max="1.5" step="0.05" value="0.3"></div>
+                  <div class="ctl"><label for="c-fps">Frame rate <output id="c-fps-o"></output></label><input type="range" id="c-fps" min="5" max="120" step="5" value="30"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="inst" id="sim-school">
+              <div class="inst-head"><h3>School tracking: when does a Kalman filter help?</h3><span class="tag">12 fish, constant-velocity Kalman filter, identities known</span></div>
+              <div class="inst-body">
+                <div class="inst-view"><canvas id="school" width="640" height="300"></canvas>
+                  <div class="readouts"><div class="ro"><b id="s-true">0</b><span>true polarisation</span></div><div class="ro" id="s-fd-box"><b id="s-fd">0</b><span>frame differencing</span></div><div class="ro" id="s-kf-box"><b id="s-kf">0</b><span>Kalman filter</span></div></div>
+                  <svg class="chart" id="kal-chart" viewBox="0 0 640 230" style="width:100%;height:auto;margin-top:1rem" role="img" aria-label="Polarisation error versus noise ratio"></svg>
+                  <div class="legend"><span><i style="background:#eb7958"></i>frame differencing error</span><span><i style="background:#F7B24A"></i>Kalman error</span><span><i style="background:#fff"></i>your setting</span></div>
+                </div>
+                <div class="inst-ctrl">
+                  <div class="ctl"><label for="s-r">Localisation noise ÷ motion per frame <output id="s-r-o"></output></label><input type="range" id="s-r" min="-2" max="1" step="0.05" value="-0.5"></div>
+                  <div class="ctl"><label for="s-al">School cohesion <output id="s-al-o"></output></label><input type="range" id="s-al" min="0" max="1" step="0.05" value="0.9"></div>
+                  <p class="small muted">Dots are what the detector reports; tails show each method's velocity estimate. Low noise: differencing is already accurate and the filter lags on turns. High noise: differencing turns into random headings and the filter wins.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="inst" id="sim-bio">
+              <div class="inst-head"><h3>How warm can the farm run?</h3><span class="tag">placeholder salmonid parameters; not for decisions</span></div>
+              <div class="inst-body">
+                <div class="inst-view"><svg class="chart" id="bio-chart" viewBox="0 0 640 320" style="width:100%;height:auto" role="img" aria-label="Carrying capacity limits and yield versus temperature"></svg>
+                  <div class="legend"><span><i style="background:#9ED8E6"></i>oxygen limit</span><span id="b-nh3-l"><i style="background:#C79BE0"></i>ammonia limit</span><span><i style="background:#7FE0B0"></i>welfare stocking cap</span><span><i style="background:#F7B24A;height:5px"></i>relative yield</span></div>
+                  <div class="readouts"><div class="ro hot"><b id="b-ceil">0</b><span>recommended loop ceiling (°C)</span></div><div class="ro"><b id="b-opt">15</b><span>growth optimum (°C)</span></div><div class="ro"><b id="b-bind">do</b><span>binding above the ceiling</span></div><div class="ro"><b id="b-cap">0</b><span>capacity at the ceiling (kg)</span></div></div>
+                </div>
+                <div class="inst-ctrl">
+                  <div class="ctl"><label for="b-f">Water flow <output id="b-f-o"></output></label><input type="range" id="b-f" min="50" max="1000" step="10" value="400"></div>
+                  <div class="ctl"><label for="b-v">Tank volume <output id="b-v-o"></output></label><input type="range" id="b-v" min="20" max="400" step="10" value="100"></div>
+                  <div class="ctl"><label for="b-ph">pH <output id="b-ph-o"></output></label><input type="range" id="b-ph" min="6.8" max="8.2" step="0.1" value="7.6"></div>
+                  <div class="ctl"><label for="b-s">Salinity <output id="b-s-o"></output></label><input type="range" id="b-s" min="0" max="35" step="1" value="30"></div>
+                  <p class="small muted">Cool water: the welfare cap binds. Warm water: oxygen runs out and ammonia turns more toxic. The best temperature for the farm sits below the fastest-growth temperature.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="nb" id="lab-verify">
+          <div class="nb-head"><div><p class="nb-num">Evidence</p><h2>How every number was checked</h2><p class="lede">Each equation has a test that reproduces a published value or recovers a known answer from synthetic data. The browser simulations are tested against the Python library to within 10⁻¹² for the solvers.</p></div>
+            <div class="reported"><h4>Status</h4><div class="numbers" id="ver-tally" style="gap:1rem"></div></div></div>
+          <div class="scroll"><table id="ver-table"></table></div>
+        </article>
+
+        <article class="nb" id="lab-repo">
+          <div class="nb-head"><div><p class="nb-num">Open source</p><h2>Use the code</h2><p class="lede">Every simulation here imports the same library your notebook can. Pin the version you report.</p></div></div>
+          <pre class="json">!pip -q install "git+https://github.com/ejri/aquatic-guardian.git@v0.2.0"
 import aquatic_guardian as ag
-r = ag.screening.screen({"it_load_mw": 24, "delta_t_k": 8})
-print(r["near_field"]["delta_t_near_field_k"])</code></pre>
-      <p class="src" style="margin-top:1rem">Cite as: Aquatic Guardian contributors (2026), <i>Aquatic Guardian</i>, version 0.1.0. See <code>CITATION.cff</code>.</p>
+r = ag.screening.screen({"it_load_mw": 24, "delta_t_k": 8, "t_ambient_c": 12})
+fit = ag.occupancy.fit(y, psi_covariates=zone, detection_covariates=turbidity)
+rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, ...)</pre>
+          <p class="small muted" style="margin-top:.8rem">Results on this page: <code>python app/notebook_results.py</code> (fixed seeds). Code Apache-2.0; text CC BY 4.0; schemas CC0.</p>
+          <p style="margin-top:1.2rem"><b>Printable briefs</b> (one per jurisdiction), generated from the same files as this page:</p>
+          <p id="brief-links" class="row" style="margin-top:.6rem;gap:.6rem 1.2rem;flex-wrap:wrap"></p>
+        </article>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= INDUSTRY ================= -->
+<div data-route="industry">
+  <section class="pagehead deep">
+    <svg class="art-bg" viewBox="0 0 600 400" aria-hidden="true"><rect x="60" y="110" width="170" height="190" rx="10" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/><g stroke="#2D5563" stroke-width="6"><path d="M85 150h120M85 185h120M85 220h120M85 255h120"/></g><path d="M230 170h60c14 0 14 26 28 26s14-26 28-26 14 26 28 26 14-26 28-26h120" fill="none" stroke="#F7B24A" stroke-width="8" stroke-linecap="round"/><path d="M230 250h320" stroke="#9ED8E6" stroke-width="8" stroke-linecap="round"/></svg>
+    <div class="wrap">
+      <p class="kicker">For operators, engineers and investors</p>
+      <h1>Choose the cooling before the regulator does.</h1>
+      <p class="lede">Compare designs on the numbers regulators will ask for, see the temperature-rise trade-off, and produce the disclosure record in the format agencies can ingest.</p>
+      <div class="jump"><button type="button" data-scroll="ind-compare">Compare designs</button><button type="button" data-scroll="ind-trade">Temperature trade-off</button><button type="button" data-scroll="ind-tool">Full screening</button><button type="button" data-scroll="ind-reuse">Heat reuse done right</button></div>
+    </div>
+  </section>
+  <section class="block" id="ind-compare">
+    <div class="wrap">
+      <h2 class="section">Three designs, same facility</h2>
+      <div class="row" style="margin:1rem 0 1.6rem;gap:1.2rem">
+        <label class="small" for="ic-mw">IT load</label><input type="number" id="ic-mw" value="40" min="1" max="1000" step="1" style="width:7rem"><span class="small muted">MW</span>
+        <label class="small" for="ic-t">Summer water</label><input type="number" id="ic-t" value="13" min="2" max="30" step="0.5" style="width:6rem"><span class="small muted">°C</span>
+        <label class="small" for="ic-w">Water body</label><select id="ic-w"><option value="marine">Coastal sea</option><option value="estuarine">Estuary</option><option value="fresh">River or lake</option></select>
+      </div>
+      <div class="compare" id="compare"></div>
+    </div>
+  </section>
+  <section class="block" id="ind-trade">
+    <div class="wrap grid2 wide-right">
+      <div><h2 class="section">The temperature-rise trade-off</h2><p class="lede">A bigger rise across the heat exchanger means less water pumped and a smaller intake, but hotter discharge and less oxygen in it. The chart shows both for your facility.</p><p class="small muted">Uses the compare inputs above, once-through cooling, 10 ports at 4 m spacing in 20 m of water.</p></div>
+      <div class="light"><svg class="chart" id="trade-chart" viewBox="0 0 640 300" style="width:100%;height:auto" role="img" aria-label="Flow and surface rise versus discharge temperature rise"></svg>
+        <div class="legend" style="color:var(--muted)"><span><i style="background:var(--accent)"></i>cooling flow (m³/s, left)</span><span><i style="background:var(--gold)"></i>screening surface rise (°C, right)</span><span><i style="background:var(--warn)"></i>allowed increment</span></div></div>
+    </div>
+  </section>
+  <section class="block" id="ind-tool">
+    <div class="wrap">
+      <h2 class="section">Full screening and disclosure record</h2>
+      <p class="lede" style="margin-bottom:1.5rem">All inputs, technical detail, and the Aquatic Disclosure Record (schema 0.1.0) ready to hand to an agency.</p>
+      <div class="tool" data-tool="technical"></div>
+    </div>
+  </section>
+  <section class="block" id="ind-reuse">
+    <div class="wrap grid2">
+      <div><h2 class="section">Heat reuse that counts</h2><p class="lede">Reuse only reduces your footprint if the heat is captured before discharge. If it goes to a farm, the farmed animals need a named welfare standard.</p></div>
+      <div class="light">
+        <div class="ctl"><label for="r-erf" style="color:var(--muted)">Heat recovered before discharge <output id="r-erf-o" style="color:var(--ink)"></output></label><input type="range" id="r-erf" min="0" max="80" step="5" value="20"></div>
+        <div class="res-nums" id="reuse-nums"></div>
+        <ul class="serif"><li>Germany already requires new data centres to reuse at least 10% of their heat from July 2026, rising to 20% by 2028.</li><li>Warm water released to the sea and later "used" by a nearby farm is not reuse. The heat has already been discharged.</li><li>Report species, stocking density, mortality and stunning method for any animals raised on your heat.</li></ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= ABOUT ================= -->
+<div data-route="about">
+  <section class="pagehead deep"><div class="wrap"><p class="kicker">About</p><h1>Built in the open, for all sentient beings.</h1><p class="lede">Aquatic Guardian is the second phase of a Sentient Futures fellowship project on governing ocean-cooled and underwater computing.</p></div></section>
+  <section class="block"><div class="wrap grid2">
+    <div class="serif">
+      <h2 class="section">The project</h2>
+      <p>Phase 1, <a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Governing the Ocean Server Farm</a> (Elchami, Kaplan and Daher, April 2026), mapped the governance gap for offshore compute across four stressors: heat, electromagnetic fields, noise and chemicals.</p>
+      <p>Phase 2 turns that analysis into things governments can adopt: a framework, model language for live instruments, a disclosure standard, and three research notebooks built by mentees on thermal transport, aquatic monitoring and contained aquaculture. Supervision: Ibrahim Elchami, Ph.D.</p>
+      <p>Sentient Futures works on field building for the welfare of all sentient beings as AI transforms the world. This project sits where AI infrastructure meets animal welfare.</p>
     </div>
     <div>
-      <h3>Repository</h3>
-<pre class="tree" tabindex="0"><code>policy/          framework, recommendations, model language
-schemas/         disclosure and notebook handoff (JSON Schema)
-data/            instrument tracker, criteria with sources
-src/             Python library (screening, plume, tidal,
-                 numerics, water quality, occupancy, imaging,
-                 tracking, bioenergetics, sentience)
-briefs/          printable brief per jurisdiction
-tests/           automated checks incl. engine parity,
-                 briefs and browser accessibility
-app/             browser engine, site build, brief build
-web/             source fragments for this page
-site/            this website, built and published
-notebooks/       how the three Colab notebooks connect
-docs/            verification register, corrections,
-                 metrics, crosswalk</code></pre>
-      <h3 style="margin-top:1.5rem">Download briefs</h3>
-      <p>One printable brief per jurisdiction: the problem, the instruments and their status, the clauses and the asks. Generated from the same files as this page, so they cannot drift from it. They open on GitHub.</p>
-      <ul id="brief-links"></ul>
-      <h3 style="margin-top:1.5rem">Get involved</h3>
-      <p>Most needed now: a UM3 benchmark, species thresholds from specialists, tracker corrections, and officials willing to test the model language against a real file. See <code>CONTRIBUTING.md</code>.</p>
+      <h2 class="section">Get involved</h2>
+      <ul class="serif"><li>Run a Visual Plumes benchmark of the near-field coefficients.</li><li>Supply species temperature thresholds and welfare parameters.</li><li>Correct the policy tracker with a primary source.</li><li>Test the model language against a real file in your office.</li><li>Translate the framework.</li></ul>
+      <p class="small muted">Code Apache-2.0. Text and data CC BY 4.0. Schemas CC0. Cite with CITATION.cff.</p>
     </div>
-  </div>
-</section>
+  </div></section>
+</div>
 </main>
 
 <footer class="site">
   <div class="wrap">
-    <p><b>Aquatic Guardian 0.1.0</b>, 29 September 2026. A Sentient Futures project building on <i>Governing the Ocean Server Farm</i> (Elchami, Kaplan and Daher, April 2026).</p>
-    <p>Screening results are for scoping and public understanding. They are not legal advice and do not replace a regulatory mixing-zone study, a Clean Water Act §316 demonstration, a Fisheries Act authorisation or species-expert review. Policy status changes; check the tracker's primary sources before relying on a date.</p>
+    <div><b>Aquatic Guardian 0.2.0</b>, 29 September 2026. A Sentient Futures project.<br>Screening results are for scoping and public understanding. They are not legal advice and do not replace a regulatory mixing-zone study, a §316 demonstration, a Fisheries Act authorisation or species-expert review.</div>
+    <div><b>Audiences</b><br><a href="#/public">Public</a><br><a href="#/officials">Officials</a><br><a href="#/lab">Researchers</a><br><a href="#/industry">Industry</a></div>
+    <div><b>Project</b><br><a href="#/about">About</a><br><a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Phase 1 site</a></div>
   </div>
 </footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

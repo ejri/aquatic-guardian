@@ -152,6 +152,16 @@
       total_flow_error_factor: Math.pow(n, 2 / 3) };
   }
 
+  /* Dilution along the rise for visualisation, using the same constants as nearField. */
+  function dilutionAt(flow, n, d, sp, z, ta, dt, s) {
+    var gp = reducedGravity(ta, dt, s), Q = flow / n, L = n > 1 ? n * sp : d, q = flow / L;
+    var sJet = z / (JET_DECAY * d);
+    var sPt = gp > 0 ? Math.max(C_POINT * Math.pow(gp * Q, 1 / 3) * Math.pow(z, 5 / 3) / Q, sJet) : sJet;
+    var sLn = gp > 0 ? C_LINE * Math.pow(gp * q, 1 / 3) * z / q : NaN;
+    var sBug = gp > 0 ? Math.max(C_POINT * Math.pow(gp * flow, 1 / 3) * Math.pow(z, 5 / 3) / flow, sJet) : sJet;
+    return { point: Math.max(sPt, 1), line: Math.max(sLn, 1), total_flow_bug: Math.max(sBug, 1), g_prime: gp };
+  }
+
   function requiredReporting(cool, marine, aqua) {
     var items = [];
     if (cool !== "closed_loop_air") items.push("impingement counts by taxon, life stage and tier",
@@ -236,8 +246,9 @@
     return fl;
   }
 
-  var api = { version: "0.1.0", DEFAULTS: DEFAULTS, screen: screen, doSat: doSat, nh3Frac: nh3Frac,
-    density: density, okubo: okubo, temperatureRule: temperatureRule,
+  var api = { version: "0.2.0", DEFAULTS: DEFAULTS, screen: screen, doSat: doSat, nh3Frac: nh3Frac,
+    density: density, rhoCp: rhoCp, reducedGravity: reducedGravity, nearField: nearField, dilutionAt: dilutionAt, okubo: okubo,
+    okuboCross: okuboCross, kNum: kNum, temperatureRule: temperatureRule, OMEGA_M2: OMEGA,
     JURISDICTIONS: JURISDICTIONS, INTAKE_RULES: INTAKE_RULES, jurisdiction: jurisdiction };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.AquaticGuardian = api;

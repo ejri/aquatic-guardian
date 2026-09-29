@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software or framework, please cite it as below."
 title: "Aquatic Guardian: a plug-in aquatic, ecological and sentience module for data-centre regulation"
-version: 0.1.0
+version: 0.2.0
 date-released: 2026-09-29
 license: Apache-2.0
 authors:
@@ -13,11 +13,15 @@ references:
   - type: report
     title: "Governing the Ocean Server Farm"
     authors:
-      - family-names: Elchami
-        given-names: Ibrahim
       - family-names: Kaplan
         given-names: Zachary
       - family-names: Daher
         given-names: Charbel
+      - family-names: Manohar
+        given-names: Muktika
+      - family-names: Uba
+        given-names: Suleiman Muhammad
+      - family-names: Elchami
+        given-names: Ibrahim
     year: 2026
-    publisher: {name: "Sentient Futures"}
+    publisher: { name: "Sentient Futures" }

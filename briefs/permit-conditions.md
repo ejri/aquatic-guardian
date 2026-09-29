@@ -58,8 +58,8 @@ From `data/instruments.json`, status as of 2026-09-29.
 
 | Instrument | Type | Legal status | Key dates | Where it bites | What to ask for |
 |---|---|---|---|---|---|
-| Clean Water Act §316(a) and §316(b), 40 CFR Part 125 — United States (federal) | statute and rule | In force (enacted) — **check**: No primary-source link recorded in the repository yet. | 2014-08-15, Existing-facility intake rule (Subpart J) published | §316(b) already counts impinged and entrained organisms; a once-through data centre above ~3-4 MW likely exceeds the 2 MGD trigger. | EPA guidance confirming §316(b) applies to data centres; add taxon, life-stage and tier fields to monitoring reports. |
-| WAC 173-201A (surface water quality standards) — Washington | rule | In force (enacted) — **check**: No primary-source link recorded in the repository yet. | none recorded | Marine 1-DMax categories and the 12/(T-2) point-source increment at the mixing-zone edge. | Ecology mixing-zone approvals for data centres use critical conditions and report sentience-tier biology. |
+| Clean Water Act §316(a) and §316(b), 40 CFR Part 125 — United States (federal) | statute and rule | In force (enacted) — **check**: Needs a primary-source URL before this status can be treated as verified. No primary-source link recorded in the repository yet. | 2014-08-15, Existing-facility intake rule (Subpart J) published | §316(b) already counts impinged and entrained organisms; a once-through data centre above ~3-4 MW likely exceeds the 2 MGD trigger. | EPA guidance confirming §316(b) applies to data centres; add taxon, life-stage and tier fields to monitoring reports. |
+| WAC 173-201A (surface water quality standards) — Washington | rule | In force (enacted) — **check**: Needs a primary-source URL before this status can be treated as verified. No primary-source link recorded in the repository yet. | none recorded | Marine 1-DMax categories and the 12/(T-2) point-source increment at the mixing-zone edge. | Ecology mixing-zone approvals for data centres use critical conditions and report sentience-tier biology. |
 
 ## What to ask for
 
