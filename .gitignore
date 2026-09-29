@@ -8,3 +8,5 @@ dist/
 node_modules/
 .DS_Store
 .ipynb_checkpoints/
+benchmarks/visual_plumes/decks/*
+!benchmarks/visual_plumes/decks/.gitkeep

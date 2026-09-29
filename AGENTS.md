@@ -5,7 +5,7 @@ A plug-in aquatic, ecological and animal-welfare module for data-centre regulati
 1. **Policy** (`policy/`): framework, recommendations, model clauses for US, EU, Canada, international and UK instruments.
 2. **Verified library** (`src/aquatic_guardian/`): screening physics, water quality, occupancy, imaging, tracking, bioenergetics, sentience reporting, disclosure and handoff records.
 3. **Open-source packaging**: tests, schemas, data, CI, licences, citation, governance.
-4. **Website and screening app** (`site/index.html`, built from `site/parts/` by `app/build.py`), presented as a Sentient Futures project.
+4. **Website and screening app** (`site/index.html`, built from `web/parts/` by `app/build.py`), presented as a Sentient Futures project.
 
 Phase 1 was *Governing the Ocean Server Farm* (Elchami, Kaplan and Daher, Sentient Futures, April 2026), with a site at https://oceanic-datacenters-governance.netlify.app.
 

@@ -1,18 +1,30 @@
-"""Build site/index.html from the ordered fragments in site/parts/.
+"""Build the published site in site/ from the source fragments in web/parts/.
 
-Injects the screening engine, the instrument tracker, and every model-language
-clause from policy/model-language/*.md, so the website never drifts from the
-repository's single sources of truth. `--check` fails if site/index.html is stale.
+Only built output lives in site/ (that is the Netlify publish directory); the
+editable fragments live in web/parts/. site/index.html gets the screening
+engine, the instrument tracker, and every model-language clause from
+policy/model-language/*.md injected, so the website never drifts from the
+repository's single sources of truth. site/404.html reuses the same head.
+`--check` fails if either published file, or a mirrored package resource, is stale.
 """
 from __future__ import annotations
 import json, re, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+PARTS = ROOT / "web" / "parts"
+SITE = ROOT / "site"
+PAGES = {"index.html": ("1_head.html", "2_body.html", "3_script.html"),
+         "404.html": ("1_head.html", "404_body.html")}
+# 1_head.html is shared, so pages other than index.html get their own title and description.
+PAGE_META = {"404.html": ("Page not found: Aquatic Guardian",
+                          "That page is not on the Aquatic Guardian site. Go to the home page for "
+                          "the framework, the model language, the policy tracker and the screening tool.")}
 GROUPS = [("us-federal", "US federal"), ("us-state-model-bill", "US states"),
           ("permit-conditions", "Permits"), ("eu", "European Union"),
           ("canada", "Canada"), ("international", "International and UK")]
 CLAUSE = re.compile(r"<!-- clause: (?P<id>[\w-]+) -->\n(?P<body>.*?)\n<!-- /clause -->", re.S)
+BRIEF_BASE = "https://github.com/ejri/aquatic-guardian/blob/main/briefs"
 
 
 def parse_group(path: Path) -> dict:
@@ -30,24 +42,38 @@ def parse_group(path: Path) -> dict:
     return {"title": title, "intro": intro, "clauses": clauses}
 
 
-def build() -> str:
-    tpl = "".join(p.read_text() for p in sorted((ROOT / "site" / "parts").glob("*.html")))
+def site_data() -> dict:
     policy = []
     for stem, label in GROUPS:
         g = parse_group(ROOT / "policy" / "model-language" / f"{stem}.md")
         g.update({"key": stem, "label": label,
                   "path": f"policy/model-language/{stem}.md"})
         policy.append(g)
-    data = {"instruments": json.loads((ROOT / "data" / "instruments.json").read_text()),
-            "policy": policy}
-    engine = (ROOT / "app" / "engine.js").read_text()
-    out = tpl.replace("/*__ENGINE__*/", engine)
-    out = out.replace("/*__DATA__*/", "window.AG_DATA = " + json.dumps(data, ensure_ascii=False) + ";")
+    criteria = json.loads((ROOT / "data" / "criteria.json").read_text())
+    return {"instruments": json.loads((ROOT / "data" / "instruments.json").read_text()),
+            "policy": policy,
+            "jurisdictions": criteria.get("jurisdictions", []),
+            "briefs": [{"label": label, "file": f"{stem}.md", "url": f"{BRIEF_BASE}/{stem}.md"}
+                       for stem, label in GROUPS]}
+
+
+def build(page: str) -> str:
+    out = "".join((PARTS / name).read_text() for name in PAGES[page])
+    if page in PAGE_META:
+        title, desc = PAGE_META[page]
+        out = re.sub(r"<title>.*?</title>", f"<title>{title}</title>", out, count=1, flags=re.S)
+        out = re.sub(r'(<meta name="description" content=)".*?"', rf'\1"{desc}"', out, count=1, flags=re.S)
+    if "/*__ENGINE__*/" in out:
+        out = out.replace("/*__ENGINE__*/", (ROOT / "app" / "engine.js").read_text())
+    if "/*__DATA__*/" in out:
+        out = out.replace("/*__DATA__*/",
+                          "window.AG_DATA = " + json.dumps(site_data(), ensure_ascii=False) + ";")
     return out
 
 
 MIRROR = [("schemas", "aquatic-disclosure.schema.json"), ("schemas", "notebook-handoff.schema.json"),
           ("data", "criteria.json"), ("data", "instruments.json")]
+# instruments.schema.json is added to MIRROR when Phase 8 lands the schema file.
 
 
 def mirror(check: bool) -> bool:
@@ -64,14 +90,15 @@ def mirror(check: bool) -> bool:
 
 
 if __name__ == "__main__":
-    if not mirror("--check" in sys.argv):
+    check = "--check" in sys.argv
+    if not mirror(check):
         sys.exit("package resources differ from schemas/ or data/: run python app/build.py")
-    html = build()
-    target = ROOT / "site" / "index.html"
-    if "--check" in sys.argv:
-        if not target.exists() or target.read_text() != html:
-            sys.exit("site/index.html is stale: run python app/build.py")
-        print("site/index.html is up to date")
-    else:
-        target.write_text(html)
-        print(f"wrote {target} ({len(html)/1024:.0f} KB)")
+    for page in PAGES:
+        html, target = build(page), SITE / page
+        if check:
+            if not target.exists() or target.read_text() != html:
+                sys.exit(f"site/{page} is stale: run python app/build.py")
+            print(f"site/{page} is up to date")
+        else:
+            target.write_text(html)
+            print(f"wrote {target} ({len(html)/1024:.0f} KB)")

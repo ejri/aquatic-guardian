@@ -14,7 +14,7 @@ Status key: **Published value**, reproduces a number printed in the cited source
 | I-2 | Estuary 1 % tidal-volume test (40 CFR 125.84) | Implemented as written | Needs legal check of current text | none |
 | P-1 | Port-spacing regime (Tian, Roberts & Daviero 2004) | s/H ≤ 0.3 line, ≥ 1.0 point | Published value | `test_regime_boundaries` |
 | P-2 | Per-port versus total flow (Correction 1) | Error factor exactly N^(2/3) | Simulation | `test_total_flow_substitution_error_is_n_two_thirds` |
-| P-3 | Dilution coefficients 0.089 (point) and 0.38 (line) | Fischer et al. (1979) asymptotic minimum dilution | **Needs benchmark** against Visual Plumes UM3 / NRFIELD and a lab data set | none yet |
+| P-3 | Dilution coefficients 0.089 (point) and 0.38 (line) | Fischer et al. (1979) asymptotic minimum dilution; MTT integral similarity (∝ z, ∝ z^{5/3}); library vs integral sweep in `docs/BENCHMARK_P3.md` | **Needs benchmark** against Visual Plumes UM3 / NRFIELD and a lab data set (integral infrastructure in place; VP outputs not yet present) | `test_pure_jet_dilution_scales_linearly_with_z`, `test_pure_plume_dilution_scales_as_z_to_the_five_thirds` |
 | P-4 | Stratified trapping, crossflow and bottom attachment | Not modelled | **Out of scope**; use UM3/CORMIX | none |
 | T-1 | M2 excursion 2U/ω (Correction 2) | 10.7 km ↔ 0.75 m/s | Published value | `test_tidal_excursion` |
 | N-1 | Okubo (1971) diffusivity | 0.58 m²/s at 1 km; crossover ~3 km for 2.1 m²/s | Published value | `test_okubo_values` |
