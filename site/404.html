@@ -12,6 +12,9 @@
 :root{
   --bg:#EEF2F0; --panel:#E2EAE7; --ink:#0E2A33; --muted:#3D5E52; --tide:#1D6B74; --tide-ink:#FFFFFF;
   --heat:#A8650A; --heat-soft:#F3E3C7; --line:#C3D2CD; --high:#8F2D1F; --high-soft:#F2DCD6;
+  /* --heat at small text sizes is 4.1:1 on --bg, short of WCAG AA. --heat-text is the
+     same hue darkened to 5.6:1 and is used only for heat-coloured text below 18.66 px. */
+  --heat-text:#8A5308;
   --sans:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   --serif:"Source Serif 4","Iowan Old Style","Palatino Linotype",Georgia,serif;
   --measure:68ch; --wide:1180px;
@@ -21,12 +24,12 @@
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#0C1D22; --panel:#13292F; --ink:#E1EBE8; --muted:#9DBBAF; --tide:#63B9C1; --tide-ink:#0C1D22;
-    --heat:#E6A94A; --heat-soft:#3A2C14; --line:#27434B; --high:#F09A87; --high-soft:#3B1D17; color-scheme:dark;
+    --heat:#E6A94A; --heat-text:#E6A94A; --heat-soft:#3A2C14; --line:#27434B; --high:#F09A87; --high-soft:#3B1D17; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0C1D22; --panel:#13292F; --ink:#E1EBE8; --muted:#9DBBAF; --tide:#63B9C1; --tide-ink:#0C1D22;
-  --heat:#E6A94A; --heat-soft:#3A2C14; --line:#27434B; --high:#F09A87; --high-soft:#3B1D17; color-scheme:dark;
+  --heat:#E6A94A; --heat-text:#E6A94A; --heat-soft:#3A2C14; --line:#27434B; --high:#F09A87; --high-soft:#3B1D17; color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 4.5rem);-webkit-text-size-adjust:100%}
@@ -121,8 +124,10 @@ select{max-width:100%}
 @media (max-width:560px){.field{grid-template-columns:minmax(0,1fr)}.filters{flex-direction:column;align-items:stretch}}
 select,input[type="number"],input[type="text"]{font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--muted);border-radius:3px;padding:.5rem .6rem;min-height:2.6rem}
 .status{display:inline-block;font-size:.82rem;font-weight:600;padding:.12rem .45rem;border-radius:3px;background:var(--panel)}
-#tracker-table{min-width:900px}
-#tracker-table th:nth-child(1){width:21%}#tracker-table th:nth-child(2){width:15%}#tracker-table th:nth-child(3){width:17%}#tracker-table th:nth-child(4){width:23%}#tracker-table th:nth-child(5){width:24%}
+#tracker-table{min-width:1020px}
+#tracker-table th:nth-child(1){width:19%}#tracker-table th:nth-child(2){width:14%}#tracker-table th:nth-child(3){width:9%}#tracker-table th:nth-child(4){width:15%}#tracker-table th:nth-child(5){width:21%}#tracker-table th:nth-child(6){width:22%}
+#tracker-table td:nth-child(3){white-space:nowrap;font-variant-numeric:tabular-nums}
+.stale{display:block;font-size:.8rem;font-weight:600;color:var(--heat-text)}
 .status.proposed,.status.consultation{background:var(--heat-soft)}
 .verify{display:inline-block;margin-left:.35rem;font-size:.8rem;font-weight:600;color:var(--high)}
 .deadline{background:var(--heat-soft);border-left:4px solid var(--heat);padding:1rem 1.2rem;max-width:var(--measure);margin:0 0 1rem}
@@ -142,6 +147,9 @@ legend{font-weight:700;font-size:1rem;margin-bottom:.6rem;padding:0}
 .field small{grid-column:1/-1;color:var(--muted);font-size:.84rem;margin-top:-.2rem}
 .field select,.field input{width:100%}
 .field.check{grid-template-columns:auto 1fr;justify-content:start}
+/* Selects whose option text is a jurisdiction or rule name are too long for the
+   narrow control column; give them the full width instead of truncating. */
+.field.wide{grid-template-columns:minmax(0,1fr)}
 .field.check input{width:1.2rem;height:1.2rem;min-height:0}
 .results{min-width:0}
 .summary{font-family:var(--serif);font-size:1.12rem;line-height:1.65;margin-bottom:1.5rem}
@@ -160,7 +168,7 @@ legend{font-weight:700;font-size:1rem;margin-bottom:.6rem;padding:0}
 .flags li{display:grid;grid-template-columns:5.5rem 1fr;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.97rem}
 .sev{font-weight:700;font-size:.85rem}
 .sev.high{color:var(--high)}
-.sev.caution{color:var(--heat)}
+.sev.caution{color:var(--heat-text)}
 .sev.info{color:var(--muted)}
 .out-block{margin:0 0 2rem}
 .out-block h3{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
@@ -173,7 +181,7 @@ pre.json{background:var(--panel);border:1px solid var(--line);border-radius:3px;
 .caveat{font-size:.9rem;color:var(--muted);border-top:1px solid var(--line);padding-top:1rem}
 
 /* evidence */
-.tally{display:flex;flex-wrap:wrap;gap:2.5rem;margin:1.5rem 0 2rem}
+.tally{display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:1.5rem 2.5rem;margin:1.5rem 0 2rem}
 .tally div strong{display:block;font-size:2.4rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
 .tally div span{color:var(--muted);font-size:.95rem}
 .corrections{padding-left:1.3rem;max-width:var(--measure)}
@@ -191,22 +199,40 @@ footer.site p{max-width:var(--measure)}
 @media print{header.site,.actions,.modes,.tabs,.filters{display:none}section.block{border:0;padding:1rem 0}}
 </style>
 </head>
-</head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="top">
-  <div class="wrap top-inner">
-    <a class="brand" href="index.html">Aquatic Guardian</a>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="/"><b>Aquatic Guardian</b><span>a Sentient Futures project</span></a>
+    <nav class="primary" aria-label="Sections">
+      <a href="/#mission">Why it matters</a>
+      <a href="/#framework">Framework</a>
+      <a href="/#language">Model language</a>
+      <a href="/#tracker">Tracker</a>
+      <a href="/#tool">Screening tool</a>
+      <a href="/#evidence">Evidence</a>
+      <a href="/#source">Open source</a>
+    </nav>
   </div>
 </header>
-<main id="main" class="wrap" style="padding:3rem 1.25rem 4rem">
-  <h1>Page not found</h1>
-  <p class="lede" style="max-width:var(--measure)">That address is not part of this site. The screening tool and policy library are on the home page.</p>
-  <p><a class="btn" href="index.html">Back to Aquatic Guardian</a></p>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap prose">
+    <h1 class="hero-sentence">That page is not here.</h1>
+    <p class="hero-follow">The address may have changed, or the link may have a typo. Everything on this site is on one page, so the home page has all of it.</p>
+    <div class="actions">
+      <a class="btn solid" href="/">Go to the home page</a>
+      <a class="btn ghost" href="/#tool">Screen a facility</a>
+    </div>
+    <p class="hero-note">Looking for a file rather than a page? The framework, model language, data, schemas and Python library are in the repository at <code>github.com/ejri/aquatic-guardian</code>.</p>
+  </div>
+</section>
 </main>
-<footer class="foot">
+
+<footer class="site">
   <div class="wrap">
-    <p>A Sentient Futures project. Screening results are not a permit decision.</p>
+    <p><b>Aquatic Guardian 0.1.0</b>, 29 September 2026. A Sentient Futures project building on <i>Governing the Ocean Server Farm</i> (Elchami, Kaplan and Daher, April 2026).</p>
   </div>
 </footer>
 </body>

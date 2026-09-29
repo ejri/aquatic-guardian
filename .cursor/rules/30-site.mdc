@@ -1,13 +1,15 @@
 ---
 description: Rules for the public website and screening app
-globs: site/**, app/build.py
+globs: web/**, site/**, app/build.py, netlify.toml
 alwaysApply: false
 ---
-- Edit web/parts/*.html, never site/index.html or site/404.html directly; run `python app/build.py` to regenerate. Only built output is published from site/.
-- The page is a single self-contained file. Only Google Fonts may load from the network. No analytics, trackers, remote images or CDNs.
+- Edit web/parts/*.html, never the built files in site/; run `python app/build.py` to regenerate. site/ is the Netlify publish directory and holds built output only (index.html, 404.html).
+- Every published page is a single self-contained file. Only Google Fonts may load from the network. No analytics, trackers, remote images or CDNs. netlify.toml's Content-Security-Policy is the enforced version of that rule; widen it only with a reason.
 - Design tokens (keep them): fog #EEF2F0, panel #E2EAE7, ink #0E2A33, muted #3D5E52, tide #1D6B74 (interactive), heat #A8650A (heat quantities and cautions only), line #C3D2CD; dark-mode equivalents are in web/parts/1_head.html. Fonts: Public Sans for UI and headings, Source Serif 4 for reading text and clauses.
+- heat #A8650A is 4.1:1 on the light background, so it may only be used for text at 18.66 px bold or larger. Small heat-coloured text uses --heat-text (#8A5308, 5.6:1); in dark mode --heat-text equals --heat. Do not put --heat back on small text to "match the palette": axe-core will fail the build.
 - Avoid: all-caps eyebrow labels, arrows on buttons, identical shadowed cards, gradient washes, decorative numbering on non-sequences.
 - Accessibility: WCAG 2.2 AA, visible focus, labels on every input, results announced with aria-live, colour never the only signal, prefers-reduced-motion respected.
 - Must work at 390 px wide, in dark mode, and with no horizontal page scroll; wide tables scroll inside `.scroll`.
 - Copy is plain, specific and in sentence case. Errors say what went wrong and how to fix it.
 - Every number the app shows comes from app/engine.js; no hard-coded results in markup except the hero defaults.
+- tests/test_site.py (marker `site`) drives site/index.html in Chromium and runs axe-core from the local node_modules copy. Serious or critical violations fail. Run `pip install -e ".[site]" && python -m playwright install chromium && npm install` first.

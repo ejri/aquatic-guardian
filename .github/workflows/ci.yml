@@ -13,8 +13,27 @@ jobs:
       - uses: actions/setup-node@v4
         with: {node-version: "20"}
       - run: pip install -e ".[test]"
-      - run: pytest -q -m "not slow"
+      - run: pytest -q -m "not slow and not site"
       - run: python app/build.py --check
+      - run: python app/briefs.py --check
+      - run: python scripts/tracker_report.py
+
+  site:
+    # Browser checks for site/index.html: console errors, 390 px layout, input labels,
+    # the screening tool in each mode, and axe-core under the WCAG 2.2 AA tag set.
+    # axe-core comes from npm, never a CDN.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "20"}
+      - run: pip install -e ".[site]"
+      - run: npm install
+      - run: python -m playwright install --with-deps chromium
+      - run: python app/build.py --check
+      - run: pytest -q -m site
 
   notebooks:
     runs-on: ubuntu-latest

@@ -1,0 +1,9 @@
+{
+  "name": "aquatic-guardian-dev",
+  "private": true,
+  "description": "Development-only Node dependencies. The published site loads no scripts from npm or any CDN; axe-core is injected into the page by tests/test_site.py from this local node_modules copy.",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "axe-core": "^4.10.0"
+  }
+}

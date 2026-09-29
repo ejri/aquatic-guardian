@@ -13,11 +13,45 @@ from pathlib import Path
 WA_MARINE_1DMAX_C = {"extraordinary": 13.0, "excellent": 16.0, "good": 19.0, "fair": 22.0}
 
 
-def load_criteria(path: str | Path | None = None) -> list[dict]:
+def _data(path: str | Path | None = None) -> dict:
     if path is None:
         from ._resources import path as _res
         path = _res("data", "criteria.json")
-    return json.loads(Path(path).read_text())["criteria"]
+    return json.loads(Path(path).read_text())
+
+
+def load_criteria(path: str | Path | None = None) -> list[dict]:
+    return _data(path)["criteria"]
+
+
+def load_jurisdictions(path: str | Path | None = None) -> dict:
+    """Jurisdiction records from data/criteria.json, keyed by id.
+
+    Each record names the temperature rule that applies, its legal status and
+    source, and which intake rule applies. Jurisdictions whose numeric rule is
+    permit-specific or not yet transcribed map to the 'custom' temperature rule
+    with `verify: true`; they never assert a numeric threshold of their own.
+    Mirrored in app/engine.js (JURISDICTIONS); tests/test_engine_parity.py
+    checks the two copies against this file.
+    """
+    return {j["id"]: j for j in _data(path)["jurisdictions"]}
+
+
+def jurisdiction(jurisdiction_id: str, path: str | Path | None = None) -> dict:
+    """Resolve one jurisdiction, with its intake rule's status and source attached."""
+    js = load_jurisdictions(path)
+    if jurisdiction_id not in js:
+        raise ValueError(jurisdiction_id)
+    j = js[jurisdiction_id]
+    intake = _data(path)["intake_rules"][j["intake_rule"]]
+    return {"id": j["id"], "label": j["label"], "country": j["country"],
+            "temperature_rule": j["temperature_rule"],
+            "temperature_status": j["temperature_status"],
+            "temperature_source": j["temperature_source"],
+            "status_as_of": j["status_as_of"], "note": j["note"],
+            "verify": j["verify"], "verify_note": j.get("verify_note"),
+            "intake_rule": j["intake_rule"], "intake_label": intake["label"],
+            "intake_status": intake["status"], "intake_source": intake["source"]}
 
 
 def wa_marine_allowed_increment(t_background_c: float, category: str = "excellent") -> dict:

@@ -12,11 +12,78 @@
   var WA = { extraordinary: 13.0, excellent: 16.0, good: 19.0, fair: 22.0 };
   var F_TO_K = 5 / 9;
 
+  /* Mirror of the intake_rules and jurisdictions sections of data/criteria.json.
+   * tests/test_engine_parity.py fails if these tables drift from that file. */
+  var INTAKE_RULES = {
+    us_cwa_316b: { label: "US cooling-water intake rules", country: "US", status: "rule",
+      source: "Clean Water Act \u00a7316(b) and 40 CFR Part 125 (2 MGD design-intake trigger, 25 % cooling-use test, and the 1 % tidal-excursion-volume test for new facilities in estuaries at 40 CFR 125.84)" },
+    ca_fisheries_act: { label: "Fisheries Act (Canada)", country: "CA", status: "rule",
+      source: "Fisheries Act s.34(1), s.35 and s.36(3): water changed by heat can be a deleterious substance, and intake works can harmfully alter fish habitat. No numeric intake threshold." },
+    none: { label: "No intake rule applied", country: null, status: "placeholder",
+      source: "This repository does not yet transcribe an intake rule for this jurisdiction. The \u00a7316(b) arithmetic is still shown for comparison but no intake requirement is asserted." }
+  };
+  var JURISDICTIONS = [
+    { id: "us-wa", label: "Washington (United States)", country: "US", status_as_of: "2026-09-29",
+      temperature_rule: "wa_marine", temperature_status: "rule",
+      temperature_source: "WAC 173-201A-210(1)(c)", intake_rule: "us_cwa_316b",
+      note: "Marine water-body categories set a 1-DMax criterion; a point source may add no more than 12/(T-2) \u00b0C at the edge of the mixing zone, and no more than 0.3 \u00b0C where the criterion is already exceeded naturally. Pick the category for the receiving water below.",
+      verify: false },
+    { id: "us-ca", label: "California (United States)", country: "US", status_as_of: "2026-09-29",
+      temperature_rule: "ca_new_coastal", temperature_status: "rule",
+      temperature_source: "California Thermal Plan \u00a73.B.(3)\u2013(4), coastal waters, new discharges (SWRCB; text transcribed in data/checks/ca_thermal_plan.md)",
+      intake_rule: "us_cwa_316b",
+      note: "New coastal discharges: no more than 4 \u00b0F (2.22 \u00b0C) above natural at the shoreline, the ocean substrate, or the ocean surface beyond 1,000 ft, and no more than 20 \u00b0F (11.1 \u00b0C) above natural at the discharge itself.",
+      verify: false },
+    { id: "us-or", label: "Oregon (United States)", country: "US", status_as_of: "2026-09-29",
+      temperature_rule: "custom", temperature_status: "placeholder", temperature_source: null,
+      intake_rule: "us_cwa_316b",
+      note: "Oregon's numeric temperature standard is not transcribed in this repository, so no state increment is applied. Enter the increment from the applicable standard or permit. Federal intake rules still apply.",
+      verify: true,
+      verify_note: "Needs Oregon's temperature standard transcribed from the primary rule text before this jurisdiction can carry a numeric increment." },
+    { id: "us-other", label: "Other United States state or federal waters", country: "US", status_as_of: "2026-09-29",
+      temperature_rule: "custom", temperature_status: "placeholder", temperature_source: null,
+      intake_rule: "us_cwa_316b",
+      note: "Federal intake rules apply nationally, but this repository transcribes state temperature standards only for Washington and California. Enter the increment your state standard or permit sets.",
+      verify: true,
+      verify_note: "No state temperature standard transcribed; the increment is user-supplied." },
+    { id: "ca-bc", label: "British Columbia (Canada)", country: "CA", status_as_of: "2026-09-29",
+      temperature_rule: "custom", temperature_status: "placeholder", temperature_source: null,
+      intake_rule: "ca_fisheries_act",
+      note: "British Columbia sets thermal limits in the waste discharge authorisation issued under the Environmental Management Act, so the numeric increment is permit-specific rather than a published standard. Enter the increment the authorisation sets.",
+      verify: true,
+      verify_note: "Permit-specific: no published numeric marine thermal increment is transcribed in this repository." },
+    { id: "eu", label: "European Union member state", country: "EU", status_as_of: "2026-09-29",
+      temperature_rule: "custom", temperature_status: "placeholder", temperature_source: null,
+      intake_rule: "none",
+      note: "Water temperature is a supporting element of ecological status under the Water Framework Directive, but the numeric limit comes from the member state's water permit. Enter that increment. EU law sets no cooling-water intake screening rule equivalent to \u00a7316(b).",
+      verify: true,
+      verify_note: "Member-state permit values and any national thermal standard are not transcribed in this repository." },
+    { id: "other", label: "Other or not listed", country: null, status_as_of: "2026-09-29",
+      temperature_rule: "custom", temperature_status: "placeholder", temperature_source: null,
+      intake_rule: "none",
+      note: "No jurisdiction-specific rule is applied and no intake requirement is asserted. Enter the increment from the applicable standard or permit and treat the result as arithmetic only.",
+      verify: true,
+      verify_note: "No rules transcribed for this selection." }
+  ];
+
+  function jurisdiction(id) {
+    var j = null;
+    for (var i = 0; i < JURISDICTIONS.length; i++) if (JURISDICTIONS[i].id === id) j = JURISDICTIONS[i];
+    if (!j) throw new Error("unknown jurisdiction " + id);
+    var intake = INTAKE_RULES[j.intake_rule];
+    return { id: j.id, label: j.label, country: j.country, temperature_rule: j.temperature_rule,
+      temperature_status: j.temperature_status, temperature_source: j.temperature_source,
+      status_as_of: j.status_as_of, note: j.note, verify: j.verify,
+      verify_note: j.verify_note === undefined ? null : j.verify_note,
+      intake_rule: j.intake_rule, intake_label: intake.label, intake_status: intake.status,
+      intake_source: intake.source };
+  }
+
   var DEFAULTS = {
     it_load_mw: 24.0, pue: 1.15, cooling_type: "once_through", fraction_to_water: null,
     reuse_fraction: 0.0, delta_t_k: 8.0, water_type: "marine", t_ambient_c: 12.0, s_psu: 30.0,
     ph: 8.0, u_peak_ms: 0.3, depth_m: 20.0, n_ports: 10, port_diameter_m: 0.3,
-    port_spacing_m: 4.0, cooling_fraction: 1.0, temperature_rule: "wa_marine",
+    port_spacing_m: 4.0, cooling_fraction: 1.0, jurisdiction: "us-wa", temperature_rule: null,
     wa_category: "excellent", custom_increment_k: 1.0, grid_dx_m: 25.0, grid_dt_s: 10.0,
     aquaculture_reuse: false
   };
@@ -110,6 +177,8 @@
     var o = { inputs: Object.assign({}, f, { fraction_to_water: frac, s_psu: s }),
       heat_rejected_mw: qRej, heat_reused_mw: qReuse, heat_to_water_mw: qW, flow_m3s: flow,
       flow_l_s_per_mw_it: f.it_load_mw ? flow * 1000 / f.it_load_mw : 0 };
+    var juris = jurisdiction(f.jurisdiction), ruleId = f.temperature_rule || juris.temperature_rule;
+    o.jurisdiction = Object.assign({}, juris, { resolved_temperature_rule: ruleId });
     var mgd = flow / MGD_TO_M3S;
     o.intake_316b = { design_intake_mgd: mgd, exceeds_2_mgd: mgd > 2, cooling_fraction: f.cooling_fraction,
       likely_applicable: mgd > 2 && f.cooling_fraction >= 0.25, min_screen_open_area_m2: flow / THROUGH_SCREEN };
@@ -118,7 +187,7 @@
     var vol = Math.PI * Math.pow(exc / 2, 2) * f.depth_m, wd = flow * 12.4206 * 3600;
     var tf = vol > 0 ? wd / vol : Infinity;
     o.tidal_volume_check = { reference_volume_m3: vol, withdrawn_per_cycle_m3: wd, fraction: tf, within_1_percent: tf <= 0.01 };
-    var rule = temperatureRule(f.temperature_rule, f.t_ambient_c, f.wa_category, f.custom_increment_k);
+    var rule = temperatureRule(ruleId, f.t_ambient_c, f.wa_category, f.custom_increment_k);
     o.temperature_rule = rule;
     if (flow > 0) {
       var nf = nearField(flow, Math.round(f.n_ports), f.port_diameter_m, f.port_spacing_m, f.depth_m,
@@ -141,8 +210,16 @@
   function flags(o, f) {
     var fl = [];
     function add(id, sev, text) { fl.push({ id: id, severity: sev, text: text }); }
-    if (o.intake_316b.likely_applicable) add("intake_316b", "high", "Design intake exceeds 2 MGD with >= 25% cooling use: CWA §316(b) intake rules likely apply (US).");
-    if (f.water_type === "estuarine" && !o.tidal_volume_check.within_1_percent) add("tidal_volume", "high", "Intake exceeds 1% of the tidal-excursion volume (new-facility estuary test, 40 CFR 125.84).");
+    var intakeRule = o.jurisdiction.intake_rule;
+    if (intakeRule === "us_cwa_316b") {
+      if (o.intake_316b.likely_applicable) add("intake_316b", "high", "Design intake exceeds 2 MGD with >= 25% cooling use: CWA §316(b) intake rules likely apply (US).");
+      if (f.water_type === "estuarine" && !o.tidal_volume_check.within_1_percent) add("tidal_volume", "high", "Intake exceeds 1% of the tidal-excursion volume (new-facility estuary test, 40 CFR 125.84).");
+    } else if (intakeRule === "ca_fisheries_act" && o.flow_m3s > 0) {
+      add("fisheries_act", "high", "Fisheries Act (Canada): water changed by heat can be a deleterious substance under s.34(1), s.36(3) prohibits depositing one, and intake works may need a s.35 authorisation for harmful alteration of fish habitat.");
+    } else if (intakeRule === "none" && o.flow_m3s > 0) {
+      add("no_intake_rule", "caution", "No cooling-water intake rule is transcribed for this jurisdiction, so no intake requirement is screened. The US 2 MGD arithmetic is shown for comparison only.");
+    }
+    if (o.jurisdiction.temperature_status === "placeholder") add("jurisdiction_rule", "caution", "No numeric temperature standard is transcribed for this jurisdiction. The allowed increment is the value you entered, not a published limit, so this result cannot show that a design complies.");
     var nf = o.near_field;
     if (nf !== null) {
       if (!nf.meets_rule) add("temperature", "high", "Screening temperature rise at the surface exceeds the allowed increment under slack-water conditions.");
@@ -160,7 +237,8 @@
   }
 
   var api = { version: "0.1.0", DEFAULTS: DEFAULTS, screen: screen, doSat: doSat, nh3Frac: nh3Frac,
-    density: density, okubo: okubo, temperatureRule: temperatureRule };
+    density: density, okubo: okubo, temperatureRule: temperatureRule,
+    JURISDICTIONS: JURISDICTIONS, INTAKE_RULES: INTAKE_RULES, jurisdiction: jurisdiction };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.AquaticGuardian = api;
 })(typeof window !== "undefined" ? window : this);

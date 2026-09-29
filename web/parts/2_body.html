@@ -69,7 +69,7 @@
     </ol>
 
     <h3 style="margin-top:1rem">Which facilities are covered</h3>
-    <div class="scroll" style="margin-top:.75rem">
+    <div class="scroll" style="margin-top:.75rem" role="region" aria-label="Coverage tiers" tabindex="0">
       <table>
         <thead><tr><th scope="col">Tier</th><th scope="col">Facilities</th><th scope="col">Layers</th></tr></thead>
         <tbody>
@@ -96,6 +96,7 @@
   <div class="wrap">
     <h2>Policy tracker</h2>
     <p class="lede">The instruments this framework is designed to attach to, their status, and what to ask for. Status as of <span id="as-of"></span>.</p>
+    <div id="tracker-note"></div>
     <div id="deadline"></div>
     <div class="filters">
       <label for="f-stage">Show</label>
@@ -107,13 +108,13 @@
       <label for="f-juris">Jurisdiction</label>
       <select id="f-juris"><option value="all">All</option></select>
     </div>
-    <div class="scroll">
+    <div class="scroll" role="region" aria-label="Policy tracker" tabindex="0">
       <table id="tracker-table">
-        <thead><tr><th scope="col">Instrument</th><th scope="col">Status</th><th scope="col">Key dates</th><th scope="col">Hook</th><th scope="col">What to ask for</th></tr></thead>
+        <thead><tr><th scope="col">Instrument</th><th scope="col">Status</th><th scope="col">Last checked</th><th scope="col">Key dates</th><th scope="col">Hook</th><th scope="col">What to ask for</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
-    <p class="src" style="margin-top:1rem">Items marked "check" have conflicting or secondary sources. Corrections are welcome as pull requests to <code>data/instruments.json</code> with a primary-source link.</p>
+    <p class="src" style="margin-top:1rem">Items marked "check" still need something confirmed: either sources disagree, or no primary-source link is recorded yet. "Last checked" is when a person last compared the entry with its source. Corrections are welcome as pull requests to <code>data/instruments.json</code> with a primary-source link.</p>
   </div>
 </section>
 
@@ -138,7 +139,7 @@
     <h2>How the numbers were checked</h2>
     <p class="lede">Every equation in the toolkit has a test that reproduces a published value or demonstrates the property on synthetic data with a known answer. The browser engine is tested against the Python reference on 200 random facilities.</p>
     <div class="tally">
-      <div><strong>40</strong><span>automated checks, all passing in v0.1</span></div>
+      <div><strong>119</strong><span>automated checks, all passing in v0.1</span></div>
       <div><strong>6</strong><span>corrections to the earlier models</span></div>
       <div><strong>4</strong><span>items awaiting outside benchmark or text check</span></div>
       <div><strong>All</strong><span>species welfare parameters still placeholders</span></div>
@@ -157,7 +158,7 @@
       </div>
       <div>
         <h3>What still needs experts</h3>
-        <p>Near-field dilution coefficients need a benchmark against Visual Plumes UM3 or NRFIELD. The seawater ammonia correction and the California Thermal Plan values need checking against primary text. Species temperature thresholds and welfare parameters need species specialists and a fish-health veterinarian. Site currents must come from station data.</p>
+        <p>Near-field dilution coefficients need a benchmark against Visual Plumes UM3 or NRFIELD. The seawater ammonia correction needs checking against the primary table. Only Washington and California carry a transcribed temperature rule; for British Columbia, the EU and Oregon the tool uses the increment you enter, which cannot show that a design complies. Species temperature thresholds and welfare parameters need species specialists and a fish-health veterinarian. Site currents must come from station data, and every tracker entry still needs a primary-source link.</p>
         <p>The tool does not model stratified trapping, bottom attachment or far-field transport. Use it to scope a question, not to answer a permit.</p>
         <p class="src">Full register: <code>docs/VERIFICATION.md</code>.</p>
       </div>
@@ -172,7 +173,7 @@
       <p class="serif">The framework, model language, schemas, Python library, notebooks integration and this website live in one repository, so the policy text, the app and the research notebooks all use the same verified functions.</p>
       <p class="serif">Code is Apache-2.0. Policy text and documentation are CC BY 4.0. The disclosure schema is CC0, so an agency can adopt it without conditions.</p>
       <h3 style="margin-top:1.5rem">Use it in Colab</h3>
-<pre class="tree"><code>!pip -q install "git+https://github.com/ejri/aquatic-guardian.git@v0.1.0"
+<pre class="tree" tabindex="0"><code>!pip -q install "git+https://github.com/ejri/aquatic-guardian.git@v0.1.0"
 import aquatic_guardian as ag
 r = ag.screening.screen({"it_load_mw": 24, "delta_t_k": 8})
 print(r["near_field"]["delta_t_near_field_k"])</code></pre>
@@ -180,18 +181,24 @@ print(r["near_field"]["delta_t_near_field_k"])</code></pre>
     </div>
     <div>
       <h3>Repository</h3>
-<pre class="tree"><code>policy/          framework, recommendations, model language
+<pre class="tree" tabindex="0"><code>policy/          framework, recommendations, model language
 schemas/         disclosure and notebook handoff (JSON Schema)
 data/            instrument tracker, criteria with sources
 src/             Python library (screening, plume, tidal,
                  numerics, water quality, occupancy, imaging,
                  tracking, bioenergetics, sentience)
-tests/           40 checks incl. browser-engine parity
-app/             browser engine and site build
-site/            this website
+briefs/          printable brief per jurisdiction
+tests/           automated checks incl. engine parity,
+                 briefs and browser accessibility
+app/             browser engine, site build, brief build
+web/             source fragments for this page
+site/            this website, built and published
 notebooks/       how the three Colab notebooks connect
 docs/            verification register, corrections,
                  metrics, crosswalk</code></pre>
+      <h3 style="margin-top:1.5rem">Download briefs</h3>
+      <p>One printable brief per jurisdiction: the problem, the instruments and their status, the clauses and the asks. Generated from the same files as this page, so they cannot drift from it. They open on GitHub.</p>
+      <ul id="brief-links"></ul>
       <h3 style="margin-top:1.5rem">Get involved</h3>
       <p>Most needed now: a UM3 benchmark, species thresholds from specialists, tracker corrections, and officials willing to test the model language against a real file. See <code>CONTRIBUTING.md</code>.</p>
     </div>

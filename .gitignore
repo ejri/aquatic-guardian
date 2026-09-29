@@ -6,6 +6,9 @@ __pycache__/
 build/
 dist/
 node_modules/
+# Briefs are committed as Markdown only; PDF and DOCX are produced locally by pandoc.
+briefs/*.pdf
+briefs/*.docx
 .DS_Store
 .ipynb_checkpoints/
 benchmarks/visual_plumes/decks/*

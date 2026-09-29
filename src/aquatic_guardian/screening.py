@@ -14,8 +14,8 @@ DEFAULTS = {
     "water_type": "marine", "t_ambient_c": 12.0, "s_psu": 30.0, "ph": 8.0,
     "u_peak_ms": 0.3, "depth_m": 20.0,
     "n_ports": 10, "port_diameter_m": 0.3, "port_spacing_m": 4.0,
-    "cooling_fraction": 1.0, "temperature_rule": "wa_marine", "wa_category": "excellent",
-    "custom_increment_k": 1.0,
+    "cooling_fraction": 1.0, "jurisdiction": "us-wa", "temperature_rule": None,
+    "wa_category": "excellent", "custom_increment_k": 1.0,
     "grid_dx_m": 25.0, "grid_dt_s": 10.0, "aquaculture_reuse": False,
 }
 
@@ -32,12 +32,18 @@ def screen(facility: dict | None = None) -> dict:
            "heat_rejected_mw": q_rej, "heat_reused_mw": q_reuse, "heat_to_water_mw": q_w,
            "flow_m3s": flow, "flow_l_s_per_mw_it": flow * 1000 / f["it_load_mw"] if f["it_load_mw"] else 0.0}
 
+    # The jurisdiction picks the temperature rule and the intake rule. An explicit
+    # temperature_rule overrides the jurisdiction's default, for permit-specific work.
+    juris = criteria.jurisdiction(f["jurisdiction"])
+    rule_id = f["temperature_rule"] or juris["temperature_rule"]
+    out["jurisdiction"] = {**juris, "resolved_temperature_rule": rule_id}
+
     out["intake_316b"] = intake.cwa316b_screen(flow, f["cooling_fraction"])
     exc = tidal.excursion_half_cycle(f["u_peak_ms"])
     out["tidal_excursion_m"] = exc
     out["tidal_volume_check"] = intake.tidal_volume_check(flow, exc, f["depth_m"])
 
-    rule = criteria.temperature_rule(f["temperature_rule"], f["t_ambient_c"], f["wa_category"],
+    rule = criteria.temperature_rule(rule_id, f["t_ambient_c"], f["wa_category"],
                                      f["custom_increment_k"])
     out["temperature_rule"] = rule
     if flow > 0:
@@ -76,10 +82,18 @@ def _flags(o: dict, f: dict) -> list[dict]:
     fl = []
     def add(i, sev, text):
         fl.append({"id": i, "severity": sev, "text": text})
-    if o["intake_316b"]["likely_applicable"]:
-        add("intake_316b", "high", "Design intake exceeds 2 MGD with >= 25% cooling use: CWA §316(b) intake rules likely apply (US).")
-    if f["water_type"] == "estuarine" and not o["tidal_volume_check"]["within_1_percent"]:
-        add("tidal_volume", "high", "Intake exceeds 1% of the tidal-excursion volume (new-facility estuary test, 40 CFR 125.84).")
+    intake_rule = o["jurisdiction"]["intake_rule"]
+    if intake_rule == "us_cwa_316b":
+        if o["intake_316b"]["likely_applicable"]:
+            add("intake_316b", "high", "Design intake exceeds 2 MGD with >= 25% cooling use: CWA §316(b) intake rules likely apply (US).")
+        if f["water_type"] == "estuarine" and not o["tidal_volume_check"]["within_1_percent"]:
+            add("tidal_volume", "high", "Intake exceeds 1% of the tidal-excursion volume (new-facility estuary test, 40 CFR 125.84).")
+    elif intake_rule == "ca_fisheries_act" and o["flow_m3s"] > 0:
+        add("fisheries_act", "high", "Fisheries Act (Canada): water changed by heat can be a deleterious substance under s.34(1), s.36(3) prohibits depositing one, and intake works may need a s.35 authorisation for harmful alteration of fish habitat.")
+    elif intake_rule == "none" and o["flow_m3s"] > 0:
+        add("no_intake_rule", "caution", "No cooling-water intake rule is transcribed for this jurisdiction, so no intake requirement is screened. The US 2 MGD arithmetic is shown for comparison only.")
+    if o["jurisdiction"]["temperature_status"] == "placeholder":
+        add("jurisdiction_rule", "caution", "No numeric temperature standard is transcribed for this jurisdiction. The allowed increment is the value you entered, not a published limit, so this result cannot show that a design complies.")
     nf = o["near_field"]
     if nf is not None:
         if not nf["meets_rule"]:

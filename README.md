@@ -12,20 +12,29 @@ It builds on *Governing the Ocean Server Farm* (Elchami, Kaplan and Daher, Senti
 |---|---|
 | Policy framework, recommendations and model language for the US (federal and state), permits, the EU, Canada, BBNJ, ISO/IEC and the UK | `policy/` |
 | Verified screening library (heat budget, intake, near-field plume, tidal excursion, numerical diffusion, DO, ammonia, temperature rules, occupancy, underwater imaging, tracking metrics, bioenergetics, sentience reporting) | `src/aquatic_guardian/` |
-| 40 automated checks against published values and known-truth simulations, including browser-engine parity | `tests/`, `docs/VERIFICATION.md` |
+| 119 automated checks against published values and known-truth simulations, including browser-engine parity, brief generation, tracker validation and site accessibility | `tests/`, `docs/VERIFICATION.md` |
 | The six technical corrections adopted from the fact-check | `docs/CORRECTIONS.md` |
 | Aquatic Disclosure Schema (CC0) and notebook handoff schema | `schemas/`, `docs/METRICS.md`, `docs/CROSSWALK.md` |
 | Instrument tracker and criteria table, each entry with its source | `data/` |
 | How the three Colab notebooks import the library and exchange validated JSON | `notebooks/INTEGRATION.md` |
-| Public website and screening app (single self-contained page) | `site/index.html`, built by `app/build.py` |
+| Public website and screening app (single self-contained page) | `site/index.html` and `site/404.html`, built from `web/parts/` by `app/build.py`; deployment notes in `docs/DEPLOY.md` |
+| Printable brief per jurisdiction, generated from the same sources as the site | `briefs/`, built by `app/briefs.py` |
 | Agent brief, Cursor project rules and a phased Cursor prompt pack | `AGENTS.md`, `.cursor/rules/`, `cursor/PROMPTS.md` |
 
 ## Quick start
 
 ```bash
 pip install -e ".[test]"
-pytest -q                 # 40 checks
-python app/build.py       # rebuild site/index.html from policy text, data and engine
+pytest -q                 # 119 checks (88 without the browser and notebook markers)
+python app/build.py       # rebuild site/ from policy text, data and engine
+python app/briefs.py      # rebuild briefs/
+```
+
+The browser checks are opt-in, because they need a downloaded Chromium:
+
+```bash
+pip install -e ".[site]" && npm install && python -m playwright install chromium
+pytest -m site
 ```
 
 In Colab:
@@ -40,7 +49,9 @@ r["near_field"]["delta_t_near_field_k"], [f["text"] for f in r["flags"]]
 ## Single sources of truth
 
 - Model language lives only in `policy/model-language/*.md`, between `<!-- clause: id -->` markers. The website extracts it at build time.
-- The tracker lives only in `data/instruments.json`.
+- The tracker lives only in `data/instruments.json`, validated against `schemas/instruments.schema.json`. `python scripts/tracker_report.py` says what needs rechecking.
+- Thresholds, and which rule applies in which jurisdiction, live only in `data/criteria.json`.
+- The briefs in `briefs/` are generated; edit the sources, not the briefs.
 - Screening logic lives in `src/aquatic_guardian/screening.py`; `app/engine.js` mirrors it and `tests/test_engine_parity.py` fails if they diverge.
 - CI (`.github/workflows/ci.yml`) runs the tests and fails if the built site or bundled resources are stale.
 

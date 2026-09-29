@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ejri/aquatic-guardian/schemas/instruments.schema.json",
+  "title": "Aquatic Guardian instrument tracker",
+  "description": "Shape of data/instruments.json: the instruments this framework is designed to attach to, their legal status, when a person last checked them, and the primary sources behind each entry. Every statement about an instrument carries a status and a date, and 'verify' stays true until a primary source is recorded.",
+  "type": "object",
+  "required": ["as_of", "note", "stale_after_days", "instruments"],
+  "additionalProperties": false,
+  "properties": {
+    "as_of": {"$ref": "#/$defs/date", "description": "Date the tracker as a whole was compiled."},
+    "note": {"type": "string", "minLength": 1},
+    "stale_after_days": {"type": "integer", "minimum": 1,
+      "description": "An entry whose last_checked is older than this needs rechecking. scripts/tracker_report.py reads it."},
+    "instruments": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/instrument"}}
+  },
+  "$defs": {
+    "date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "instrument": {
+      "type": "object",
+      "required": ["id", "jurisdiction", "name", "type", "status", "stage", "dates", "hook",
+                   "action", "last_checked", "sources", "doc", "verify"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "jurisdiction": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "type": {"type": "string", "minLength": 1,
+          "description": "What the instrument is: bill, statute, rule, delegated act, consultation, treaty, standard, executive order, funding programme, or a combination."},
+        "status": {"type": "string", "minLength": 1,
+          "description": "The status in plain words, as a reader would say it."},
+        "stage": {"enum": ["proposed", "adopted", "enacted", "consultation", "programme",
+                           "standard", "failed"],
+          "description": "Machine-readable stage. The site filters and the report use this, not the prose status."},
+        "dates": {"type": "array", "items": {
+          "type": "object", "required": ["date", "event"], "additionalProperties": false,
+          "properties": {"date": {"$ref": "#/$defs/date"}, "event": {"type": "string", "minLength": 1}}}},
+        "hook": {"type": "string", "minLength": 1,
+          "description": "The part of the instrument this framework attaches to."},
+        "action": {"type": "string", "minLength": 1, "description": "What to ask for."},
+        "deadline": {"$ref": "#/$defs/date",
+          "description": "Set only where the instrument itself has a closing date, for example a consultation."},
+        "last_checked": {"$ref": "#/$defs/date",
+          "description": "When a person last compared this entry with its source."},
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/source"},
+          "description": "Primary sources. Empty is allowed, but then verify must be true."},
+        "doc": {"type": "string", "pattern": "^policy/model-language/[a-z0-9-]+\\.md$",
+          "description": "The model-language file whose clauses attach to this instrument. app/briefs.py uses it to place the entry in a brief."},
+        "verify": {"type": "boolean"},
+        "verify_note": {"type": "string", "minLength": 1,
+          "description": "What a person still has to confirm, beyond the missing source itself. Required when verify is true and sources are already on file."}
+      },
+      "allOf": [
+        {
+          "comment": "verify must have a reason. An empty sources array is a reason on its own; otherwise say what is in doubt.",
+          "if": {"properties": {"verify": {"const": true}, "sources": {"minItems": 1}},
+                 "required": ["verify", "sources"]},
+          "then": {"required": ["verify_note"]}
+        },
+        {
+          "comment": "An entry with no recorded source cannot claim to be verified.",
+          "if": {"properties": {"sources": {"maxItems": 0}}, "required": ["sources"]},
+          "then": {"properties": {"verify": {"const": true}}}
+        }
+      ]
+    },
+    "source": {
+      "type": "object",
+      "required": ["url", "title", "accessed"],
+      "additionalProperties": false,
+      "properties": {
+        "url": {"type": "string", "format": "uri", "pattern": "^https?://"},
+        "title": {"type": "string", "minLength": 1},
+        "accessed": {"$ref": "#/$defs/date"},
+        "primary": {"type": "boolean",
+          "description": "True for the instrument's own text or the issuing body's page; false for reporting about it."}
+      }
+    }
+  }
+}

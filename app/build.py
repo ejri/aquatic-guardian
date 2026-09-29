@@ -28,17 +28,26 @@ BRIEF_BASE = "https://github.com/ejri/aquatic-guardian/blob/main/briefs"
 
 
 def parse_group(path: Path) -> dict:
+    """Title, status preamble and clauses of one model-language file.
+
+    `context` is the prose between a clause's heading and the clause itself, which
+    app/briefs.py prints above the clause. `text` is the clause body exactly as the
+    markers enclose it; nothing downstream may reword it.
+    """
     text = path.read_text()
     lines = text.splitlines()
     title = lines[0].lstrip("# ").strip()
     intro_end = next((i for i, l in enumerate(lines[1:], 1) if l.startswith("## ")), len(lines))
     intro = "\n".join(lines[1:intro_end]).strip()
-    clauses = []
+    clauses, prev_end = [], 0
     for m in CLAUSE.finditer(text):
         before = text[:m.start()]
-        heads = re.findall(r"^#{2,3} (.+)$", before, re.M)
-        clauses.append({"id": m["id"], "heading": heads[-1] if heads else title,
+        heads = list(re.finditer(r"^#{2,3} (.+)$", before, re.M))
+        head_end = heads[-1].end() if heads else 0
+        clauses.append({"id": m["id"], "heading": heads[-1].group(1) if heads else title,
+                        "context": text[max(head_end, prev_end):m.start()].strip(),
                         "text": m["body"].strip()})
+        prev_end = m.end()
     return {"title": title, "intro": intro, "clauses": clauses}
 
 
@@ -46,6 +55,8 @@ def site_data() -> dict:
     policy = []
     for stem, label in GROUPS:
         g = parse_group(ROOT / "policy" / "model-language" / f"{stem}.md")
+        # `context` is for the briefs only; leave it out so the page stays small.
+        g["clauses"] = [{k: v for k, v in c.items() if k != "context"} for c in g["clauses"]]
         g.update({"key": stem, "label": label,
                   "path": f"policy/model-language/{stem}.md"})
         policy.append(g)
@@ -72,8 +83,8 @@ def build(page: str) -> str:
 
 
 MIRROR = [("schemas", "aquatic-disclosure.schema.json"), ("schemas", "notebook-handoff.schema.json"),
+          ("schemas", "instruments.schema.json"),
           ("data", "criteria.json"), ("data", "instruments.json")]
-# instruments.schema.json is added to MIRROR when Phase 8 lands the schema file.
 
 
 def mirror(check: bool) -> bool:
