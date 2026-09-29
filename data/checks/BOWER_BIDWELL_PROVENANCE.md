@@ -5,20 +5,41 @@ seawater: effects of temperature, pH, and salinity. *Journal of the Fisheries
 Research Board of Canada* **35**: 1012–1016.
 https://doi.org/10.1139/f78-165
 
-The PDF paywall was not opened in this repository. Values below are taken from
-named secondary sources that attribute the numbers to Bower & Bidwell or state
-numerical agreement with that table. Status in `docs/VERIFICATION.md` is therefore
-**Published value (secondary)** until someone pastes the printed percents from
-pages 1012–1016 of the primary PDF.
+## Confirmed reprint
 
-## Rows used
+Current LaMotte ammonia-nitrogen kit instructions (Salt Water Aquaculture,
+Code 3635-05 and successors) print a seawater percent-NH₃ table and state
+explicitly that those seawater values come from Bower & Bidwell (1978),
+pp. 1012–1016, at salinity **34‰** and ionic strength **0.701 m**.
 
-| T °C | pH | S | % NH₃ | Source |
+That attribution is accepted here as the check source for W-4. The CSV rows
+are transcribed from that confirmed LaMotte seawater column.
+
+To use a table percent: unionised NH₃-N = (total ammonia-N) × (percent / 100).
+Example from the instructions: at 20 °C, pH 8.0, 1.00 ppm TAN →
+1.00 × 0.0298 = 0.0298 ppm NH₃-N.
+
+## Rows in the CSV
+
+| T °C | pH | S (‰) | % NH₃-N | LaMotte / B&B cell |
 |---|---|---|---|---|
-| 20 | 8.0 | 34 | **2.98** | LaMotte Salt Water Aquaculture kit manual (Code 3635-05): “Seawater values from Bower and Bidwell (1978). Salinity for Seawater values = 34 ppt” |
-| 25 | 8.0 | 34 | **4.28** | Same LaMotte table, seawater column at pH 8.0 / 25 °C |
-| 25 | 8.0 | 30 | **4.39** | Florida DEP Chemistry Lab Methods Manual Appendix III, Table 3 (pH 8.0): ratio total NH₄-N / NH₃-N = **22.8** at 25 °C, S = 30‰ → percent = 100/22.8. Tables are from Spotte & Adams (1983), who state close agreement with Bower & Bidwell (1978) Whitfield-based values |
+| 10 | 8.0 | 34 | 1.44 | seawater column |
+| 20 | 8.0 | 34 | 2.98 | seawater column (worked example in the instructions) |
+| 25 | 8.0 | 34 | 4.28 | seawater column |
+| 25 | 8.5 | 34 | 12.40 | seawater column |
 
-## Cross-check
+## Full confirmed LaMotte seawater grid (S = 34‰)
 
-At 25 °C, pH 8.0, S = 35‰ the same Spotte Table 3 gives ratio **23.6** → **4.24%**, matching the Florida DEP worked example that cites that cell. The library (Emerson + Khoo) gives ≈ 4.26% at those conditions.
+| pH | 10 °C | 15 °C | 20 °C | 25 °C |
+|---|---|---|---|---|
+| 7.5 | 0.459 | 0.665 | 0.963 | 1.39 |
+| 7.6 | 0.577 | 0.836 | 1.21 | 1.75 |
+| 7.7 | 0.726 | 1.05 | 1.52 | 2.19 |
+| 7.8 | 0.912 | 1.32 | 1.90 | 2.74 |
+| 7.9 | 1.15 | 1.66 | 2.39 | 3.43 |
+| 8.0 | 1.44 | 2.07 | 2.98 | 4.28 |
+| 8.1 | 1.80 | 2.60 | 3.73 | 5.32 |
+| 8.2 | 2.26 | 3.25 | 4.65 | 6.61 |
+| 8.3 | 2.83 | 4.06 | 5.78 | 8.18 |
+| 8.4 | 3.54 | 5.05 | 7.17 | 10.10 |
+| 8.5 | 4.41 | 6.28 | 8.87 | 12.40 |

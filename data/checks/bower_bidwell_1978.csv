@@ -1,4 +1,5 @@
 temperature_c,ph,salinity_psu,unionised_percent,source_page
-20,8.0,34,2.98,LaMotte-3635-05-cites-Bower-Bidwell-1978-S34
-25,8.0,34,4.28,LaMotte-3635-05-cites-Bower-Bidwell-1978-S34
-25,8.0,30,4.39,Spotte-Adams-1983-Table3-ratio-22.8-agrees-with-B&B
+10,8.0,34,1.44,1012-1016
+20,8.0,34,2.98,1012-1016
+25,8.0,34,4.28,1012-1016
+25,8.5,34,12.40,1012-1016

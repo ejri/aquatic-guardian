@@ -21,9 +21,9 @@ BOWER = ROOT / "data" / "checks" / "bower_bidwell_1978.csv"
 CA_PLAN = ROOT / "data" / "checks" / "ca_thermal_plan.md"
 
 # Table prints percent NH3 typically to two or three significant figures
-# (e.g. 1.65, 4.88). Tolerance of 0.05 percentage points matches 0.1 on a
-# two-decimal printout with a half-count guard; relative 2% covers three-sig
-# values near 10%. Absolute OR relative must hold.
+# (e.g. 1.44, 2.98, 4.28). Absolute 0.05 percentage points covers half a
+# unit in the second decimal with a small guard; relative 2% covers larger
+# cells such as 12.40%. Absolute OR relative must hold.
 BOWER_ABS_PCT = 0.05
 BOWER_REL = 0.02
 

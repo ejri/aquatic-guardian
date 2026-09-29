@@ -24,7 +24,7 @@ Status key: **Published value**, reproduces a number printed in the cited source
 | W-1 | DO saturation (Garcia & Gordon 1992, Benson & Krause) | 9.09 mg/L at 20 °C fresh; 14.62 at 0 °C | Published value | `test_do_freshwater_20c`, `test_do_freshwater_0c` |
 | W-2 | DO in seawater | 20 °C/35: 7.2 to 7.5; 10 °C/35: 8.8 to 9.2 mg/L | Published value (range) | `test_do_seawater_ranges` |
 | W-3 | Un-ionised ammonia, freshwater (Emerson et al. 1975) | Table values at 20 °C pH 7 and 25 °C pH 8 | Published value | `test_emerson_table` |
-| W-4 | Salinity correction (Khoo et al. 1977) vs Bower & Bidwell (1978) seawater % NH₃ | LaMotte reprint of B&B at S=34 (2.98% / 4.28% at 20/25 °C, pH 8); Spotte & Adams (1983) Table 3 ratio 22.8 → 4.39% at 25 °C, S=30, pH 8 (states agreement with B&B) | **Published value (secondary)** — primary PDF pages 1012–1016 not opened; see `data/checks/BOWER_BIDWELL_PROVENANCE.md` | `test_unionised_fraction_vs_bower_bidwell`, `test_salinity_lowers_unionised_fraction` |
+| W-4 | Salinity correction (Khoo et al. 1977) vs Bower & Bidwell (1978) seawater % NH₃ | LaMotte seawater table at S=34‰ / ionic strength 0.701 m, attributed to Bower & Bidwell (1978) pp. 1012–1016: e.g. 2.98% at 20 °C pH 8.0, 4.28% at 25 °C pH 8.0 | **Published value** — confirmed LaMotte reprint of B&B; see `data/checks/BOWER_BIDWELL_PROVENANCE.md` | `test_unionised_fraction_vs_bower_bidwell`, `test_salinity_lowers_unionised_fraction` |
 | W-5 | EPA 2013 freshwater ammonia criteria | 17 and 1.9 mg TAN/L at pH 7, 20 °C | Published value | `test_epa2013_criteria_at_reference_conditions` |
 | R-1 | WA marine increment rule, WAC 173-201A-210 | 12/(T−2), headroom and 0.3 °C cases | Published rule text | `test_wa_increment_rule` |
 | R-2 | CA Thermal Plan, new coastal discharges | 4 °F and 20 °F at/ beyond 1,000 ft; unit conversion | **Published value** — SWRCB Thermal Plan §3.B.(3)–(4) transcribed in `data/checks/ca_thermal_plan.md` (PDF accessed 2026-09-29) | `test_ca_thermal_plan_units`, `test_ca_thermal_plan_text_matches_criteria` |
@@ -49,7 +49,7 @@ Status key: **Published value**, reproduces a number printed in the cited source
 ## Before any result leaves the team
 
 1. P-3 benchmark completed and the coefficient source recorded.
-2. W-4 primary PDF pages checked if citing beyond the secondary reprints; R-2 checked against the primary text.
+2. W-4 confirmed via LaMotte's attributed Bower & Bidwell (1978) seawater table (pp. 1012–1016); R-2 checked against the SWRCB Thermal Plan primary text.
 3. All placeholder species parameters replaced and reviewed.
 4. Site tidal currents taken from a NOAA CO-OPS or DFO/CHS station, not assumed.
 5. The conditional-finding template in each notebook completed.
