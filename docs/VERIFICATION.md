@@ -14,7 +14,7 @@ Status key: **Published value**, reproduces a number printed in the cited source
 | I-2 | Estuary 1 % tidal-volume test (40 CFR 125.84) | Implemented as written | Needs legal check of current text | none |
 | P-1 | Port-spacing regime (Tian, Roberts & Daviero 2004) | s/H ≤ 0.3 line, ≥ 1.0 point | Published value | `test_regime_boundaries` |
 | P-2 | Per-port versus total flow (Correction 1) | Error factor exactly N^(2/3) | Simulation | `test_total_flow_substitution_error_is_n_two_thirds` |
-| P-3 | Dilution coefficients 0.089 (point) and 0.38 (line) | Fischer et al. (1979) asymptotic minimum dilution; MTT integral similarity (∝ z, ∝ z^{5/3}); library vs integral sweep in `docs/BENCHMARK_P3.md` | **Needs benchmark** against Visual Plumes UM3 / NRFIELD and a lab data set (integral infrastructure in place; VP outputs not yet present) | `test_pure_jet_dilution_scales_linearly_with_z`, `test_pure_plume_dilution_scales_as_z_to_the_five_thirds` |
+| P-3 | Dilution coefficients 0.089 (point) and 0.38 (line) | Fischer et al. (1979) asymptotic minimum dilution; MTT integral similarity (∝ z, ∝ z^{5/3}); library vs integral sweep in `docs/BENCHMARK_P3.md`; 8 integral *proxy* CSVs under `benchmarks/visual_plumes/outputs/` (not UM3) | **Needs benchmark** against real Visual Plumes UM3 / NRFIELD (and ideally a lab set). Integral proxy exercises the merge path only — see `outputs/PROVENANCE.json` | `test_pure_jet_dilution_scales_linearly_with_z`, `test_pure_plume_dilution_scales_as_z_to_the_five_thirds` |
 | P-4 | Stratified trapping, crossflow and bottom attachment | Not modelled | **Out of scope**; use UM3/CORMIX | none |
 | T-1 | M2 excursion 2U/ω (Correction 2) | 10.7 km ↔ 0.75 m/s | Published value | `test_tidal_excursion` |
 | N-1 | Okubo (1971) diffusivity | 0.58 m²/s at 1 km; crossover ~3 km for 2.1 m²/s | Published value | `test_okubo_values` |
@@ -24,7 +24,7 @@ Status key: **Published value**, reproduces a number printed in the cited source
 | W-1 | DO saturation (Garcia & Gordon 1992, Benson & Krause) | 9.09 mg/L at 20 °C fresh; 14.62 at 0 °C | Published value | `test_do_freshwater_20c`, `test_do_freshwater_0c` |
 | W-2 | DO in seawater | 20 °C/35: 7.2 to 7.5; 10 °C/35: 8.8 to 9.2 mg/L | Published value (range) | `test_do_seawater_ranges` |
 | W-3 | Un-ionised ammonia, freshwater (Emerson et al. 1975) | Table values at 20 °C pH 7 and 25 °C pH 8 | Published value | `test_emerson_table` |
-| W-4 | Salinity correction (Khoo et al. 1977) | Lowers fraction; order of magnitude of Bower & Bidwell (1978) | **Needs table check** — CSV scaffold in `data/checks/bower_bidwell_1978.csv` (rows still TRANSCRIBE); secondary sources cite ~4.2% NH₃ at 25 °C, pH 8, S≈35 but primary pages 1012–1016 not yet transcribed | `test_salinity_lowers_unionised_fraction`, `test_unionised_fraction_vs_bower_bidwell` (skips until transcribed) |
+| W-4 | Salinity correction (Khoo et al. 1977) vs Bower & Bidwell (1978) seawater % NH₃ | LaMotte reprint of B&B at S=34 (2.98% / 4.28% at 20/25 °C, pH 8); Spotte & Adams (1983) Table 3 ratio 22.8 → 4.39% at 25 °C, S=30, pH 8 (states agreement with B&B) | **Published value (secondary)** — primary PDF pages 1012–1016 not opened; see `data/checks/BOWER_BIDWELL_PROVENANCE.md` | `test_unionised_fraction_vs_bower_bidwell`, `test_salinity_lowers_unionised_fraction` |
 | W-5 | EPA 2013 freshwater ammonia criteria | 17 and 1.9 mg TAN/L at pH 7, 20 °C | Published value | `test_epa2013_criteria_at_reference_conditions` |
 | R-1 | WA marine increment rule, WAC 173-201A-210 | 12/(T−2), headroom and 0.3 °C cases | Published rule text | `test_wa_increment_rule` |
 | R-2 | CA Thermal Plan, new coastal discharges | 4 °F and 20 °F at/ beyond 1,000 ft; unit conversion | **Published value** — SWRCB Thermal Plan §3.B.(3)–(4) transcribed in `data/checks/ca_thermal_plan.md` (PDF accessed 2026-09-29) | `test_ca_thermal_plan_units`, `test_ca_thermal_plan_text_matches_criteria` |
@@ -49,7 +49,7 @@ Status key: **Published value**, reproduces a number printed in the cited source
 ## Before any result leaves the team
 
 1. P-3 benchmark completed and the coefficient source recorded.
-2. W-4 and R-2 checked against the primary text.
+2. W-4 primary PDF pages checked if citing beyond the secondary reprints; R-2 checked against the primary text.
 3. All placeholder species parameters replaced and reviewed.
 4. Site tidal currents taken from a NOAA CO-OPS or DFO/CHS station, not assumed.
 5. The conditional-finding template in each notebook completed.

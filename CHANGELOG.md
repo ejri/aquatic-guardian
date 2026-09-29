@@ -1,6 +1,8 @@
 # Changelog
 
 ## 0.1.0 (2026-09-29)
+- W-4: filled `data/checks/bower_bidwell_1978.csv` from LaMotte's Bower & Bidwell (1978) seawater reprint (S=34) and Spotte & Adams (1983) Table 3 (S=30); provenance in `data/checks/BOWER_BIDWELL_PROVENANCE.md`. Primary PDF pages still not opened.
+- P-3: integral MTT *proxy* CSVs under `benchmarks/visual_plumes/outputs/` (not EPA Visual Plumes); P-3 remains Needs benchmark until real UM3 runs.
 - Phase 9: `.zenodo.json` for GitHub–Zenodo DOI minting; draft release notes in `docs/RELEASE_NOTES_0.1.0.md`.
 - Phase 5: site sources moved to `web/parts/`, so `site/` holds only the published files; `app/build.py` now also builds `site/404.html`; `netlify.toml` with a publish directory, no build command and a Content-Security-Policy that allows nothing but the page itself and Google Fonts; `tests/test_site.py` (`site`) drives Chromium and axe-core from a local `node_modules` copy; CI `site` job; `docs/DEPLOY.md`; `scripts/screenshots.py` and `docs/screenshots/`.
 - Phase 5 fixes found by axe-core: the two code blocks and the wide tables are now keyboard-scrollable, and caution labels use a darkened `--heat-text` (5.6:1 instead of 4.1:1 on the light background). No design token changed value.

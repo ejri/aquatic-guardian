@@ -31,7 +31,7 @@ def test_salinity_lowers_unionised_fraction():
     fresh = wq.unionised_fraction(25, 8.0, 0)
     sea = wq.unionised_fraction(25, 8.0, 34)
     assert sea < fresh
-    assert 0.035 < sea < 0.05   # Bower & Bidwell (1978) order of magnitude; compare to table before citing
+    assert 0.035 < sea < 0.05   # LaMotte reprint of Bower & Bidwell (1978) at 25 C / pH 8 / S=34 is 4.28%
 
 
 def test_epa2013_criteria_at_reference_conditions():

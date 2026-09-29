@@ -77,12 +77,17 @@ d = 1.0 m, Q = 0.02 m³/s, g′ = 0.04 m/s², z = 80 m → ratio ≈ 1.30.
 ## Visual Plumes
 
 Decks: `python benchmarks/visual_plumes/write_um3_decks.py`  
-Instructions: `benchmarks/visual_plumes/README.md`  
-Outputs (not yet present): `benchmarks/visual_plumes/outputs/<case_id>.csv`
+Instructions: `benchmarks/visual_plumes/README.md`
 
-When those CSVs exist, re-run `python benchmarks/compare_near_field.py` to fill
-`dilution_visual_plumes` columns. **P-3 stays Needs benchmark until UM3/NRFIELD
-outputs (and ideally a lab data set) are in and reviewed.**
+**Proxy (not UM3):** `python benchmarks/visual_plumes/write_integral_proxy_outputs.py`
+writes eight MTT integral centreline profiles into `outputs/` with
+`PROVENANCE.json` stating `not_visual_plumes: true`. They exercise the CSV
+loader and merge columns. **They do not close P-3.**
+
+When true Visual Plumes CSVs exist, replace the proxy files and re-run
+`python benchmarks/compare_near_field.py` to fill `dilution_visual_plumes`
+columns. **P-3 stays Needs benchmark until UM3/NRFIELD outputs (and ideally a
+lab data set) are in and reviewed.**
 
 ## What a human expert still has to check
 
