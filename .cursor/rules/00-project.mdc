@@ -1,0 +1,11 @@
+---
+description: Core invariants for the Aquatic Guardian repository
+alwaysApply: true
+---
+Read AGENTS.md before making changes. Follow its single-sources-of-truth table and non-negotiable rules.
+
+- Do not invent thresholds, coefficients, legal citations, dates or statuses. Use a named source or mark the value `placeholder` / `verify` and tell the user.
+- Never loosen a test tolerance to get green. Find the cause in the equations or the data.
+- After any change run `pytest -q` and `python app/build.py --check`. Report the result.
+- Keep changes small and reviewable. Explain what you changed and why, and list anything a human expert still has to check.
+- Update docs/VERIFICATION.md and CHANGELOG.md when behaviour changes.

@@ -1,0 +1,208 @@
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#top"><b>Aquatic Guardian</b><span>a Sentient Futures project</span></a>
+    <nav class="primary" aria-label="Sections">
+      <a href="#mission">Why it matters</a>
+      <a href="#framework">Framework</a>
+      <a href="#language">Model language</a>
+      <a href="#tracker">Tracker</a>
+      <a href="#tool">Screening tool</a>
+      <a href="#evidence">Evidence</a>
+      <a href="#source">Open source</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero" id="top">
+  <div class="wrap">
+    <p class="hero-sentence">
+      A <label class="visually-hidden" for="h-mw">IT load in megawatts</label><input id="h-mw" type="number" inputmode="decimal" min="1" max="999" step="1" value="24"> megawatt AI data centre cooled with seawater draws <output id="h-flow">0.84</output> cubic metres of water every second and sends it back <label class="visually-hidden" for="h-dt">temperature rise in degrees Celsius</label><input id="h-dt" type="number" inputmode="decimal" min="1" max="20" step="1" value="8"> °C warmer.
+    </p>
+    <p class="hero-follow">That is <output id="h-mgd">19</output> million US gallons a day, <output id="h-ratio">10</output> times the threshold at which US rules for cooling-water intakes at power plants and factories begin to apply. No data-centre reporting rule yet counts the fish, crabs and larvae drawn in with it.</p>
+    <div class="actions">
+      <a class="btn solid" href="#tool">Screen a facility</a>
+      <a class="btn ghost" href="#language">Find model language for your jurisdiction</a>
+    </div>
+    <p class="hero-note">Figures assume a PUE of 1.15 and once-through cooling. Change the numbers above; the full screening tool below uses the same verified engine.</p>
+  </div>
+</section>
+
+<section class="block" id="mission">
+  <div class="wrap split">
+    <div class="prose">
+      <h2>AI's footprint reaches animals through water</h2>
+      <p class="serif">Almost every watt a data centre draws leaves as heat. Where that heat is carried away by seawater, a river or a lake, or where the servers sit in the water itself, it reaches animals directly: fish and crabs pinned against intake screens, larvae drawn through heat exchangers, warm plumes that pull animals in and then chill them when a facility shuts down.</p>
+      <p class="serif">Governments are writing data-centre rules now, mostly about electricity prices, grids and communities. Aquatic Guardian gives them a ready-made module for the water and the animals: definitions, metrics, permit conditions and model clauses that fit the instruments already on the table.</p>
+      <p class="serif">Sentient Futures works on field building for the welfare of all sentient beings as AI reshapes the world. This project applies that mission to the physical side of AI. Compute governance usually means chips and training runs; here it means the heat and water of the buildings that run them, and the animals, many of them sentient, that live in that water. Aquatic Guardian grew out of the Sentient Futures fellowship, extending the Phase 1 report <a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Governing the Ocean Server Farm</a> into a framework, a toolkit and a public app.</p>
+    </div>
+    <div>
+      <div class="fact"><strong>485 to ~950 TWh</strong><span>Projected data-centre electricity use, 2025 to 2030 (IEA, April 2026). Nearly all of it ends up as heat.</span></div>
+      <div class="fact"><strong>24 MW</strong><span>HiCloud's underwater data centre off Shanghai's Lingang area, commercial since May 2026.</span></div>
+      <div class="fact"><strong>None yet</strong><span>No data-centre disclosure rule in the US, the EU or British Columbia defines heat discharged to water or counts animals at intakes (September 2026).</span></div>
+      <div class="fact"><strong>Fishes, cephalopods, decapods</strong><span>Recognised as sentient in UK law since 2022, and within the "realistic possibility" of consciousness under the 2024 New York Declaration.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="framework">
+  <div class="wrap">
+    <h2>The framework</h2>
+    <p class="lede">Version 0.1, a public consultation draft. It adds to existing regulation rather than replacing it: every requirement names the instrument it attaches to.</p>
+    <ul class="principles">
+      <li><b>Heat in water is pollution before it is a resource</b>UNCLOS counts the introduction of energy as marine pollution, and Canada's Fisheries Act already treats heated water as potentially deleterious.</li>
+      <li><b>Reuse only counts before discharge</b>Heat recovered from the cooling loop is reuse. Warm water released to a bay is discharge, whatever happens to it afterwards.</li>
+      <li><b>Critical conditions, not averages</b>Mixing zones are judged at slack water and summer-maximum temperatures, as regulators already do for power plants.</li>
+      <li><b>Count individuals as well as populations</b>Animals affected at intakes are reported by taxon, life stage and sentience evidence, never folded into a single score.</li>
+      <li><b>Honest uncertainty</b>Screening results are labelled as screening. Species values nobody has reviewed are marked as placeholders and cannot support a decision.</li>
+      <li><b>Indigenous rights first</b>Siting near Indigenous waters requires consultation to the applicable legal standard, including UNDRIP-aligned laws and treaty fishing rights.</li>
+    </ul>
+
+    <ol class="layers" aria-label="The five layers, in order">
+      <li><h3>Disclosure</h3><p>Operators publish a machine-readable Aquatic Disclosure Record each period: heat to water, discharge temperature rise, intake flow and screen velocity, animals impinged and entrained by taxon and life stage, chemicals, noise, cables and freshwater use.</p><p class="attach">Attaches to: DOE reporting in S.4214/H.R.9442, EU Delegated Regulation 2024/1364, state disclosure bills, BC Hydro applications.</p></li>
+      <li><h3>Assessment</h3><p>Before approval, a thermal study at critical design conditions with a recognised model, an intake assessment, a receptor assessment covering protected and sentient taxa, and cumulative climate effects.</p><p class="attach">Attaches to: NPDES and §316(a) demonstrations, Fisheries Act authorisations, EU EIA and Habitats Directive assessments, CADA acceleration-zone designation.</p></li>
+      <li><h3>Permit conditions</h3><p>Closed-loop cooling by default, a numeric temperature increment at a defined mixing-zone edge, a 0.15 m/s screen velocity, cold-shock ramp-down, chemical limits and a reopener.</p><p class="attach">Attaches to: NPDES permits, BC Environmental Management Act authorisations, member-state water permits.</p></li>
+      <li><h3>Monitoring</h3><p>Continuous temperature, summer oxygen, intake sampling by taxon and life stage, and occupancy surveys corrected for detection probability, published within 90 days.</p><p class="attach">Attaches to: permit monitoring and reporting requirements.</p></li>
+      <li><h3>Adaptive management</h3><p>Exceedances, cold-shock events or detection-corrected declines trigger a reopener or load reduction. Data centres can shift compute to another site in minutes, which makes this far more practical than it ever was for power plants.</p><p class="attach">Attaches to: permit reopeners, the EU 2028 rating review, BC's two-year allocation windows.</p></li>
+    </ol>
+
+    <h3 style="margin-top:1rem">Which facilities are covered</h3>
+    <div class="scroll" style="margin-top:.75rem">
+      <table>
+        <thead><tr><th scope="col">Tier</th><th scope="col">Facilities</th><th scope="col">Layers</th></tr></thead>
+        <tbody>
+          <tr><td>A. Disclosure</td><td>500 kW IT or more, withdrawing or discharging surface water or seawater, or sited in, on or under water (matches the EU reporting floor)</td><td>1</td></tr>
+          <tr><td>B. Assessment</td><td>Tier A with design intake above 2 MGD (0.088 m³/s), more than 3 MW of heat to water, or near protected habitat</td><td>1 to 5</td></tr>
+          <tr><td>C. Enhanced</td><td>Submerged or floating facilities, estuaries and enclosed bays, and any facility supplying heat to aquaculture</td><td>1 to 5, plus decommissioning assurance, baseline surveys and welfare standards</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src" style="margin-top:1rem">Full text: <code>policy/FRAMEWORK.md</code> in the repository. Licensed CC BY 4.0.</p>
+  </div>
+</section>
+
+<section class="block" id="language">
+  <div class="wrap">
+    <h2>Model language</h2>
+    <p class="lede">Clauses drafted to drop into the bills, permits, rating schemes and funding agreements that exist today. Copy them, adapt the bracketed values, and cite the repository.</p>
+    <div class="tabs" role="tablist" aria-label="Jurisdiction" id="lang-tabs"></div>
+    <div id="lang-panel" role="tabpanel" tabindex="0"></div>
+  </div>
+</section>
+
+<section class="block" id="tracker">
+  <div class="wrap">
+    <h2>Policy tracker</h2>
+    <p class="lede">The instruments this framework is designed to attach to, their status, and what to ask for. Status as of <span id="as-of"></span>.</p>
+    <div id="deadline"></div>
+    <div class="filters">
+      <label for="f-stage">Show</label>
+      <select id="f-stage">
+        <option value="all">All instruments</option>
+        <option value="open">Open opportunities (proposed, consultation, programme)</option>
+        <option value="enacted">In force</option>
+      </select>
+      <label for="f-juris">Jurisdiction</label>
+      <select id="f-juris"><option value="all">All</option></select>
+    </div>
+    <div class="scroll">
+      <table id="tracker-table">
+        <thead><tr><th scope="col">Instrument</th><th scope="col">Status</th><th scope="col">Key dates</th><th scope="col">Hook</th><th scope="col">What to ask for</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="src" style="margin-top:1rem">Items marked "check" have conflicting or secondary sources. Corrections are welcome as pull requests to <code>data/instruments.json</code> with a primary-source link.</p>
+  </div>
+</section>
+
+<section class="block" id="tool">
+  <div class="wrap">
+    <h2>Screening tool</h2>
+    <p class="lede">Estimate a facility's heat and water footprint, which rules it is likely to trigger, and what it would have to report. Everything runs in your browser; nothing you enter is sent anywhere.</p>
+    <div class="modes" role="group" aria-label="Level of detail">
+      <button type="button" data-mode="public" aria-pressed="true">Public</button>
+      <button type="button" data-mode="official" aria-pressed="false">Officials</button>
+      <button type="button" data-mode="technical" aria-pressed="false">Technical</button>
+    </div>
+    <div class="tool">
+      <form id="tool-form" novalidate></form>
+      <div class="results" id="results" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="evidence">
+  <div class="wrap">
+    <h2>How the numbers were checked</h2>
+    <p class="lede">Every equation in the toolkit has a test that reproduces a published value or demonstrates the property on synthetic data with a known answer. The browser engine is tested against the Python reference on 200 random facilities.</p>
+    <div class="tally">
+      <div><strong>40</strong><span>automated checks, all passing in v0.1</span></div>
+      <div><strong>6</strong><span>corrections to the earlier models</span></div>
+      <div><strong>4</strong><span>items awaiting outside benchmark or text check</span></div>
+      <div><strong>All</strong><span>species welfare parameters still placeholders</span></div>
+    </div>
+    <div class="split">
+      <div>
+        <h3>Corrections adopted</h3>
+        <ol class="corrections">
+          <li><b>Per-port and per-length fluxes.</b> Using total diffuser flow in a point-plume law understates dilution by N<sup>2/3</sup>, a factor of 4.6 for ten ports.</li>
+          <li><b>Tidal excursion.</b> Excursion is 2U/ω per half-cycle. The earlier 10.7 km implies a 0.75 m/s current, typical of straits rather than open coast.</li>
+          <li><b>Numerical diffusion.</b> First-order upwind at 25 m adds more mixing than the ocean does at any scale below about 3 km, so the old model under-predicted peak temperatures near the outfall.</li>
+          <li><b>Critical conditions.</b> Compliance is tested at slack water and summer maximum temperature, not at a mean current.</li>
+          <li><b>Ammonia.</b> Seawater speciation needs a salinity correction; US saltwater criteria date from 1989 and Canada has no marine guideline.</li>
+          <li><b>Heat reuse.</b> Reuse is practical only before discharge. Heat in open water is a regulated load, not a resource.</li>
+        </ol>
+      </div>
+      <div>
+        <h3>What still needs experts</h3>
+        <p>Near-field dilution coefficients need a benchmark against Visual Plumes UM3 or NRFIELD. The seawater ammonia correction and the California Thermal Plan values need checking against primary text. Species temperature thresholds and welfare parameters need species specialists and a fish-health veterinarian. Site currents must come from station data.</p>
+        <p>The tool does not model stratified trapping, bottom attachment or far-field transport. Use it to scope a question, not to answer a permit.</p>
+        <p class="src">Full register: <code>docs/VERIFICATION.md</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="source">
+  <div class="wrap split">
+    <div>
+      <h2>Open source</h2>
+      <p class="serif">The framework, model language, schemas, Python library, notebooks integration and this website live in one repository, so the policy text, the app and the research notebooks all use the same verified functions.</p>
+      <p class="serif">Code is Apache-2.0. Policy text and documentation are CC BY 4.0. The disclosure schema is CC0, so an agency can adopt it without conditions.</p>
+      <h3 style="margin-top:1.5rem">Use it in Colab</h3>
+<pre class="tree"><code>!pip -q install "git+https://github.com/&lt;org&gt;/aquatic-guardian.git@v0.1.0"
+import aquatic_guardian as ag
+r = ag.screening.screen({"it_load_mw": 24, "delta_t_k": 8})
+print(r["near_field"]["delta_t_near_field_k"])</code></pre>
+      <p class="src" style="margin-top:1rem">Cite as: Aquatic Guardian contributors (2026), <i>Aquatic Guardian</i>, version 0.1.0. See <code>CITATION.cff</code>.</p>
+    </div>
+    <div>
+      <h3>Repository</h3>
+<pre class="tree"><code>policy/          framework, recommendations, model language
+schemas/         disclosure and notebook handoff (JSON Schema)
+data/            instrument tracker, criteria with sources
+src/             Python library (screening, plume, tidal,
+                 numerics, water quality, occupancy, imaging,
+                 tracking, bioenergetics, sentience)
+tests/           40 checks incl. browser-engine parity
+app/             browser engine and site build
+site/            this website
+notebooks/       how the three Colab notebooks connect
+docs/            verification register, corrections,
+                 metrics, crosswalk</code></pre>
+      <h3 style="margin-top:1.5rem">Get involved</h3>
+      <p>Most needed now: a UM3 benchmark, species thresholds from specialists, tracker corrections, and officials willing to test the model language against a real file. See <code>CONTRIBUTING.md</code>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p><b>Aquatic Guardian 0.1.0</b>, 29 September 2026. A Sentient Futures project building on <i>Governing the Ocean Server Farm</i> (Elchami, Kaplan and Daher, April 2026).</p>
+    <p>Screening results are for scoping and public understanding. They are not legal advice and do not replace a regulatory mixing-zone study, a Clean Water Act §316 demonstration, a Fisheries Act authorisation or species-expert review. Policy status changes; check the tracker's primary sources before relying on a date.</p>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>

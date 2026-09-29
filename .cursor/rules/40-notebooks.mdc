@@ -1,0 +1,12 @@
+---
+description: Rules for the Colab notebooks
+globs: notebooks/**, **/*.ipynb
+alwaysApply: false
+---
+- Notebooks must run top to bottom on free Colab CPU in under 15 minutes with synthetic data when real data is unavailable.
+- The first code cell installs a pinned library version and prints `aquatic_guardian.__version__`.
+- Physics, water quality, occupancy, imaging, tracking and bioenergetics come from the library, not re-implemented in cells. Keep the teaching narrative and figures.
+- Handoffs use `aquatic_guardian.handoff.make/write/read`; files must validate against schemas/notebook-handoff.schema.json.
+- Keep the conditional-finding templates and the placeholder lists; a non-empty placeholders list means results do not leave the team.
+- Keep embedded vetting assertions. Do not weaken them.
+- Clear outputs before committing unless a figure is needed for documentation.

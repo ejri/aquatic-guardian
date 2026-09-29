@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/aquatic-guardian/aquatic-guardian/schemas/notebook-handoff.schema.json",
+  "title": "Aquatic Guardian notebook handoff",
+  "description": "Structured exchange between the Thermal-Tidal, Aquatic Monitoring and Aquaculture Vision notebooks. Run order: thermal -> monitoring and aquaculture; aquaculture returns a loop-inlet ceiling to thermal.",
+  "type": "object",
+  "required": ["handoff_version", "producer", "created", "scenario_id", "assumptions", "placeholders"],
+  "properties": {
+    "handoff_version": {"const": "0.1.0"},
+    "producer": {"enum": ["thermal_tidal", "aquatic_monitoring", "aquaculture_vision"]},
+    "created": {"type": "string"},
+    "scenario_id": {"type": "string"},
+    "library_version": {"type": "string"},
+    "loop_inlet_temperature_c": {"type": "number"},
+    "receiving_water": {"type": "object", "properties": {
+      "ambient_t_c": {"type": "number"}, "salinity_psu": {"type": "number"}, "ph": {"type": "number"},
+      "do_mg_l": {"type": "number"}, "unionised_ammonia_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+      "turbidity_ntu": {"type": "number", "minimum": 0}}},
+    "plume": {"type": "object", "properties": {
+      "delta_t_mixing_zone_edge_k": {"type": "number"},
+      "mixing_zone_radius_m": {"type": "number"},
+      "regime": {"enum": ["point", "line", "transitional"]},
+      "near_field_dilution": {"type": "number", "minimum": 1},
+      "design_condition": {"type": "string", "description": "e.g. slack water, 10th-percentile current, August maximum ambient"},
+      "grid": {"type": "object", "properties": {
+        "dx_m": {"type": "number"}, "k_num_m2s": {"type": "number"}, "k_phys_m2s": {"type": "number"},
+        "scheme": {"type": "string"}}}}},
+    "detection": {"type": "object", "properties": {
+      "psi_hat": {"type": "number"}, "naive_occupancy": {"type": "number"},
+      "detection_covariates": {"type": "array", "items": {"type": "string"}},
+      "unrecoverable_frame_fraction": {"type": "number", "minimum": 0, "maximum": 1}}},
+    "recommended_loop_inlet_ceiling_c": {"type": "number"},
+    "binding_constraint": {"enum": ["do", "ammonia", "welfare", "growth"]},
+    "assumptions": {"type": "array", "items": {"type": "string"}},
+    "placeholders": {"type": "array", "items": {"type": "string"},
+      "description": "Every parameter still at a placeholder value. A non-empty list means results must not leave the team."}
+  }
+}

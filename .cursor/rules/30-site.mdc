@@ -1,0 +1,13 @@
+---
+description: Rules for the public website and screening app
+globs: site/**, app/build.py
+alwaysApply: false
+---
+- Edit site/parts/*.html, never site/index.html directly; run `python app/build.py` to regenerate.
+- The page is a single self-contained file. Only Google Fonts may load from the network. No analytics, trackers, remote images or CDNs.
+- Design tokens (keep them): fog #EEF2F0, panel #E2EAE7, ink #0E2A33, muted #3D5E52, tide #1D6B74 (interactive), heat #A8650A (heat quantities and cautions only), line #C3D2CD; dark-mode equivalents are in site/parts/1_head.html. Fonts: Public Sans for UI and headings, Source Serif 4 for reading text and clauses.
+- Avoid: all-caps eyebrow labels, arrows on buttons, identical shadowed cards, gradient washes, decorative numbering on non-sequences.
+- Accessibility: WCAG 2.2 AA, visible focus, labels on every input, results announced with aria-live, colour never the only signal, prefers-reduced-motion respected.
+- Must work at 390 px wide, in dark mode, and with no horizontal page scroll; wide tables scroll inside `.scroll`.
+- Copy is plain, specific and in sentence case. Errors say what went wrong and how to fix it.
+- Every number the app shows comes from app/engine.js; no hard-coded results in markup except the hero defaults.

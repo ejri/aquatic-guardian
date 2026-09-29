@@ -1,0 +1,29 @@
+{
+  "retrieved": "2026-09-29",
+  "note": "Legal status: 'rule' = enacted regulation; 'guidance' = non-binding agency guidance; 'placeholder' = not to be used for decisions. Species-specific thresholds require species-expert review.",
+  "criteria": [
+    {"id": "wa-marine-extraordinary", "jurisdiction": "US-WA", "water": "marine", "metric": "1-DMax", "value_c": 13.0, "status": "rule", "source": "WAC 173-201A-210(1)(c)"},
+    {"id": "wa-marine-excellent", "jurisdiction": "US-WA", "water": "marine", "metric": "1-DMax", "value_c": 16.0, "status": "rule", "source": "WAC 173-201A-210(1)(c)"},
+    {"id": "wa-marine-good", "jurisdiction": "US-WA", "water": "marine", "metric": "1-DMax", "value_c": 19.0, "status": "rule", "source": "WAC 173-201A-210(1)(c)"},
+    {"id": "wa-marine-fair", "jurisdiction": "US-WA", "water": "marine", "metric": "1-DMax", "value_c": 22.0, "status": "rule", "source": "WAC 173-201A-210(1)(c)"},
+    {"id": "wa-marine-increment", "jurisdiction": "US-WA", "water": "marine", "metric": "point-source increment at mixing-zone edge", "formula": "12/(T-2)", "status": "rule", "source": "WAC 173-201A-210(1)(c)(ii)"},
+    {"id": "wa-fresh-char", "jurisdiction": "US-WA", "water": "fresh", "metric": "7-DADMax", "value_c": 12.0, "use": "char spawning and rearing", "status": "rule", "source": "WAC 173-201A-200"},
+    {"id": "wa-fresh-core-summer", "jurisdiction": "US-WA", "water": "fresh", "metric": "7-DADMax", "value_c": 16.0, "use": "core summer salmonid habitat", "status": "rule", "source": "WAC 173-201A-200"},
+    {"id": "wa-fresh-spawn-rear-migrate", "jurisdiction": "US-WA", "water": "fresh", "metric": "7-DADMax", "value_c": 17.5, "use": "salmonid spawning, rearing and migration", "status": "rule", "source": "WAC 173-201A-200"},
+    {"id": "r10-bull-trout-rearing", "jurisdiction": "US-EPA-R10", "water": "fresh", "metric": "7-DADM", "value_c": 12.0, "status": "guidance", "source": "EPA 910-B-03-002 (2003)"},
+    {"id": "r10-core-juvenile-rearing", "jurisdiction": "US-EPA-R10", "water": "fresh", "metric": "7-DADM", "value_c": 16.0, "status": "guidance", "source": "EPA 910-B-03-002 (2003)"},
+    {"id": "r10-migration-noncore", "jurisdiction": "US-EPA-R10", "water": "fresh", "metric": "7-DADM", "value_c": 18.0, "status": "guidance", "source": "EPA 910-B-03-002 (2003)"},
+    {"id": "r10-migration-refugia", "jurisdiction": "US-EPA-R10", "water": "fresh", "metric": "7-DADM", "value_c": 20.0, "status": "guidance", "source": "EPA 910-B-03-002 (2003)"},
+    {"id": "r10-bull-trout-spawning", "jurisdiction": "US-EPA-R10", "water": "fresh", "metric": "7-DADM", "value_c": 9.0, "status": "guidance", "source": "EPA 910-B-03-002 (2003)"},
+    {"id": "r10-salmon-spawning", "jurisdiction": "US-EPA-R10", "water": "fresh", "metric": "7-DADM", "value_c": 13.0, "use": "spawning, incubation, emergence", "status": "guidance", "source": "EPA 910-B-03-002 (2003)"},
+    {"id": "r10-steelhead-smolt", "jurisdiction": "US-EPA-R10", "water": "fresh", "metric": "7-DADM", "value_c": 14.0, "status": "guidance", "source": "EPA 910-B-03-002 (2003)"},
+    {"id": "ca-thermal-plan-new-coastal", "jurisdiction": "US-CA", "water": "marine", "metric": "increase above natural", "value_k": 2.22, "use": "shoreline, substrate, or surface beyond 1,000 ft", "max_discharge_delta_k": 11.1, "status": "rule", "source": "California Thermal Plan, coastal waters, new discharges (verify current text)"},
+    {"id": "epa2013-nh3-acute", "jurisdiction": "US", "water": "fresh", "metric": "CMC mg TAN/L at pH 7, 20 C", "value": 17.0, "status": "guidance", "source": "EPA 822-R-13-001 (2013)"},
+    {"id": "epa2013-nh3-chronic", "jurisdiction": "US", "water": "fresh", "metric": "CCC mg TAN/L at pH 7, 20 C", "value": 1.9, "status": "guidance", "source": "EPA 822-R-13-001 (2013)"},
+    {"id": "epa1989-nh3-salt-acute", "jurisdiction": "US", "water": "marine", "metric": "CMC mg NH3/L", "value": 0.233, "status": "guidance", "source": "EPA 440/5-88-004 (1989); verify"},
+    {"id": "epa1989-nh3-salt-chronic", "jurisdiction": "US", "water": "marine", "metric": "CCC mg NH3/L", "value": 0.035, "status": "guidance", "source": "EPA 440/5-88-004 (1989); verify"},
+    {"id": "ccme-nh3-fresh", "jurisdiction": "CA", "water": "fresh", "metric": "long-term mg NH3/L", "value": 0.019, "status": "guidance", "source": "CCME Canadian Water Quality Guidelines; no marine guideline"},
+    {"id": "kelp-heat-stress", "jurisdiction": "any", "water": "marine", "metric": "onset of heat stress", "value_c": 18.0, "status": "placeholder", "source": "High-teens C in literature; species- and population-specific. Expert review required."},
+    {"id": "eelgrass-heat-stress", "jurisdiction": "any", "water": "marine", "metric": "onset of heat stress", "value_c": null, "status": "placeholder", "source": "Population-specific; expert review required."}
+  ]
+}

@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aquatic Guardian: data centres, water and sentient animals</title>
+<meta name="description" content="A plug-in aquatic, ecological and animal-welfare module for data-centre regulation, with model language, a policy tracker and an open-source screening tool.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF2F0; --panel:#E2EAE7; --ink:#0E2A33; --muted:#3D5E52; --tide:#1D6B74; --tide-ink:#FFFFFF;
+  --heat:#A8650A; --heat-soft:#F3E3C7; --line:#C3D2CD; --high:#8F2D1F; --high-soft:#F2DCD6;
+  --sans:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --serif:"Source Serif 4","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --measure:68ch; --wide:1180px;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C1D22; --panel:#13292F; --ink:#E1EBE8; --muted:#9DBBAF; --tide:#63B9C1; --tide-ink:#0C1D22;
+    --heat:#E6A94A; --heat-soft:#3A2C14; --line:#27434B; --high:#F09A87; --high-soft:#3B1D17; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C1D22; --panel:#13292F; --ink:#E1EBE8; --muted:#9DBBAF; --tide:#63B9C1; --tide-ink:#0C1D22;
+  --heat:#E6A94A; --heat-soft:#3A2C14; --line:#27434B; --high:#F09A87; --high-soft:#3B1D17; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 4.5rem);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:1.0625rem;line-height:1.55}
+img,svg{max-width:100%}
+a{color:var(--tide);text-underline-offset:.18em;text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:3px solid var(--tide);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:var(--ink);color:var(--bg);padding:.5rem 1rem;z-index:20}
+.skip:focus{left:1rem;top:calc(env(safe-area-inset-top,0px) + .5rem)}
+.wrap{max-width:var(--wide);margin:0 auto;padding:0 1.25rem}
+.prose{max-width:var(--measure)}
+h1,h2,h3,h4{font-family:var(--sans);line-height:1.15;margin:0}
+h2{font-size:clamp(1.75rem,3.2vw,2.5rem);font-weight:700;letter-spacing:-.015em;margin-bottom:.6rem}
+h3{font-size:1.2rem;font-weight:600;margin-bottom:.35rem}
+p{margin:0 0 1rem}
+.lede{font-size:1.2rem;color:var(--muted);max-width:60ch}
+.serif{font-family:var(--serif);font-size:1.075rem;line-height:1.65}
+
+/* header */
+header.site{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+header.site .wrap{display:flex;align-items:center;gap:1.5rem;min-height:3.75rem}
+.brand{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);line-height:1.1;flex:none}
+.brand b{font-weight:700;font-size:1.05rem}
+.brand span{font-size:.8rem;color:var(--muted)}
+nav.primary{display:flex;gap:1.1rem;overflow-x:auto;scrollbar-width:none;margin-left:auto;padding:.25rem 0}
+nav.primary::-webkit-scrollbar{display:none}
+nav.primary a{color:var(--ink);text-decoration:none;font-size:.95rem;white-space:nowrap;padding:.35rem 0;border-bottom:2px solid transparent}
+nav.primary a:hover,nav.primary a[aria-current="true"]{border-bottom-color:var(--tide)}
+
+/* hero: the one bold element */
+.hero{padding:clamp(3rem,9vw,6.5rem) 0 clamp(2.5rem,6vw,4rem)}
+.hero-sentence{font-size:clamp(1.9rem,4.6vw,3.55rem);font-weight:600;line-height:1.22;letter-spacing:-.02em;max-width:24ch;margin:0 0 1.5rem}
+.hero-sentence input[type="number"]{font:inherit;color:var(--tide);background:transparent;border:0;border-bottom:3px solid var(--tide);width:2.6ch;min-height:0;padding:0;text-align:center;-moz-appearance:textfield;appearance:textfield;border-radius:0}
+.hero-sentence input[type="number"]:hover{background:var(--panel)}
+.hero-sentence input::-webkit-inner-spin-button,.hero-sentence input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.hero-sentence output{color:var(--heat);font-variant-numeric:tabular-nums}
+.hero-follow{font-size:clamp(1.1rem,1.8vw,1.35rem);color:var(--muted);max-width:52ch;margin-bottom:2rem}
+.hero-follow output{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.actions{display:flex;flex-wrap:wrap;gap:.75rem}
+.btn{display:inline-block;font:600 1rem/1 var(--sans);padding:.85rem 1.2rem;border-radius:3px;text-decoration:none;border:2px solid var(--tide);cursor:pointer}
+.btn.solid{background:var(--tide);color:var(--tide-ink)}
+.btn.ghost{background:transparent;color:var(--tide)}
+.btn.small{padding:.45rem .7rem;font-size:.875rem}
+.hero-note{font-size:.9rem;color:var(--muted);margin-top:1.5rem;max-width:62ch}
+
+section.block{padding:clamp(3rem,7vw,5rem) 0;border-top:1px solid var(--line)}
+.split{display:grid;grid-template-columns:minmax(0,1fr);gap:2rem}
+@media (min-width:900px){.split{grid-template-columns:minmax(0,5fr) minmax(0,4fr);gap:4rem}}
+
+/* mission */
+.fact{border-left:4px solid var(--heat);padding:.2rem 0 .2rem 1.1rem;margin:0 0 1.4rem}
+.fact strong{display:block;font-size:1.6rem;line-height:1.2;font-weight:700;font-variant-numeric:tabular-nums}
+.fact span{color:var(--muted);font-size:.95rem}
+
+/* principles and layers */
+.principles{list-style:none;padding:0;margin:1.5rem 0 0;display:grid;gap:1.1rem 2.5rem}
+@media (min-width:760px){.principles{grid-template-columns:1fr 1fr}}
+.principles li{font-family:var(--serif);line-height:1.6}
+.principles b{font-family:var(--sans);font-weight:600;display:block;margin-bottom:.15rem}
+.layers{list-style:none;padding:0;margin:2.5rem 0 0;counter-reset:layer;position:relative}
+.layers::before{content:"";position:absolute;left:1.05rem;top:.5rem;bottom:.5rem;width:4px;background:linear-gradient(var(--tide),var(--heat))}
+.layers>li{counter-increment:layer;position:relative;padding:0 0 1.8rem 3.4rem}
+.layers>li::before{content:counter(layer);position:absolute;left:0;top:0;width:2.35rem;height:2.35rem;border-radius:50%;background:var(--bg);border:3px solid var(--tide);display:grid;place-items:center;font-weight:700;font-variant-numeric:tabular-nums}
+.layers h3{padding-top:.3rem}
+.layers p{max-width:var(--measure);margin-bottom:.4rem}
+.attach{font-size:.92rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;vertical-align:top;padding:.6rem .75rem;border-bottom:1px solid var(--line)}
+th{font-weight:600;background:var(--panel)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--line);border-radius:3px}
+.scroll table{min-width:640px}
+
+/* tabs and clauses */
+.tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin:1.5rem 0 1.25rem}
+.tabs button{font:500 .95rem var(--sans);padding:.55rem .9rem;border-radius:3px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.intro{max-width:var(--measure);margin-bottom:1.5rem}
+.intro ul{padding-left:1.2rem;margin:.25rem 0 1rem}
+.intro li{margin-bottom:.35rem}
+.clause{border-left:3px solid var(--line);padding:.1rem 0 .1rem 1.25rem;margin:0 0 2rem;max-width:78ch}
+.clause-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.5rem 1rem;margin-bottom:.5rem}
+.clause-head h3{font-size:1.05rem;margin:0}
+.clause-text{font-family:var(--serif);font-size:1.05rem;line-height:1.7;white-space:pre-line}
+.src{font-size:.88rem;color:var(--muted)}
+
+/* tracker */
+.filters{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:center;margin:1.25rem 0}
+.filters label{font-size:.92rem;color:var(--muted)}
+.filters select{max-width:100%;min-width:0}
+select{max-width:100%}
+@media (max-width:560px){.field{grid-template-columns:minmax(0,1fr)}.filters{flex-direction:column;align-items:stretch}}
+select,input[type="number"],input[type="text"]{font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1px solid var(--muted);border-radius:3px;padding:.5rem .6rem;min-height:2.6rem}
+.status{display:inline-block;font-size:.82rem;font-weight:600;padding:.12rem .45rem;border-radius:3px;background:var(--panel)}
+#tracker-table{min-width:900px}
+#tracker-table th:nth-child(1){width:21%}#tracker-table th:nth-child(2){width:15%}#tracker-table th:nth-child(3){width:17%}#tracker-table th:nth-child(4){width:23%}#tracker-table th:nth-child(5){width:24%}
+.status.proposed,.status.consultation{background:var(--heat-soft)}
+.verify{display:inline-block;margin-left:.35rem;font-size:.8rem;font-weight:600;color:var(--high)}
+.deadline{background:var(--heat-soft);border-left:4px solid var(--heat);padding:1rem 1.2rem;max-width:var(--measure);margin:0 0 1rem}
+.deadline strong{font-variant-numeric:tabular-nums}
+
+/* tool */
+.modes{display:inline-flex;border:1px solid var(--ink);border-radius:3px;overflow:hidden;margin:1rem 0 1.5rem}
+.modes button{font:600 .95rem var(--sans);padding:.6rem 1rem;background:transparent;color:var(--ink);border:0;cursor:pointer}
+.modes button+button{border-left:1px solid var(--ink)}
+.modes button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.tool{display:grid;grid-template-columns:minmax(0,1fr);gap:2rem}
+@media (min-width:980px){.tool{grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:3rem}}
+fieldset{border:0;padding:0;margin:0 0 1.5rem}
+legend{font-weight:700;font-size:1rem;margin-bottom:.6rem;padding:0}
+.field{display:grid;grid-template-columns:minmax(0,1fr) minmax(8.5rem,14rem);gap:.4rem .8rem;align-items:center;padding:.45rem 0;border-bottom:1px solid var(--line)}
+.field label{font-size:.95rem}
+.field small{grid-column:1/-1;color:var(--muted);font-size:.84rem;margin-top:-.2rem}
+.field select,.field input{width:100%}
+.field.check{grid-template-columns:auto 1fr;justify-content:start}
+.field.check input{width:1.2rem;height:1.2rem;min-height:0}
+.results{min-width:0}
+.summary{font-family:var(--serif);font-size:1.12rem;line-height:1.65;margin-bottom:1.5rem}
+.summary b{font-family:var(--sans)}
+.nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(10.5rem,1fr));gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line);margin-bottom:1.5rem}
+.num{padding:.8rem .9rem;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.num strong{display:block;font-size:1.35rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.num.heat strong{color:var(--heat)}
+.num span{font-size:.84rem;color:var(--muted)}
+.gauge{margin:0 0 1.75rem}
+.gauge-track{position:relative;height:1.1rem;background:var(--panel);border-radius:2px;overflow:hidden}
+.gauge-fill{position:absolute;left:0;top:0;bottom:0;background:var(--heat)}
+.gauge-mark{position:absolute;top:-.3rem;bottom:-.3rem;width:3px;background:var(--ink)}
+.gauge-legend{display:flex;justify-content:space-between;gap:1rem;font-size:.86rem;color:var(--muted);margin-top:.45rem}
+.flags{list-style:none;padding:0;margin:0 0 1.75rem}
+.flags li{display:grid;grid-template-columns:5.5rem 1fr;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.97rem}
+.sev{font-weight:700;font-size:.85rem}
+.sev.high{color:var(--high)}
+.sev.caution{color:var(--heat)}
+.sev.info{color:var(--muted)}
+.out-block{margin:0 0 2rem}
+.out-block h3{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+pre.json{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:1rem;overflow:auto;max-height:22rem;font-size:.82rem;line-height:1.45;margin:0}
+.conditions{font-family:var(--serif);line-height:1.65;padding-left:1.4rem}
+.conditions li{margin-bottom:.7rem}
+.tech td:first-child{color:var(--muted)}
+.tech td:last-child{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.error{border-left:4px solid var(--high);background:var(--high-soft);padding:.8rem 1rem;margin-bottom:1rem}
+.caveat{font-size:.9rem;color:var(--muted);border-top:1px solid var(--line);padding-top:1rem}
+
+/* evidence */
+.tally{display:flex;flex-wrap:wrap;gap:2.5rem;margin:1.5rem 0 2rem}
+.tally div strong{display:block;font-size:2.4rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.tally div span{color:var(--muted);font-size:.95rem}
+.corrections{padding-left:1.3rem;max-width:var(--measure)}
+.corrections li{margin-bottom:.9rem;font-family:var(--serif);line-height:1.6}
+.corrections b{font-family:var(--sans)}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em}
+.tree{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:1rem 1.2rem;overflow-x:auto;font-size:.88rem;line-height:1.6;margin:0}
+
+footer.site{border-top:1px solid var(--line);padding:2.5rem 0 3rem;font-size:.92rem;color:var(--muted)}
+footer.site p{max-width:var(--measure)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 1.25rem);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:.6rem 1rem;border-radius:3px;font-size:.92rem;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{header.site,.actions,.modes,.tabs,.filters{display:none}section.block{border:0;padding:1rem 0}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#top"><b>Aquatic Guardian</b><span>a Sentient Futures project</span></a>
+    <nav class="primary" aria-label="Sections">
+      <a href="#mission">Why it matters</a>
+      <a href="#framework">Framework</a>
+      <a href="#language">Model language</a>
+      <a href="#tracker">Tracker</a>
+      <a href="#tool">Screening tool</a>
+      <a href="#evidence">Evidence</a>
+      <a href="#source">Open source</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero" id="top">
+  <div class="wrap">
+    <p class="hero-sentence">
+      A <label class="visually-hidden" for="h-mw">IT load in megawatts</label><input id="h-mw" type="number" inputmode="decimal" min="1" max="999" step="1" value="24"> megawatt AI data centre cooled with seawater draws <output id="h-flow">0.84</output> cubic metres of water every second and sends it back <label class="visually-hidden" for="h-dt">temperature rise in degrees Celsius</label><input id="h-dt" type="number" inputmode="decimal" min="1" max="20" step="1" value="8"> °C warmer.
+    </p>
+    <p class="hero-follow">That is <output id="h-mgd">19</output> million US gallons a day, <output id="h-ratio">10</output> times the threshold at which US rules for cooling-water intakes at power plants and factories begin to apply. No data-centre reporting rule yet counts the fish, crabs and larvae drawn in with it.</p>
+    <div class="actions">
+      <a class="btn solid" href="#tool">Screen a facility</a>
+      <a class="btn ghost" href="#language">Find model language for your jurisdiction</a>
+    </div>
+    <p class="hero-note">Figures assume a PUE of 1.15 and once-through cooling. Change the numbers above; the full screening tool below uses the same verified engine.</p>
+  </div>
+</section>
+
+<section class="block" id="mission">
+  <div class="wrap split">
+    <div class="prose">
+      <h2>AI's footprint reaches animals through water</h2>
+      <p class="serif">Almost every watt a data centre draws leaves as heat. Where that heat is carried away by seawater, a river or a lake, or where the servers sit in the water itself, it reaches animals directly: fish and crabs pinned against intake screens, larvae drawn through heat exchangers, warm plumes that pull animals in and then chill them when a facility shuts down.</p>
+      <p class="serif">Governments are writing data-centre rules now, mostly about electricity prices, grids and communities. Aquatic Guardian gives them a ready-made module for the water and the animals: definitions, metrics, permit conditions and model clauses that fit the instruments already on the table.</p>
+      <p class="serif">Sentient Futures works on field building for the welfare of all sentient beings as AI reshapes the world. This project applies that mission to the physical side of AI. Compute governance usually means chips and training runs; here it means the heat and water of the buildings that run them, and the animals, many of them sentient, that live in that water. Aquatic Guardian grew out of the Sentient Futures fellowship, extending the Phase 1 report <a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Governing the Ocean Server Farm</a> into a framework, a toolkit and a public app.</p>
+    </div>
+    <div>
+      <div class="fact"><strong>485 to ~950 TWh</strong><span>Projected data-centre electricity use, 2025 to 2030 (IEA, April 2026). Nearly all of it ends up as heat.</span></div>
+      <div class="fact"><strong>24 MW</strong><span>HiCloud's underwater data centre off Shanghai's Lingang area, commercial since May 2026.</span></div>
+      <div class="fact"><strong>None yet</strong><span>No data-centre disclosure rule in the US, the EU or British Columbia defines heat discharged to water or counts animals at intakes (September 2026).</span></div>
+      <div class="fact"><strong>Fishes, cephalopods, decapods</strong><span>Recognised as sentient in UK law since 2022, and within the "realistic possibility" of consciousness under the 2024 New York Declaration.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="framework">
+  <div class="wrap">
+    <h2>The framework</h2>
+    <p class="lede">Version 0.1, a public consultation draft. It adds to existing regulation rather than replacing it: every requirement names the instrument it attaches to.</p>
+    <ul class="principles">
+      <li><b>Heat in water is pollution before it is a resource</b>UNCLOS counts the introduction of energy as marine pollution, and Canada's Fisheries Act already treats heated water as potentially deleterious.</li>
+      <li><b>Reuse only counts before discharge</b>Heat recovered from the cooling loop is reuse. Warm water released to a bay is discharge, whatever happens to it afterwards.</li>
+      <li><b>Critical conditions, not averages</b>Mixing zones are judged at slack water and summer-maximum temperatures, as regulators already do for power plants.</li>
+      <li><b>Count individuals as well as populations</b>Animals affected at intakes are reported by taxon, life stage and sentience evidence, never folded into a single score.</li>
+      <li><b>Honest uncertainty</b>Screening results are labelled as screening. Species values nobody has reviewed are marked as placeholders and cannot support a decision.</li>
+      <li><b>Indigenous rights first</b>Siting near Indigenous waters requires consultation to the applicable legal standard, including UNDRIP-aligned laws and treaty fishing rights.</li>
+    </ul>
+
+    <ol class="layers" aria-label="The five layers, in order">
+      <li><h3>Disclosure</h3><p>Operators publish a machine-readable Aquatic Disclosure Record each period: heat to water, discharge temperature rise, intake flow and screen velocity, animals impinged and entrained by taxon and life stage, chemicals, noise, cables and freshwater use.</p><p class="attach">Attaches to: DOE reporting in S.4214/H.R.9442, EU Delegated Regulation 2024/1364, state disclosure bills, BC Hydro applications.</p></li>
+      <li><h3>Assessment</h3><p>Before approval, a thermal study at critical design conditions with a recognised model, an intake assessment, a receptor assessment covering protected and sentient taxa, and cumulative climate effects.</p><p class="attach">Attaches to: NPDES and §316(a) demonstrations, Fisheries Act authorisations, EU EIA and Habitats Directive assessments, CADA acceleration-zone designation.</p></li>
+      <li><h3>Permit conditions</h3><p>Closed-loop cooling by default, a numeric temperature increment at a defined mixing-zone edge, a 0.15 m/s screen velocity, cold-shock ramp-down, chemical limits and a reopener.</p><p class="attach">Attaches to: NPDES permits, BC Environmental Management Act authorisations, member-state water permits.</p></li>
+      <li><h3>Monitoring</h3><p>Continuous temperature, summer oxygen, intake sampling by taxon and life stage, and occupancy surveys corrected for detection probability, published within 90 days.</p><p class="attach">Attaches to: permit monitoring and reporting requirements.</p></li>
+      <li><h3>Adaptive management</h3><p>Exceedances, cold-shock events or detection-corrected declines trigger a reopener or load reduction. Data centres can shift compute to another site in minutes, which makes this far more practical than it ever was for power plants.</p><p class="attach">Attaches to: permit reopeners, the EU 2028 rating review, BC's two-year allocation windows.</p></li>
+    </ol>
+
+    <h3 style="margin-top:1rem">Which facilities are covered</h3>
+    <div class="scroll" style="margin-top:.75rem">
+      <table>
+        <thead><tr><th scope="col">Tier</th><th scope="col">Facilities</th><th scope="col">Layers</th></tr></thead>
+        <tbody>
+          <tr><td>A. Disclosure</td><td>500 kW IT or more, withdrawing or discharging surface water or seawater, or sited in, on or under water (matches the EU reporting floor)</td><td>1</td></tr>
+          <tr><td>B. Assessment</td><td>Tier A with design intake above 2 MGD (0.088 m³/s), more than 3 MW of heat to water, or near protected habitat</td><td>1 to 5</td></tr>
+          <tr><td>C. Enhanced</td><td>Submerged or floating facilities, estuaries and enclosed bays, and any facility supplying heat to aquaculture</td><td>1 to 5, plus decommissioning assurance, baseline surveys and welfare standards</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src" style="margin-top:1rem">Full text: <code>policy/FRAMEWORK.md</code> in the repository. Licensed CC BY 4.0.</p>
+  </div>
+</section>
+
+<section class="block" id="language">
+  <div class="wrap">
+    <h2>Model language</h2>
+    <p class="lede">Clauses drafted to drop into the bills, permits, rating schemes and funding agreements that exist today. Copy them, adapt the bracketed values, and cite the repository.</p>
+    <div class="tabs" role="tablist" aria-label="Jurisdiction" id="lang-tabs"></div>
+    <div id="lang-panel" role="tabpanel" tabindex="0"></div>
+  </div>
+</section>
+
+<section class="block" id="tracker">
+  <div class="wrap">
+    <h2>Policy tracker</h2>
+    <p class="lede">The instruments this framework is designed to attach to, their status, and what to ask for. Status as of <span id="as-of"></span>.</p>
+    <div id="deadline"></div>
+    <div class="filters">
+      <label for="f-stage">Show</label>
+      <select id="f-stage">
+        <option value="all">All instruments</option>
+        <option value="open">Open opportunities (proposed, consultation, programme)</option>
+        <option value="enacted">In force</option>
+      </select>
+      <label for="f-juris">Jurisdiction</label>
+      <select id="f-juris"><option value="all">All</option></select>
+    </div>
+    <div class="scroll">
+      <table id="tracker-table">
+        <thead><tr><th scope="col">Instrument</th><th scope="col">Status</th><th scope="col">Key dates</th><th scope="col">Hook</th><th scope="col">What to ask for</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="src" style="margin-top:1rem">Items marked "check" have conflicting or secondary sources. Corrections are welcome as pull requests to <code>data/instruments.json</code> with a primary-source link.</p>
+  </div>
+</section>
+
+<section class="block" id="tool">
+  <div class="wrap">
+    <h2>Screening tool</h2>
+    <p class="lede">Estimate a facility's heat and water footprint, which rules it is likely to trigger, and what it would have to report. Everything runs in your browser; nothing you enter is sent anywhere.</p>
+    <div class="modes" role="group" aria-label="Level of detail">
+      <button type="button" data-mode="public" aria-pressed="true">Public</button>
+      <button type="button" data-mode="official" aria-pressed="false">Officials</button>
+      <button type="button" data-mode="technical" aria-pressed="false">Technical</button>
+    </div>
+    <div class="tool">
+      <form id="tool-form" novalidate></form>
+      <div class="results" id="results" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="evidence">
+  <div class="wrap">
+    <h2>How the numbers were checked</h2>
+    <p class="lede">Every equation in the toolkit has a test that reproduces a published value or demonstrates the property on synthetic data with a known answer. The browser engine is tested against the Python reference on 200 random facilities.</p>
+    <div class="tally">
+      <div><strong>40</strong><span>automated checks, all passing in v0.1</span></div>
+      <div><strong>6</strong><span>corrections to the earlier models</span></div>
+      <div><strong>4</strong><span>items awaiting outside benchmark or text check</span></div>
+      <div><strong>All</strong><span>species welfare parameters still placeholders</span></div>
+    </div>
+    <div class="split">
+      <div>
+        <h3>Corrections adopted</h3>
+        <ol class="corrections">
+          <li><b>Per-port and per-length fluxes.</b> Using total diffuser flow in a point-plume law understates dilution by N<sup>2/3</sup>, a factor of 4.6 for ten ports.</li>
+          <li><b>Tidal excursion.</b> Excursion is 2U/ω per half-cycle. The earlier 10.7 km implies a 0.75 m/s current, typical of straits rather than open coast.</li>
+          <li><b>Numerical diffusion.</b> First-order upwind at 25 m adds more mixing than the ocean does at any scale below about 3 km, so the old model under-predicted peak temperatures near the outfall.</li>
+          <li><b>Critical conditions.</b> Compliance is tested at slack water and summer maximum temperature, not at a mean current.</li>
+          <li><b>Ammonia.</b> Seawater speciation needs a salinity correction; US saltwater criteria date from 1989 and Canada has no marine guideline.</li>
+          <li><b>Heat reuse.</b> Reuse is practical only before discharge. Heat in open water is a regulated load, not a resource.</li>
+        </ol>
+      </div>
+      <div>
+        <h3>What still needs experts</h3>
+        <p>Near-field dilution coefficients need a benchmark against Visual Plumes UM3 or NRFIELD. The seawater ammonia correction and the California Thermal Plan values need checking against primary text. Species temperature thresholds and welfare parameters need species specialists and a fish-health veterinarian. Site currents must come from station data.</p>
+        <p>The tool does not model stratified trapping, bottom attachment or far-field transport. Use it to scope a question, not to answer a permit.</p>
+        <p class="src">Full register: <code>docs/VERIFICATION.md</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="source">
+  <div class="wrap split">
+    <div>
+      <h2>Open source</h2>
+      <p class="serif">The framework, model language, schemas, Python library, notebooks integration and this website live in one repository, so the policy text, the app and the research notebooks all use the same verified functions.</p>
+      <p class="serif">Code is Apache-2.0. Policy text and documentation are CC BY 4.0. The disclosure schema is CC0, so an agency can adopt it without conditions.</p>
+      <h3 style="margin-top:1.5rem">Use it in Colab</h3>
+<pre class="tree"><code>!pip -q install "git+https://github.com/&lt;org&gt;/aquatic-guardian.git@v0.1.0"
+import aquatic_guardian as ag
+r = ag.screening.screen({"it_load_mw": 24, "delta_t_k": 8})
+print(r["near_field"]["delta_t_near_field_k"])</code></pre>
+      <p class="src" style="margin-top:1rem">Cite as: Aquatic Guardian contributors (2026), <i>Aquatic Guardian</i>, version 0.1.0. See <code>CITATION.cff</code>.</p>
+    </div>
+    <div>
+      <h3>Repository</h3>
+<pre class="tree"><code>policy/          framework, recommendations, model language
+schemas/         disclosure and notebook handoff (JSON Schema)
+data/            instrument tracker, criteria with sources
+src/             Python library (screening, plume, tidal,
+                 numerics, water quality, occupancy, imaging,
+                 tracking, bioenergetics, sentience)
+tests/           40 checks incl. browser-engine parity
+app/             browser engine and site build
+site/            this website
+notebooks/       how the three Colab notebooks connect
+docs/            verification register, corrections,
+                 metrics, crosswalk</code></pre>
+      <h3 style="margin-top:1.5rem">Get involved</h3>
+      <p>Most needed now: a UM3 benchmark, species thresholds from specialists, tracker corrections, and officials willing to test the model language against a real file. See <code>CONTRIBUTING.md</code>.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p><b>Aquatic Guardian 0.1.0</b>, 29 September 2026. A Sentient Futures project building on <i>Governing the Ocean Server Farm</i> (Elchami, Kaplan and Daher, April 2026).</p>
+    <p>Screening results are for scoping and public understanding. They are not legal advice and do not replace a regulatory mixing-zone study, a Clean Water Act §316 demonstration, a Fisheries Act authorisation or species-expert review. Policy status changes; check the tracker's primary sources before relying on a date.</p>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+/* Aquatic Guardian screening engine (JavaScript mirror of src/aquatic_guardian/screening.py).
+ * Apache-2.0. Parity with the Python reference is checked by tests/test_engine_parity.py.
+ * Screening only: conservative slack-water, stagnant, unstratified near-field assumptions.
+ */
+(function (root) {
+  "use strict";
+  var G = 9.81, CP_SEA = 3990.0, CP_FRESH = 4184.0;
+  var MGD_TO_M3S = 3.785411784e3 / 86400.0, THROUGH_SCREEN = 0.5 * 0.3048;
+  var M2 = 12.4206012 * 3600.0, OMEGA = 2 * Math.PI / M2;
+  var C_POINT = 0.089, C_LINE = 0.38, JET_DECAY = 5.6;
+  var COOLING = { once_through: 1.0, hybrid: 0.5, closed_loop_air: 0.0 };
+  var WA = { extraordinary: 13.0, excellent: 16.0, good: 19.0, fair: 22.0 };
+  var F_TO_K = 5 / 9;
+
+  var DEFAULTS = {
+    it_load_mw: 24.0, pue: 1.15, cooling_type: "once_through", fraction_to_water: null,
+    reuse_fraction: 0.0, delta_t_k: 8.0, water_type: "marine", t_ambient_c: 12.0, s_psu: 30.0,
+    ph: 8.0, u_peak_ms: 0.3, depth_m: 20.0, n_ports: 10, port_diameter_m: 0.3,
+    port_spacing_m: 4.0, cooling_fraction: 1.0, temperature_rule: "wa_marine",
+    wa_category: "excellent", custom_increment_k: 1.0, grid_dx_m: 25.0, grid_dt_s: 10.0,
+    aquaculture_reuse: false
+  };
+
+  function density(t, s) {
+    var rw = 999.842594 + 6.793952e-2 * t - 9.095290e-3 * t * t + 1.001685e-4 * Math.pow(t, 3)
+      - 1.120083e-6 * Math.pow(t, 4) + 6.536332e-9 * Math.pow(t, 5);
+    var a = 8.24493e-1 - 4.0899e-3 * t + 7.6438e-5 * t * t - 8.2467e-7 * Math.pow(t, 3) + 5.3875e-9 * Math.pow(t, 4);
+    var b = -5.72466e-3 + 1.0227e-4 * t - 1.6546e-6 * t * t;
+    s = Math.max(s, 0);
+    return rw + a * s + b * Math.pow(s, 1.5) + 4.8314e-4 * s * s;
+  }
+  function rhoCp(t, s) {
+    var cp = CP_FRESH + (CP_SEA - CP_FRESH) * Math.min(Math.max(s, 0), 35) / 35;
+    return density(t, s) * cp;
+  }
+  function reducedGravity(ta, dt, s) {
+    var ra = density(ta, s), re = density(ta + dt, s);
+    return G * (ra - re) / ra;
+  }
+  function doSat(t, s) {
+    var A = [2.00907, 3.22014, 4.05010, 4.94457, -2.56847e-1, 3.88767];
+    var B = [-6.24523e-3, -7.37614e-3, -1.03410e-2, -8.17083e-3];
+    var ts = Math.log((298.15 - t) / (273.15 + t));
+    var ln = A[0] + A[1] * ts + A[2] * ts * ts + A[3] * Math.pow(ts, 3) + A[4] * Math.pow(ts, 4) + A[5] * Math.pow(ts, 5)
+      + s * (B[0] + B[1] * ts + B[2] * ts * ts + B[3] * Math.pow(ts, 3)) - 4.88682e-7 * s * s;
+    return Math.exp(ln) * 1.42905;
+  }
+  function pka(t, s) {
+    var p = 0.09018 + 2729.92 / (t + 273.2);
+    if (s > 0) { var I = 19.9273 * s / (1000 - 1.005109 * s); p += (0.1552 - 0.0003142 * t) * I; }
+    return p;
+  }
+  function nh3Frac(t, ph, s) { return 1 / (1 + Math.pow(10, pka(t, s) - ph)); }
+  function okubo(L) { return 0.0103 * Math.pow(L * 100, 1.15) * 1e-4; }
+  function okuboCross(k) { return Math.pow(k * 1e4 / 0.0103, 1 / 1.15) / 100; }
+  function kNum(u, dx, dt) { var c = dt ? Math.abs(u) * dt / dx : 0; return Math.abs(u) * dx / 2 * (1 - c); }
+
+  function temperatureRule(rule, t, cat, custom) {
+    if (rule === "wa_marine") {
+      var crit = WA[cat];
+      if (t >= crit) return { criterion_c: crit, allowed_increment_k: 0.3, basis: "natural exceedance: 0.3 C cap" };
+      var formula = t > 2 ? 12 / (t - 2) : Infinity, head = crit - t;
+      if (formula <= head) return { criterion_c: crit, allowed_increment_k: formula, basis: "12/(T-2) at mixing-zone edge" };
+      return { criterion_c: crit, allowed_increment_k: head, basis: "headroom to criterion" };
+    }
+    if (rule === "ca_new_coastal") return { criterion_c: null, allowed_increment_k: 4 * F_TO_K,
+      max_discharge_delta_k: 20 * F_TO_K, basis: "CA Thermal Plan (new coastal): 4 F at surface beyond 1,000 ft" };
+    if (rule === "custom") return { criterion_c: null, allowed_increment_k: +custom, basis: "permit-specific increment" };
+    throw new Error("unknown rule " + rule);
+  }
+
+  function nearField(flow, n, d, sp, depth, ta, dt, s, u) {
+    var gp = reducedGravity(ta, dt, s);
+    var Q = flow / n, uj = Q / (Math.PI * d * d / 4), M = Q * uj, Bf = gp * Q;
+    var L = n > 1 ? n * sp : d, q = flow / L, b = gp * q;
+    var lM = Bf > 0 ? Math.pow(M, 0.75) / Math.sqrt(Bf) : Infinity;
+    var r = sp / depth, reg = n <= 1 ? "point" : (r <= 0.3 ? "line" : (r >= 1.0 ? "point" : "transitional"));
+    var z = depth, sJet = z / (JET_DECAY * d);
+    var sPt = gp > 0 ? Math.max(C_POINT * Math.pow(Bf, 1 / 3) * Math.pow(z, 5 / 3) / Q, sJet) : sJet;
+    var sLn = gp > 0 ? C_LINE * Math.pow(b, 1 / 3) * z / q : NaN;
+    var S = reg === "point" ? sPt : (reg === "line" ? sLn : Math.min(sPt, sLn));
+    S = Math.max(S, 1);
+    return { g_prime: gp, regime: reg, s_over_H: r, dilution_point: sPt, dilution_line: sLn,
+      dilution: S, delta_t_near_field_k: dt / S, jet_dominated: lM > depth, jet_velocity_ms: uj,
+      total_flow_error_factor: Math.pow(n, 2 / 3) };
+  }
+
+  function requiredReporting(cool, marine, aqua) {
+    var items = [];
+    if (cool !== "closed_loop_air") items.push("impingement counts by taxon, life stage and tier",
+      "entrainment estimates by taxon and life stage (eggs/larvae separate)",
+      "fish aggregation and cold-shock events at the outfall");
+    if (marine) items.push("marine mammal and sea turtle interaction log (MMPA/ESA/SARA)");
+    if (aqua) items.push("named welfare standard for any farmed species using reused heat",
+      "stocking density, water quality and mortality by species", "stunning and slaughter method");
+    return items;
+  }
+
+  function screen(input) {
+    var f = {}, k;
+    for (k in DEFAULTS) f[k] = DEFAULTS[k];
+    for (k in (input || {})) if (input[k] !== undefined) f[k] = input[k];
+    if (f.it_load_mw < 0 || f.pue < 1) throw new Error("IT load must be >= 0 and PUE >= 1.0");
+    if (!(f.delta_t_k > 0)) throw new Error("Temperature rise must be above 0 K");
+    var frac = f.fraction_to_water === null ? COOLING[f.cooling_type] : f.fraction_to_water;
+    var s = f.water_type !== "fresh" ? f.s_psu : 0;
+    var qRej = f.it_load_mw * f.pue, qReuse = qRej * frac * f.reuse_fraction;
+    var qW = qRej * frac * (1 - f.reuse_fraction);
+    var flow = qW > 0 ? qW * 1e6 / (rhoCp(f.t_ambient_c, s) * f.delta_t_k) : 0;
+    var o = { inputs: Object.assign({}, f, { fraction_to_water: frac, s_psu: s }),
+      heat_rejected_mw: qRej, heat_reused_mw: qReuse, heat_to_water_mw: qW, flow_m3s: flow,
+      flow_l_s_per_mw_it: f.it_load_mw ? flow * 1000 / f.it_load_mw : 0 };
+    var mgd = flow / MGD_TO_M3S;
+    o.intake_316b = { design_intake_mgd: mgd, exceeds_2_mgd: mgd > 2, cooling_fraction: f.cooling_fraction,
+      likely_applicable: mgd > 2 && f.cooling_fraction >= 0.25, min_screen_open_area_m2: flow / THROUGH_SCREEN };
+    var exc = 2 * f.u_peak_ms / OMEGA;
+    o.tidal_excursion_m = exc;
+    var vol = Math.PI * Math.pow(exc / 2, 2) * f.depth_m, wd = flow * 12.4206 * 3600;
+    var tf = vol > 0 ? wd / vol : Infinity;
+    o.tidal_volume_check = { reference_volume_m3: vol, withdrawn_per_cycle_m3: wd, fraction: tf, within_1_percent: tf <= 0.01 };
+    var rule = temperatureRule(f.temperature_rule, f.t_ambient_c, f.wa_category, f.custom_increment_k);
+    o.temperature_rule = rule;
+    if (flow > 0) {
+      var nf = nearField(flow, Math.round(f.n_ports), f.port_diameter_m, f.port_spacing_m, f.depth_m,
+        f.t_ambient_c, f.delta_t_k, s, f.u_peak_ms);
+      nf.meets_rule = nf.delta_t_near_field_k <= rule.allowed_increment_k;
+      o.near_field = nf;
+    } else o.near_field = null;
+    var tDis = f.t_ambient_c + f.delta_t_k, doA = doSat(f.t_ambient_c, s), doD = doSat(tDis, s);
+    var fa = nh3Frac(f.t_ambient_c, f.ph, s), fd = nh3Frac(tDis, f.ph, s);
+    o.water_quality = { do_sat_ambient_mg_l: doA, do_sat_discharge_mg_l: doD, do_sat_drop_frac: 1 - doD / doA,
+      nh3_frac_ambient: fa, nh3_frac_discharge: fd, nh3_frac_ratio: fd / fa };
+    var kn = kNum(f.u_peak_ms, f.grid_dx_m, f.grid_dt_s);
+    o.numerics = { k_num_upwind_m2s: kn, k_okubo_at_dx_m2s: okubo(f.grid_dx_m), k_okubo_1km_m2s: okubo(1000),
+      crossover_scale_m: kn > 0 ? okuboCross(kn) : 0 };
+    o.reporting = requiredReporting(f.cooling_type, f.water_type !== "fresh", !!f.aquaculture_reuse);
+    o.flags = flags(o, f);
+    return o;
+  }
+
+  function flags(o, f) {
+    var fl = [];
+    function add(id, sev, text) { fl.push({ id: id, severity: sev, text: text }); }
+    if (o.intake_316b.likely_applicable) add("intake_316b", "high", "Design intake exceeds 2 MGD with >= 25% cooling use: CWA §316(b) intake rules likely apply (US).");
+    if (f.water_type === "estuarine" && !o.tidal_volume_check.within_1_percent) add("tidal_volume", "high", "Intake exceeds 1% of the tidal-excursion volume (new-facility estuary test, 40 CFR 125.84).");
+    var nf = o.near_field;
+    if (nf !== null) {
+      if (!nf.meets_rule) add("temperature", "high", "Screening temperature rise at the surface exceeds the allowed increment under slack-water conditions.");
+      if (nf.regime === "transitional") add("regime", "caution", "Port spacing is between line- and point-plume regimes; the lower dilution is used. Run UM3/NRFIELD or CORMIX.");
+      if (nf.jet_dominated) add("jet", "caution", "Momentum length exceeds depth: the discharge is jet-dominated and plume asymptotes are outside their range.");
+      if (o.inputs.n_ports > 1) add("per_port", "info", "Per-port fluxes used. Feeding total flow into a point-plume law would understate dilution " + nf.total_flow_error_factor.toFixed(1) + "x.");
+    }
+    var mx = o.temperature_rule.max_discharge_delta_k;
+    if (mx !== undefined && mx !== null && f.delta_t_k > mx) add("max_delta", "high", "Discharge temperature rise exceeds the rule's maximum above natural (20 F under the CA Thermal Plan).");
+    if (o.water_quality.do_sat_drop_frac > 0.1) add("do", "caution", "Oxygen saturation at discharge temperature is more than 10% below ambient, while fish oxygen demand rises.");
+    if (o.numerics.k_num_upwind_m2s > o.numerics.k_okubo_1km_m2s) add("numerics", "caution", "At this grid spacing, first-order upwind diffusion exceeds physical mixing at 1 km: far-field plumes will be over-dispersed.");
+    if (f.u_peak_ms >= 0.6) add("tidal_speed", "info", "Peak current is typical of straits and passes rather than open coast; confirm with station data.");
+    if (f.reuse_fraction > 0 && f.aquaculture_reuse) add("welfare", "caution", "Heat reuse for aquaculture must name a welfare standard; more farmed animals is not automatically a benefit.");
+    return fl;
+  }
+
+  var api = { version: "0.1.0", DEFAULTS: DEFAULTS, screen: screen, doSat: doSat, nh3Frac: nh3Frac,
+    density: density, okubo: okubo, temperatureRule: temperatureRule };
+  if (typeof module !== "undefined" && module.exports) module.exports = api;
+  else root.AquaticGuardian = api;
+})(typeof window !== "undefined" ? window : this);
+
+</script>
+<script>
+window.AG_DATA = {"instruments": {"as_of": "2026-09-29", "note": "Status tracker for instruments the Aquatic Guardian module is designed to attach to. 'verify' marks facts with conflicting or secondary sources. Update through pull requests with a primary-source link.", "instruments": [{"id": "us-s4214", "jurisdiction": "United States (federal)", "name": "AI Data Center Moratorium Act (S.4214)", "type": "bill", "status": "In committee", "stage": "proposed", "dates": [{"date": "2026-03-25", "event": "Introduced by Sen. Sanders; referred to Senate Commerce, Science, and Transportation"}], "hook": "DOE facility reporting already names 'wastewater discharge and thermal outputs' and 'cooling chemicals used'; definition covers liquid cooling.", "action": "Define the thermal, intake and biology metrics; add submerged and seawater-cooled facilities to the definition; define 'harm the environment' to include sentient aquatic animals.", "doc": "policy/model-language/us-federal.md", "verify": false}, {"id": "us-hr9442", "jurisdiction": "United States (federal)", "name": "AI Data Center Moratorium Act (H.R.9442)", "type": "bill", "status": "In committee", "stage": "proposed", "dates": [{"date": "2026-06-24", "event": "Introduced by Rep. Ocasio-Cortez; referred to Energy and Commerce and Foreign Affairs"}], "hook": "House companion to S.4214 with the same reporting duty.", "action": "Same definitional amendments as S.4214; also package as a stand-alone transparency amendment.", "doc": "policy/model-language/us-federal.md", "verify": true, "verify_note": "Cosponsor count differs between sources (13 vs 14)."}, {"id": "us-eo14318", "jurisdiction": "United States (federal)", "name": "Executive Order 14318, Accelerating Federal Permitting of Data Center Infrastructure", "type": "executive order", "status": "In force", "stage": "enacted", "dates": [{"date": "2025-07-23", "event": "Signed; revoked EO 14141"}], "hook": "NEPA categorical exclusions do not waive ESA §7, MMPA, EFH, CZMA consistency or CWA §316.", "action": "Publish a checklist of statutory consultations that still apply to coastal and submerged projects.", "doc": "policy/model-language/us-federal.md", "verify": false}, {"id": "us-cwa316", "jurisdiction": "United States (federal)", "name": "Clean Water Act §316(a) and §316(b), 40 CFR Part 125", "type": "statute and rule", "status": "In force", "stage": "enacted", "dates": [{"date": "2014-08-15", "event": "Existing-facility intake rule (Subpart J) published"}], "hook": "§316(b) already counts impinged and entrained organisms; a once-through data centre above ~3-4 MW likely exceeds the 2 MGD trigger.", "action": "EPA guidance confirming §316(b) applies to data centres; add taxon, life-stage and tier fields to monitoring reports.", "doc": "policy/model-language/permit-conditions.md", "verify": false}, {"id": "us-ca-ab93", "jurisdiction": "California", "name": "AB 93 (data centre water-use disclosure)", "type": "bill", "status": "Vetoed", "stage": "failed", "dates": [{"date": "2025-10-11", "event": "Vetoed; SB 57 (data centre energy) signed the same day"}], "hook": "A reintroduced disclosure bill is the obvious California vehicle.", "action": "Reintroduce with the Aquatic Disclosure metric set; apply Once-Through Cooling Policy logic to seawater-cooled data centres.", "doc": "policy/model-language/us-state-model-bill.md", "verify": false}, {"id": "us-wa-wac173", "jurisdiction": "Washington", "name": "WAC 173-201A (surface water quality standards)", "type": "rule", "status": "In force", "stage": "enacted", "dates": [], "hook": "Marine 1-DMax categories and the 12/(T-2) point-source increment at the mixing-zone edge.", "action": "Ecology mixing-zone approvals for data centres use critical conditions and report sentience-tier biology.", "doc": "policy/model-language/permit-conditions.md", "verify": false}, {"id": "eu-rating", "jurisdiction": "European Union", "name": "EU data centre sustainability rating scheme (Delegated Regulation amending 2024/1364)", "type": "delegated act", "status": "Adopted by Commission; in Parliament and Council scrutiny", "stage": "adopted", "dates": [{"date": "2026-09-21", "event": "Adopted by the Commission"}, {"date": "2028-12-31", "event": "Review due"}], "hook": "Labels built from Article 12 EED reporting for data centres >= 500 kW; review adds indicators.", "action": "Propose a thermal-discharge-to-surface-water indicator for the 2028 review.", "doc": "policy/model-language/eu.md", "verify": false}, {"id": "eu-mps", "jurisdiction": "European Union", "name": "Consultation on minimum performance standards for data centres", "type": "consultation", "status": "Open", "stage": "consultation", "dates": [{"date": "2026-12-14", "event": "Consultation closes"}], "hook": "Binding floor for data centres; legislative proposal expected spring 2027.", "action": "Submit the Aquatic Guardian consultation response (draft in repository).", "doc": "policy/model-language/eu.md", "verify": false, "deadline": "2026-12-14"}, {"id": "eu-cada", "jurisdiction": "European Union", "name": "Cloud and AI Development Act, COM(2026) 502", "type": "proposed regulation", "status": "Commission proposal; ordinary legislative procedure", "stage": "proposed", "dates": [{"date": "2026-06-03", "event": "Proposed by the Commission"}], "hook": "Acceleration zones with 12-month permitting that cover water abstraction, wastewater discharge and heat authorisations.", "action": "Amend zone designation criteria to require Water Framework and Habitats Directive thermal and intake screening first.", "doc": "policy/model-language/eu.md", "verify": false}, {"id": "de-enefg", "jurisdiction": "Germany", "name": "Energieeffizienzgesetz (EnEfG) data centre requirements", "type": "statute", "status": "In force; amendment in draft", "stage": "enacted", "dates": [{"date": "2026-07-01", "event": "PUE <= 1.2 and ERF >= 10% for new data centres"}, {"date": "2027-07-01", "event": "ERF >= 15%"}, {"date": "2028-07-01", "event": "ERF >= 20%"}], "hook": "Clearest heat-reuse mandate in force.", "action": "Credit aquaculture reuse toward ERF only with a named welfare standard.", "doc": "policy/model-language/eu.md", "verify": false}, {"id": "ca-bc-bill31", "jurisdiction": "British Columbia", "name": "Energy Statutes Amendment Act, 2025 (Bill 31) and BC Hydro calls for power", "type": "statute and procurement", "status": "In force; first-round results due", "stage": "enacted", "dates": [{"date": "2025-11-27", "event": "Royal Assent"}, {"date": "2026-03-09", "event": "First call closed"}, {"date": "2026-09-30", "event": "Successful applicants expected (September 2026)"}], "hook": "Competitive allocation of 300 MW (AI) and 100 MW (conventional) per window, scored partly on environmental impact and First Nations involvement.", "action": "Add an aquatic-impact sub-score and a closed-loop heat-reuse credit to the next call, co-developed with First Nations.", "doc": "policy/model-language/canada.md", "verify": true, "verify_note": "Confirm whether first-round results have been announced."}, {"id": "ca-fisheries", "jurisdiction": "Canada (federal)", "name": "Fisheries Act s.34-36 and s.35", "type": "statute", "status": "In force", "stage": "enacted", "dates": [], "hook": "'Deleterious substance' expressly includes water changed by heat; s.35 covers habitat damage.", "action": "DFO guidance confirming heated cooling water is within s.36; authorisation conditions for intakes.", "doc": "policy/model-language/canada.md", "verify": false}, {"id": "ca-scip", "jurisdiction": "Canada (federal)", "name": "AI Sovereign Compute Infrastructure Program and AI Compute Challenge", "type": "funding programme", "status": "Applications closed; agreements pending", "stage": "programme", "dates": [{"date": "2026-04-15", "event": "SCIP launched"}, {"date": "2026-06-01", "event": "SCIP applications closed"}], "hook": "Contribution agreements include sustainability criteria.", "action": "Attach aquatic disclosure and heat-reuse conditions to funded facilities.", "doc": "policy/model-language/canada.md", "verify": false}, {"id": "intl-bbnj", "jurisdiction": "International", "name": "BBNJ Agreement (High Seas Treaty)", "type": "treaty", "status": "In force", "stage": "enacted", "dates": [{"date": "2026-01-17", "event": "Entered into force"}, {"date": "2027-01-11", "event": "COP-1 opens (to 22 January)"}], "hook": "EIA obligations beyond national jurisdiction; relevant to floating or high-seas compute.", "action": "COP-1 submission asking for guidance on continuous heat-rejecting infrastructure.", "doc": "policy/model-language/international.md", "verify": false}, {"id": "intl-iso30134", "jurisdiction": "International", "name": "ISO/IEC 30134 data centre KPIs", "type": "standard", "status": "Published series; no thermal-discharge KPI", "stage": "standard", "dates": [], "hook": "WUE covers consumptive freshwater only; nothing covers heat to water or intake biology.", "action": "Propose a technical report on thermal-discharge and intake KPIs to ISO/IEC JTC 1/SC 39.", "doc": "policy/model-language/international.md", "verify": false}, {"id": "uk-sentience", "jurisdiction": "United Kingdom", "name": "Animal Welfare (Sentience) Act 2022 and Animal Sentience Committee", "type": "statute", "status": "In force", "stage": "enacted", "dates": [], "hook": "Committee scrutinises government policy for effects on vertebrates, cephalopods and decapods; data centres are Critical National Infrastructure.", "action": "Request a Committee review of data-centre siting and cooling policy.", "doc": "policy/model-language/international.md", "verify": false}]}, "policy": [{"title": "United States, federal: model language", "intro": "Status, 29 September 2026: S.4214 (introduced 25 March 2026, Senate Commerce) and H.R.9442 (introduced 24 June 2026, House Energy and Commerce and Foreign Affairs) are in committee with no hearings reported. Enactment in the 119th Congress is unlikely, so the same text is also offered as a stand-alone amendment for any energy or appropriations vehicle.\n\nClause references follow the sponsors' section-by-section summary. Conform insertion points to the bill text before tabling.", "clauses": [{"id": "us-definition", "heading": "A1. Definition", "text": "In section 3, at the end of the definition of \"artificial intelligence data center\", insert: \"The term includes any such facility that is sited in, on, or beneath navigable waters, the territorial sea, or the Outer Continental Shelf, or that withdraws surface water or seawater for cooling or discharges heated water to surface waters.\""}, {"id": "us-thermal-outputs", "heading": "A2. Thermal outputs defined", "text": "In the transparency provision, after \"wastewater discharge and thermal outputs\", insert: \"reported for each facility and each quarter as: (A) heat rejected to surface water or seawater, in megawatt-hours; (B) discharge temperature and the increase above ambient, as mean, 95th percentile and maximum of hourly values; (C) design intake flow and actual intake volume, the fraction used for cooling, and the maximum through-screen intake velocity; (D) the dimensions of the area in which the applicable temperature criterion is exceeded, and the model and design conditions used to estimate it; (E) organisms impinged and entrained, by taxon and life stage, identifying fishes, cephalopod molluscs and decapod crustaceans separately; (F) the mass of active ingredient of each biocide, antifouling agent, corrosion inhibitor and coolant released; and (G) the fraction of rejected heat recovered for beneficial use before discharge, calculated as the energy reuse factor under ISO/IEC 30134-6.\""}, {"id": "us-harm", "heading": "A3. Environmental harm defined", "text": "In the conditions for lifting the moratorium, in the condition concerning harm to the environment, insert after \"environment\": \"including water quality, aquatic and marine habitat, essential fish habitat, species listed under the Endangered Species Act, marine mammals, and the welfare of sentient aquatic animals, including fishes, cephalopod molluscs and decapod crustaceans\"."}, {"id": "us-tribal", "heading": "A4. Tribal consultation", "text": "In the community-approval condition, insert: \"and, where a facility or its intake or discharge may affect waters in which a Tribal Nation holds treaty-reserved or other federally recognised rights, government-to-government consultation with that Tribal Nation, with its free, prior and informed consent sought before approval\"."}, {"id": "us-standalone", "heading": "B. Stand-alone text: Data Center Aquatic Transparency Act", "text": "SEC. 1. SHORT TITLE. This Act may be cited as the \"Data Center Aquatic Transparency Act\".\n\nSEC. 2. DEFINITIONS. In this Act: (1) \"covered data center\" means a data center with installed information technology capacity of 500 kilowatts or more that withdraws surface water or seawater, discharges to surface waters, or is sited in, on or beneath navigable waters, the territorial sea or the Outer Continental Shelf; (2) \"Secretary\" means the Secretary of Energy, acting in consultation with the Administrator of the Environmental Protection Agency and the Administrator of the National Oceanic and Atmospheric Administration.\n\nSEC. 3. REPORTING. Not later than 1 year after enactment, the Secretary shall require the operator of each covered data center to report quarterly the information described in subparagraphs (A) through (G) of [section A2], using a machine-readable format published by the Secretary.\n\nSEC. 4. PUBLICATION. The Secretary shall publish reports under section 3 at facility level within 90 days of receipt, except information the Secretary determines to be classified.\n\nSEC. 5. RELATIONSHIP TO OTHER LAW. Nothing in this Act limits the application of the Federal Water Pollution Control Act, including sections 316(a) and 316(b), the Endangered Species Act of 1973, the Marine Mammal Protection Act of 1972, the Magnuson-Stevens Fishery Conservation and Management Act, the Coastal Zone Management Act of 1972, or the National Marine Sanctuaries Act, to a covered data center."}], "key": "us-federal", "label": "US federal", "path": "policy/model-language/us-federal.md"}, {"title": "US states: model Data Centre Water and Heat Disclosure Act", "intro": "For California (a reintroduced AB 93-type bill), Washington, Oregon and other coastal states. California's AB 93 (water-use disclosure) was vetoed on 11 October 2025; SB 57 (data-centre energy) was signed the same day. A water-and-heat disclosure bill that reuses existing agency reporting systems addresses the cost objections that typically accompany vetoes of this kind.", "clauses": [{"id": "state-bill", "heading": "Model bill", "text": "SECTION 1. Definitions. (a) \"Covered data center\" means a facility with installed information technology capacity of 500 kilowatts or more located in this state or in state waters. (b) \"Aquatic disclosure record\" means the record defined by the Aquatic Disclosure Schema, version 0.1 or a later version adopted by the [state water agency] by regulation.\n\nSECTION 2. Reporting. The operator of each covered data center shall submit an aquatic disclosure record to the [state water agency] annually, and quarterly for any facility that withdraws surface water or seawater for cooling or discharges heated water to surface waters.\n\nSECTION 3. Use of existing systems. The [state water agency] shall accept records through its existing electronic reporting system for NPDES permittees and shall not require duplicate submission of information already reported under a permit.\n\nSECTION 4. Publication. The [state water agency] shall publish facility-level records within 90 days of receipt.\n\nSECTION 5. Once-through cooling. The [state water agency] shall, within one year, determine whether its policy on once-through cooling at coastal power plants should apply to covered data centers that use once-through cooling, and shall publish that determination with its reasons."}], "key": "us-state-model-bill", "label": "US states", "path": "policy/model-language/us-state-model-bill.md"}, {"title": "Model permit conditions", "intro": "For NPDES permits (US), waste discharge authorisations under BC's Environmental Management Act, Fisheries Act authorisations (Canada), and EU member-state water permits. Bracketed values are set by the permitting authority from its own rules; the defaults shown are the US reference values.\n\n### Temperature\n\n<!-- clause: permit-temperature -->\n1. Temperature. The increase in temperature above ambient at the edge of the mixing zone defined in Attachment [X] shall not exceed [the increment under the applicable water-quality standard, for example 12/(T-2) degrees C under WAC 173-201A-210 or 4 degrees F under the California Thermal Plan], evaluated at the critical design condition of [slack water / 10th-percentile current], [August] maximum ambient temperature and maximum discharge flow.\n<!-- /clause -->\n\n### Intake\n\n<!-- clause: permit-intake -->\n2. Intake. The maximum through-screen design intake velocity shall not exceed [0.5 ft/s (0.15 m/s)]. The permittee shall sample impingement and entrainment according to [protocol] and report organisms by taxon and life stage, identifying fishes, cephalopod molluscs and decapod crustaceans separately and reporting eggs and larvae as distinct life stages.\n<!-- /clause -->\n\n### Shutdown and cold shock\n\n<!-- clause: permit-cold-shock -->\n3. Shutdown. Except in an emergency, the permittee shall reduce the discharge temperature rise at no more than [1] degree C per [hour] during planned shutdowns between [1 November and 31 March] and shall report any mortality observed within [500] m of the outfall within 24 hours.\n<!-- /clause -->\n\n### Chemicals\n\n<!-- clause: permit-chemicals -->\n4. Chemicals. The permittee shall report the mass of active ingredient of each biocide, antifouling agent, corrosion inhibitor and coolant used, shall not use copper-based antifouling in [critical habitat or Essential Fish Habitat], and shall not use PFAS-containing coolants.\n<!-- /clause -->\n\n### Monitoring\n\n<!-- clause: permit-monitoring -->\n5. Monitoring. The permittee shall measure temperature continuously at the outfall, at [two] points on the mixing-zone edge and at a reference site; dissolved oxygen at the mixing-zone edge from [June to September]; and occupancy of [focal taxa] at impact and reference sites using a method whose analysis corrects for detection probability. Data shall be published within 90 days.\n<!-- /clause -->\n\n### Reopener and load management\n\n<!-- clause: permit-reopener -->\n6. Reopener and load management. If the temperature condition is exceeded on more than [N] days in a season, or a detection-corrected decline in occupancy of a focal taxon is observed relative to the reference site, the permittee shall within [30] days submit a plan to reduce heat discharge, which may include shifting computational load to other facilities, and this permit may be reopened.\n<!-- /clause -->\n\n### Heat reuse for aquaculture\n\n<!-- clause: permit-aquaculture -->\n7. Heat reuse for aquaculture. Heat supplied to aquaculture counts toward any energy reuse requirement only if each farmed species is kept to [named welfare standard] and stocking density, water quality, mortality and stunning method are reported annually.\n<!-- /clause -->", "clauses": [{"id": "permit-temperature", "heading": "Temperature", "text": "1. Temperature. The increase in temperature above ambient at the edge of the mixing zone defined in Attachment [X] shall not exceed [the increment under the applicable water-quality standard, for example 12/(T-2) degrees C under WAC 173-201A-210 or 4 degrees F under the California Thermal Plan], evaluated at the critical design condition of [slack water / 10th-percentile current], [August] maximum ambient temperature and maximum discharge flow."}, {"id": "permit-intake", "heading": "Intake", "text": "2. Intake. The maximum through-screen design intake velocity shall not exceed [0.5 ft/s (0.15 m/s)]. The permittee shall sample impingement and entrainment according to [protocol] and report organisms by taxon and life stage, identifying fishes, cephalopod molluscs and decapod crustaceans separately and reporting eggs and larvae as distinct life stages."}, {"id": "permit-cold-shock", "heading": "Shutdown and cold shock", "text": "3. Shutdown. Except in an emergency, the permittee shall reduce the discharge temperature rise at no more than [1] degree C per [hour] during planned shutdowns between [1 November and 31 March] and shall report any mortality observed within [500] m of the outfall within 24 hours."}, {"id": "permit-chemicals", "heading": "Chemicals", "text": "4. Chemicals. The permittee shall report the mass of active ingredient of each biocide, antifouling agent, corrosion inhibitor and coolant used, shall not use copper-based antifouling in [critical habitat or Essential Fish Habitat], and shall not use PFAS-containing coolants."}, {"id": "permit-monitoring", "heading": "Monitoring", "text": "5. Monitoring. The permittee shall measure temperature continuously at the outfall, at [two] points on the mixing-zone edge and at a reference site; dissolved oxygen at the mixing-zone edge from [June to September]; and occupancy of [focal taxa] at impact and reference sites using a method whose analysis corrects for detection probability. Data shall be published within 90 days."}, {"id": "permit-reopener", "heading": "Reopener and load management", "text": "6. Reopener and load management. If the temperature condition is exceeded on more than [N] days in a season, or a detection-corrected decline in occupancy of a focal taxon is observed relative to the reference site, the permittee shall within [30] days submit a plan to reduce heat discharge, which may include shifting computational load to other facilities, and this permit may be reopened."}, {"id": "permit-aquaculture", "heading": "Heat reuse for aquaculture", "text": "7. Heat reuse for aquaculture. Heat supplied to aquaculture counts toward any energy reuse requirement only if each farmed species is kept to [named welfare standard] and stocking density, water quality, mortality and stunning method are reported annually."}], "key": "permit-conditions", "label": "Permits", "path": "policy/model-language/permit-conditions.md"}, {"title": "European Union: consultation response and model amendments", "intro": "Status, 29 September 2026:\n- The Commission adopted a Delegated Regulation establishing an EU sustainability rating scheme for data centres of 500 kW and above on 21 September 2026, built on reporting under Delegated Regulation (EU) 2024/1364. It is in the two-month scrutiny period; first labels are expected in 2027 and a review is due by 31 December 2028.\n- A consultation on binding minimum performance standards for data centres closes on **14 December 2026**; a legislative proposal is expected in spring 2027.\n- The Cloud and AI Development Act (COM(2026) 502, 3 June 2026) is a Commission proposal in the ordinary legislative procedure. It would create acceleration zones with permitting within 12 months, including authorisations for water abstraction, wastewater discharge and heat.", "clauses": [{"id": "eu-mps-response", "heading": "A. Draft response to the minimum performance standards consultation", "text": "We support binding minimum performance standards for data centres and ask the Commission to include the effect of cooling on surface waters, which current reporting under Delegated Regulation (EU) 2024/1364 does not capture.\n\nWater use effectiveness measures consumptive freshwater use. A data centre cooled with seawater or river water, or sited under water, can report near-zero water use while discharging most of its electricity demand as heat to a water body and drawing large volumes of water, with the organisms in it, through its intakes. Heat is recognised as a form of energy capable of causing marine pollution under UNCLOS, and water temperature is a supporting element of ecological status under the Water Framework Directive.\n\nWe propose three additions for data centres that withdraw or discharge surface water or seawater: (1) a reporting indicator for heat discharged to surface water (MWh per year) and the maximum discharge temperature rise; (2) a reporting indicator for design intake flow and through-screen velocity, with impingement and entrainment reported by taxon and life stage; (3) a minimum standard that new data centres of 1 MW or more use closed-loop or air-rejected cooling unless the operator demonstrates, in the environmental assessment, that once-through cooling causes less harm at that site.\n\nWe also ask that heat supplied to aquaculture count toward waste-heat reuse only where farmed animals are kept to a recognised welfare standard, consistent with Article 13 TFEU.\n\nA machine-readable schema for these indicators, with a crosswalk to Delegated Regulation 2024/1364, is published under an open licence at [repository link]."}, {"id": "eu-cada-zones", "heading": "B1. Acceleration zones", "text": "In the article on the designation of acceleration zones, add: \"Before designating an acceleration zone, Member States shall identify water bodies within or adjacent to the zone that could receive cooling-water discharges or be subject to cooling-water abstraction, and shall assess whether data centres using such waters could affect the status of those water bodies under Directive 2000/60/EC or the integrity of sites under Directive 92/43/EEC. Zones shall not include areas where such effects cannot be excluded without an appropriate assessment.\""}, {"id": "eu-cada-resource", "heading": "B2. Simplified permitting", "text": "In the provision on resource-efficiency requirements for simplified permitting, add: \"Simplified permitting shall not be available for data centres that use once-through cooling with surface water or seawater unless the operator has demonstrated compliance with the thermal and intake indicators established under Directive (EU) 2023/1791.\""}, {"id": "eu-enefg", "heading": "D1. Energy reuse and animal welfare", "text": "Heat supplied to the rearing of animals shall be counted toward the energy reuse factor only if the recipient facility complies with [a recognised welfare standard for each species], and the operator reports the species, stocking density and mortality at the recipient facility."}], "key": "eu", "label": "European Union", "path": "policy/model-language/eu.md"}, {"title": "Canada: model language", "intro": "Status, 29 September 2026:\n- British Columbia's Energy Statutes Amendment Act, 2025 (Bill 31) received Royal Assent on 27 November 2025. From 1 January 2026 BC Hydro may make available 100 MW for conventional and 300 MW for AI data centres per two-year window, allocated competitively. The first call closed 9 March 2026; successful applicants were expected to be notified in September 2026 (confirm whether announced).\n- The federal AI Sovereign Compute Infrastructure Program launched 15 April 2026; applications closed 1 June 2026.\n- The Fisheries Act defines \"deleterious substance\" to include water changed by heat so that it would be deleterious to fish or fish habitat (s.34(1)); s.36(3) prohibits depositing a deleterious substance; s.35 prohibits harmful alteration, disruption or destruction of fish habitat without authorisation.", "clauses": [{"id": "bc-scoring", "heading": "A. BC Hydro call for power: scoring criterion", "text": "Aquatic and marine impact (weight: [x] %). Applicants shall submit an Aquatic Disclosure Record at design values. Scores are awarded for: (a) closed-loop or air-rejected cooling, or once-through cooling with a design intake below 0.088 m³/s; (b) heat recovered for beneficial use before discharge, as an energy reuse factor; (c) siting outside critical habitat under the Species at Risk Act, marine protected areas and eelgrass and kelp beds; (d) a monitoring and data-sharing plan co-developed with the First Nations whose territories include the receiving waters. An application proposing once-through cooling into waters within the territory of a First Nation shall include evidence of engagement with that Nation."}, {"id": "dfo-guidance", "heading": "B. Fisheries and Oceans Canada guidance", "text": "Cooling water discharged from a data centre at a temperature that would, if added to the receiving water, degrade or alter its quality so as to be deleterious to fish or fish habitat is a deleterious substance within the meaning of subsection 34(1) of the Fisheries Act. Operators should obtain a thermal assessment at critical design conditions before discharge, and intakes should be designed to avoid impingement and entrainment consistent with DFO guidance on intake screening and a Fisheries Act authorisation where section 35 applies."}, {"id": "ised-condition", "heading": "C. ISED contribution agreements", "text": "The recipient shall report an Aquatic Disclosure Record annually for each funded facility that withdraws or discharges surface water or seawater. Heat reused for aquaculture shall be supplied only to facilities that keep animals to [a recognised welfare standard]."}], "key": "canada", "label": "Canada", "path": "policy/model-language/canada.md"}, {"title": "International and United Kingdom", "intro": "", "clauses": [{"id": "bbnj-cop1", "heading": "A. BBNJ Agreement, COP-1 (11 to 22 January 2027)", "text": "We invite the Scientific and Technical Body to develop guidance on environmental impact assessment for continuous heat-rejecting infrastructure, including floating and submerged data centres, covering thermal discharge, cooling-water intake, underwater noise, electromagnetic fields from power cables, and chemical releases, and to encourage Parties to publish monitoring data through the Clearing-House Mechanism."}, {"id": "iso-proposal", "heading": "B. ISO/IEC JTC 1/SC 39: new work item", "text": "Proposed technical report: \"Data centres: key performance indicators for thermal discharge to surface water and cooling-water intake\", defining heat-to-water intensity (MWh discharged to surface water per MWh of IT energy), maximum discharge temperature rise, design intake intensity (m³ per MWh of IT energy) and through-screen velocity, with reporting guidance for organisms impinged and entrained."}, {"id": "uk-asc", "heading": "C. UK Animal Sentience Committee", "text": "We ask the Committee to consider whether policy on the siting, cooling and heat reuse of data centres designated as Critical National Infrastructure has regard to the welfare of fishes and decapod crustaceans affected by cooling-water intakes and thermal discharges, and by aquaculture supplied with data-centre heat."}], "key": "international", "label": "International and UK", "path": "policy/model-language/international.md"}]};
+</script>
+<script>
+(function () {
+  "use strict";
+  var E = window.AquaticGuardian, D = window.AG_DATA;
+  function $(s, r) { return (r || document).querySelector(s); }
+  function el(tag, attrs, html) {
+    var n = document.createElement(tag);
+    if (attrs) for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (html !== undefined) n.innerHTML = html;
+    return n;
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function fmt(x, d) {
+    if (x === null || x === undefined || isNaN(x)) return "n/a";
+    if (!isFinite(x)) return "unbounded";
+    var a = Math.abs(x);
+    if (d === undefined) d = a >= 100 ? 0 : a >= 10 ? 1 : a >= 1 ? 2 : 3;
+    return x.toLocaleString("en", { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function toast(msg) { var t = $("#toast"); t.textContent = msg; t.classList.add("show"); setTimeout(function () { t.classList.remove("show"); }, 1800); }
+  function copy(text, label) {
+    function fallback() {
+      var ta = el("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      toast(ok ? label + " copied" : "Select the text and copy it manually");
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { toast(label + " copied"); }, fallback);
+    else fallback();
+  }
+  function md(text) {
+    var out = [], list = false;
+    text.split("\n").forEach(function (line) {
+      var t = line.trim(), inline = esc(t.replace(/^- /, "")).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`(.+?)`/g, "<code>$1</code>");
+      if (/^- /.test(t)) { if (!list) { out.push("<ul>"); list = true; } out.push("<li>" + inline + "</li>"); return; }
+      if (list) { out.push("</ul>"); list = false; }
+      if (t) out.push("<p>" + inline + "</p>");
+    });
+    if (list) out.push("</ul>");
+    return out.join("");
+  }
+
+  /* hero */
+  function hero() {
+    var mw = parseFloat($("#h-mw").value), dt = parseFloat($("#h-dt").value);
+    if (!(mw > 0) || !(dt > 0)) return;
+    try {
+      var r = E.screen({ it_load_mw: mw, delta_t_k: dt });
+      $("#h-flow").textContent = fmt(r.flow_m3s, 2);
+      $("#h-mgd").textContent = fmt(r.intake_316b.design_intake_mgd, 0);
+      var ratio = r.intake_316b.design_intake_mgd / 2;
+      $("#h-ratio").textContent = ratio >= 1 ? fmt(ratio, ratio >= 10 ? 0 : 1) : fmt(ratio, 2);
+    } catch (e) {}
+  }
+  ["#h-mw", "#h-dt"].forEach(function (s) { $(s).addEventListener("input", hero); });
+  hero();
+
+  /* model language */
+  var tabs = $("#lang-tabs"), panel = $("#lang-panel");
+  function showGroup(i) {
+    var g = D.policy[i];
+    Array.prototype.forEach.call(tabs.children, function (b, j) { b.setAttribute("aria-selected", j === i ? "true" : "false"); b.tabIndex = j === i ? 0 : -1; });
+    panel.setAttribute("aria-labelledby", "tab-" + g.key);
+    var html = '<div class="intro">' + md(g.intro) + '</div>';
+    g.clauses.forEach(function (c, k) {
+      html += '<article class="clause"><div class="clause-head"><h3>' + esc(c.heading.replace(/^[A-Z]\d?\.\s*/, "")) +
+        '</h3><button type="button" class="btn ghost small" data-copy="' + i + ":" + k + '">Copy clause</button></div>' +
+        '<div class="clause-text">' + esc(c.text) + '</div></article>';
+    });
+    html += '<p class="src">Source file: <code>' + esc(g.path) + '</code>. CC BY 4.0.</p>';
+    panel.innerHTML = html;
+  }
+  D.policy.forEach(function (g, i) {
+    var b = el("button", { type: "button", role: "tab", id: "tab-" + g.key, "aria-controls": "lang-panel" }, esc(g.label));
+    b.addEventListener("click", function () { showGroup(i); });
+    tabs.appendChild(b);
+  });
+  tabs.addEventListener("keydown", function (e) {
+    var cur = Array.prototype.indexOf.call(tabs.children, document.activeElement);
+    if (cur < 0) return;
+    var n = D.policy.length, next = e.key === "ArrowRight" ? (cur + 1) % n : e.key === "ArrowLeft" ? (cur - 1 + n) % n : -1;
+    if (next >= 0) { e.preventDefault(); showGroup(next); tabs.children[next].focus(); }
+  });
+  panel.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-copy]"); if (!b) return;
+    var p = b.getAttribute("data-copy").split(":"), c = D.policy[+p[0]].clauses[+p[1]];
+    copy(c.text + "\n\nSource: Aquatic Guardian 0.1.0, " + D.policy[+p[0]].path + " (CC BY 4.0)", "Clause");
+  });
+  showGroup(0);
+
+  /* tracker */
+  var inst = D.instruments;
+  $("#as-of").textContent = new Date(inst.as_of + "T12:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  var juris = [];
+  inst.instruments.forEach(function (x) { if (juris.indexOf(x.jurisdiction) < 0) juris.push(x.jurisdiction); });
+  juris.forEach(function (j) { $("#f-juris").appendChild(el("option", { value: j }, esc(j))); });
+  function dateText(d) { return new Date(d + "T12:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); }
+  function renderTracker() {
+    var st = $("#f-stage").value, jr = $("#f-juris").value, rows = "";
+    inst.instruments.forEach(function (x) {
+      var open = ["proposed", "consultation", "programme", "adopted"].indexOf(x.stage) >= 0;
+      if (st === "open" && !open) return;
+      if (st === "enacted" && x.stage !== "enacted") return;
+      if (jr !== "all" && x.jurisdiction !== jr) return;
+      var dates = x.dates.map(function (d) { return "<div><b>" + dateText(d.date) + "</b> " + esc(d.event) + "</div>"; }).join("");
+      rows += "<tr><td><b>" + esc(x.name) + "</b><div class=\"src\">" + esc(x.jurisdiction) + "</div></td><td><span class=\"status " + esc(x.stage) + "\">" + esc(x.status) + "</span>" +
+        (x.verify ? '<span class="verify" title="' + esc(x.verify_note || "") + '">check</span><div class="src">' + esc(x.verify_note || "") + "</div>" : "") + "</td><td>" + (dates || "<span class=\"src\">n/a</span>") + "</td><td>" + esc(x.hook) + "</td><td>" + esc(x.action) + "</td></tr>";
+    });
+    $("#tracker-table tbody").innerHTML = rows || '<tr><td colspan="5">No instruments match these filters. Choose "All instruments" to see the full list.</td></tr>';
+  }
+  $("#f-stage").addEventListener("change", renderTracker);
+  $("#f-juris").addEventListener("change", renderTracker);
+  renderTracker();
+  (function deadline() {
+    var d = inst.instruments.filter(function (x) { return x.deadline; })[0];
+    if (!d) return;
+    var days = Math.ceil((new Date(d.deadline + "T23:59:59Z") - new Date()) / 86400000);
+    $("#deadline").innerHTML = days >= 0
+      ? '<div class="deadline"><strong>' + days + ' days</strong> until the ' + esc(d.name.toLowerCase()) + ' closes on ' + dateText(d.deadline) + '. A draft response is in the EU tab of the model language above.</div>'
+      : '<div class="deadline">The ' + esc(d.name.toLowerCase()) + ' closed on ' + dateText(d.deadline) + '. Check the tracker source for the next stage.</div>';
+  })();
+
+  /* screening tool */
+  var FIELDS = [
+    { g: "Facility", k: "it_load_mw", l: "IT load", u: "MW", t: "n", min: 0.5, max: 2000, step: 0.5, m: "public" },
+    { g: "Facility", k: "cooling_type", l: "Cooling design", t: "s", m: "public", o: [["once_through", "Once-through water, or submerged"], ["hybrid", "Hybrid (part water, part air)"], ["closed_loop_air", "Closed loop to air"]] },
+    { g: "Facility", k: "delta_t_k", l: "Cooling-water temperature rise", u: "°C", t: "n", min: 0.5, max: 25, step: 0.5, m: "public" },
+    { g: "Facility", k: "pue", l: "PUE", t: "n", min: 1, max: 3, step: 0.01, m: "official", h: "Total facility power divided by IT power." },
+    { g: "Facility", k: "reuse_pct", l: "Heat recovered before discharge", u: "%", t: "n", min: 0, max: 100, step: 1, m: "official", h: "Energy reuse factor (ISO/IEC 30134-6). Reuse after discharge does not count." },
+    { g: "Facility", k: "aquaculture_reuse", l: "Recovered heat goes to aquaculture", t: "c", m: "official" },
+    { g: "Facility", k: "cooling_fraction_pct", l: "Share of intake used for cooling", u: "%", t: "n", min: 0, max: 100, step: 1, m: "technical" },
+    { g: "Facility", k: "fraction_to_water_pct", l: "Override: share of heat to water", u: "%", t: "n", min: 0, max: 100, step: 1, m: "technical", h: "Leave blank to use the cooling design default." , blank: true },
+    { g: "Receiving water", k: "water_type", l: "Water body", t: "s", m: "public", o: [["marine", "Coastal sea"], ["estuarine", "Estuary or tidal river"], ["fresh", "River or lake"]] },
+    { g: "Receiving water", k: "t_ambient_c", l: "Summer maximum water temperature", u: "°C", t: "n", min: 0, max: 32, step: 0.5, m: "public" },
+    { g: "Receiving water", k: "s_psu", l: "Salinity", u: "psu", t: "n", min: 0, max: 40, step: 0.5, m: "official" },
+    { g: "Receiving water", k: "ph", l: "pH", t: "n", min: 6, max: 9, step: 0.1, m: "official" },
+    { g: "Receiving water", k: "depth_m", l: "Depth at the outfall", u: "m", t: "n", min: 1, max: 300, step: 1, m: "official" },
+    { g: "Receiving water", k: "u_peak_ms", l: "Peak tidal current", u: "m/s", t: "n", min: 0.01, max: 3, step: 0.01, m: "official", h: "Use a NOAA CO-OPS or DFO/CHS station, not a guess." },
+    { g: "Outfall", k: "n_ports", l: "Diffuser ports", t: "n", min: 1, max: 200, step: 1, m: "official" },
+    { g: "Outfall", k: "port_diameter_m", l: "Port diameter", u: "m", t: "n", min: 0.05, max: 3, step: 0.05, m: "official" },
+    { g: "Outfall", k: "port_spacing_m", l: "Port spacing", u: "m", t: "n", min: 0.5, max: 200, step: 0.5, m: "official" },
+    { g: "Rules", k: "temperature_rule", l: "Temperature rule", t: "s", m: "official", o: [["wa_marine", "Washington marine (WAC 173-201A-210)"], ["ca_new_coastal", "California Thermal Plan, new coastal"], ["custom", "Permit-specific increment"]] },
+    { g: "Rules", k: "wa_category", l: "Washington marine category", t: "s", m: "official", show: function (f) { return f.temperature_rule === "wa_marine"; }, o: [["extraordinary", "Extraordinary (13 °C)"], ["excellent", "Excellent (16 °C)"], ["good", "Good (19 °C)"], ["fair", "Fair (22 °C)"]] },
+    { g: "Rules", k: "custom_increment_k", l: "Allowed increment", u: "°C", t: "n", min: 0.1, max: 10, step: 0.1, m: "official", show: function (f) { return f.temperature_rule === "custom"; } },
+    { g: "Model grid", k: "grid_dx_m", l: "Far-field grid spacing", u: "m", t: "n", min: 1, max: 1000, step: 1, m: "technical" },
+    { g: "Model grid", k: "grid_dt_s", l: "Time step", u: "s", t: "n", min: 0.1, max: 600, step: 0.1, m: "technical" }
+  ];
+  var MODES = ["public", "official", "technical"], mode = "public";
+  var state = { it_load_mw: 24, cooling_type: "once_through", delta_t_k: 8, pue: 1.15, reuse_pct: 0, aquaculture_reuse: false,
+    cooling_fraction_pct: 100, fraction_to_water_pct: "", water_type: "marine", t_ambient_c: 12, s_psu: 30, ph: 8.0, depth_m: 20,
+    u_peak_ms: 0.3, n_ports: 10, port_diameter_m: 0.3, port_spacing_m: 4, temperature_rule: "wa_marine", wa_category: "excellent",
+    custom_increment_k: 1.0, grid_dx_m: 25, grid_dt_s: 10 };
+  var form = $("#tool-form");
+  function visible(f) { return MODES.indexOf(f.m) <= MODES.indexOf(mode) && (!f.show || f.show(state)); }
+  function renderForm() {
+    var groups = {}, order = [];
+    FIELDS.forEach(function (f) { if (!visible(f)) return; if (!groups[f.g]) { groups[f.g] = []; order.push(f.g); } groups[f.g].push(f); });
+    var html = "";
+    order.forEach(function (g) {
+      html += "<fieldset><legend>" + esc(g) + "</legend>";
+      groups[g].forEach(function (f) {
+        var id = "in-" + f.k, lab = esc(f.l) + (f.u ? " (" + esc(f.u) + ")" : "");
+        if (f.t === "c") {
+          html += '<div class="field check"><input type="checkbox" id="' + id + '" data-k="' + f.k + '"' + (state[f.k] ? " checked" : "") + '><label for="' + id + '">' + lab + "</label></div>";
+          return;
+        }
+        html += '<div class="field"><label for="' + id + '">' + lab + "</label>";
+        if (f.t === "s") html += '<select id="' + id + '" data-k="' + f.k + '">' + f.o.map(function (o) { return '<option value="' + o[0] + '"' + (state[f.k] === o[0] ? " selected" : "") + ">" + esc(o[1]) + "</option>"; }).join("") + "</select>";
+        else html += '<input type="number" inputmode="decimal" id="' + id + '" data-k="' + f.k + '" min="' + f.min + '" max="' + f.max + '" step="' + f.step + '" value="' + esc(state[f.k]) + '"' + (f.blank ? ' placeholder="default"' : "") + (f.h ? ' aria-describedby="' + id + '-h"' : "") + ">";
+        if (f.h) html += '<small id="' + id + '-h">' + esc(f.h) + "</small>";
+        html += "</div>";
+      });
+      html += "</fieldset>";
+    });
+    form.innerHTML = html;
+  }
+  form.addEventListener("input", function (e) {
+    var k = e.target.getAttribute("data-k"); if (!k) return;
+    state[k] = e.target.type === "checkbox" ? e.target.checked : (e.target.tagName === "SELECT" ? e.target.value : e.target.value);
+    if (k === "temperature_rule") { renderForm(); var n = $("#in-temperature_rule"); if (n) n.focus(); }
+    run();
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".modes button"), function (b) {
+    b.addEventListener("click", function () {
+      mode = b.getAttribute("data-mode");
+      Array.prototype.forEach.call(document.querySelectorAll(".modes button"), function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      renderForm(); run();
+    });
+  });
+
+  function inputs() {
+    var num = function (k) { return parseFloat(state[k]); };
+    var out = {
+      it_load_mw: num("it_load_mw"), cooling_type: state.cooling_type, delta_t_k: num("delta_t_k"), pue: num("pue"),
+      reuse_fraction: num("reuse_pct") / 100, aquaculture_reuse: !!state.aquaculture_reuse, cooling_fraction: num("cooling_fraction_pct") / 100,
+      water_type: state.water_type, t_ambient_c: num("t_ambient_c"), s_psu: num("s_psu"), ph: num("ph"), depth_m: num("depth_m"),
+      u_peak_ms: num("u_peak_ms"), n_ports: Math.round(num("n_ports")), port_diameter_m: num("port_diameter_m"), port_spacing_m: num("port_spacing_m"),
+      temperature_rule: state.temperature_rule, wa_category: state.wa_category, custom_increment_k: num("custom_increment_k"),
+      grid_dx_m: num("grid_dx_m"), grid_dt_s: num("grid_dt_s"),
+      fraction_to_water: state.fraction_to_water_pct === "" || state.fraction_to_water_pct === null ? null : num("fraction_to_water_pct") / 100
+    };
+    var bad = [];
+    for (var k in out) if (typeof out[k] === "number" && !isFinite(out[k])) bad.push(k);
+    if (out.reuse_fraction < 0 || out.reuse_fraction > 1) bad.push("reuse");
+    if (out.fraction_to_water !== null && (out.fraction_to_water < 0 || out.fraction_to_water > 1)) bad.push("share of heat to water");
+    if (out.n_ports < 1) bad.push("ports");
+    return { v: out, bad: bad };
+  }
+
+  function disclosure(r) {
+    var i = r.inputs, h = 8760;
+    return {
+      schema_version: "0.1.0",
+      facility: { id: "UNSET", jurisdictions: ["UNSET"], siting: "UNSET", it_capacity_mw: i.it_load_mw, pue: i.pue, cooling_type: i.cooling_type, location: { water_type: i.water_type } },
+      reporting_period: { start: "UNSET", end: "UNSET" },
+      thermal: { heat_rejected_mwh: +(r.heat_rejected_mw * h).toFixed(0), heat_to_water_mwh: +(r.heat_to_water_mw * h).toFixed(0), heat_reused_mwh: +(r.heat_reused_mw * h).toFixed(0),
+        erf: i.reuse_fraction, discharge_delta_t_k: { max: i.delta_t_k },
+        mixing_zone: { criterion_c: r.temperature_rule.criterion_c, criterion_basis: r.temperature_rule.basis, model: "aquatic_guardian " + E.version + " screening" } },
+      intake: { design_intake_m3s: +r.flow_m3s.toFixed(4), cooling_fraction: i.cooling_fraction },
+      biology: { impingement: [], entrainment: [] },
+      provenance: { prepared_by: "UNSET", method: "design-value screening", tool_versions: ["aquatic_guardian " + E.version + " (browser)"], independently_verified: false, screening_only: true }
+    };
+  }
+
+  function conditions(r) {
+    var i = r.inputs, nf = r.near_field, rule = r.temperature_rule, c = [];
+    c.push("<b>Temperature.</b> The increase above ambient at the edge of the mixing zone shall not exceed " + fmt(rule.allowed_increment_k, 2) + " °C (" + esc(rule.basis) + "), evaluated at slack water, an ambient temperature of " + fmt(i.t_ambient_c, 1) + " °C and the maximum discharge flow of " + fmt(r.flow_m3s, 3) + " m³/s.");
+    if (r.flow_m3s > 0) c.push("<b>Intake.</b> Maximum through-screen design velocity 0.15 m/s (0.5 ft/s), requiring at least " + fmt(r.intake_316b.min_screen_open_area_m2, 1) + " m² of open screen area at the design intake of " + fmt(r.flow_m3s, 3) + " m³/s (" + fmt(r.intake_316b.design_intake_mgd, 1) + " MGD). Impingement and entrainment reported by taxon, life stage and sentience tier, with eggs and larvae as separate rows.");
+    c.push("<b>Shutdown.</b> Planned shutdowns ramp the discharge temperature rise down at no more than [1] °C per [hour] in cold months; mortality within [500] m of the outfall reported within 24 hours.");
+    c.push("<b>Chemicals.</b> Mass of each biocide, antifouling agent, corrosion inhibitor and coolant reported; no copper-based antifouling in critical habitat; no PFAS coolants.");
+    c.push("<b>Monitoring.</b> Continuous temperature at the outfall, the mixing-zone edge and a reference site; dissolved oxygen at the edge in summer; detection-corrected occupancy surveys; data published within 90 days.");
+    c.push("<b>Reopener.</b> Exceedance on more than [N] days a season, or a detection-corrected decline of a focal taxon, requires a heat-reduction plan within 30 days, which may include shifting compute to other sites.");
+    if (i.aquaculture_reuse && i.reuse_fraction > 0) c.push("<b>Aquaculture.</b> Recovered heat counts toward reuse targets only if each farmed species is kept to [named welfare standard], with stocking density, mortality and stunning method reported.");
+    return c;
+  }
+
+  function plain(r) {
+    var i = r.inputs, nf = r.near_field, s = [];
+    s.push("This facility rejects about <b>" + fmt(r.heat_rejected_mw, 1) + " MW</b> of heat, of which <b>" + fmt(r.heat_to_water_mw, 1) + " MW</b> goes into the water.");
+    if (r.flow_m3s > 0) {
+      s.push("Carrying that heat takes about <b>" + fmt(r.flow_m3s * 1000, 0) + " litres of water a second</b>, " + (r.intake_316b.likely_applicable ? "enough that US cooling-intake rules would likely apply." : "below the 2 MGD US cooling-intake threshold."));
+      if (nf) s.push("Under the most conservative still-water assumption, the warm water is diluted about <b>" + fmt(nf.dilution, nf.dilution < 10 ? 1 : 0) + " times</b> by the time it reaches the surface, leaving a rise of <b>" + fmt(nf.delta_t_near_field_k, 2) + " °C</b>. The rule selected allows " + fmt(r.temperature_rule.allowed_increment_k, 2) + " °C, so this design " + (nf.meets_rule ? "<b>passes the screen</b>." : "<b>fails the screen</b> and needs a redesign or a full study."));
+      s.push("Water leaving at " + fmt(i.t_ambient_c + i.delta_t_k, 1) + " °C holds " + fmt(r.water_quality.do_sat_drop_frac * 100, 0) + "% less oxygen than the surrounding water, at the same time as animals in it need more.");
+    } else s.push("It rejects heat to air, so there is no cooling-water intake or thermal discharge to screen.");
+    return s.join(" ");
+  }
+
+  function run() {
+    var res = $("#results"), inp = inputs();
+    if (inp.bad.length) { res.innerHTML = '<div class="error">Check these fields: ' + esc(inp.bad.join(", ")) + ". Each needs a number within its range.</div>"; return; }
+    var r;
+    try { r = E.screen(inp.v); } catch (e) { res.innerHTML = '<div class="error">' + esc(e.message) + ". Adjust the value and the results will update.</div>"; return; }
+    var nf = r.near_field, html = '<p class="summary">' + plain(r) + "</p>";
+    html += '<div class="nums">' +
+      '<div class="num heat"><strong>' + fmt(r.heat_to_water_mw, 1) + ' MW</strong><span>heat to water</span></div>' +
+      '<div class="num"><strong>' + fmt(r.flow_m3s, 2) + ' m³/s</strong><span>cooling flow (' + fmt(r.intake_316b.design_intake_mgd, 1) + ' MGD)</span></div>' +
+      (nf ? '<div class="num heat"><strong>' + fmt(nf.delta_t_near_field_k, 2) + ' °C</strong><span>screening rise at surface</span></div>' : "") +
+      '<div class="num"><strong>' + fmt(r.temperature_rule.allowed_increment_k, 2) + ' °C</strong><span>allowed increment</span></div>' +
+      '<div class="num"><strong>' + fmt(r.tidal_excursion_m / 1000, 2) + ' km</strong><span>tidal excursion per half-cycle</span></div>' +
+      '<div class="num"><strong>' + fmt(r.water_quality.nh3_frac_ratio, 2) + '×</strong><span>toxic ammonia fraction at discharge</span></div>' +
+      "</div>";
+    if (nf) {
+      var max = Math.max(nf.delta_t_near_field_k, r.temperature_rule.allowed_increment_k) * 1.25;
+      html += '<div class="gauge" role="img" aria-label="Screening rise ' + fmt(nf.delta_t_near_field_k, 2) + ' degrees against an allowed ' + fmt(r.temperature_rule.allowed_increment_k, 2) + ' degrees">' +
+        '<div class="gauge-track"><div class="gauge-fill" style="width:' + (100 * nf.delta_t_near_field_k / max).toFixed(1) + '%"></div>' +
+        '<div class="gauge-mark" style="left:' + (100 * r.temperature_rule.allowed_increment_k / max).toFixed(1) + '%"></div></div>' +
+        '<div class="gauge-legend"><span>Screening rise (bar)</span><span>Allowed increment (line)</span></div></div>';
+    }
+    if (r.flags.length) {
+      html += '<h3>What this triggers</h3><ul class="flags">' + r.flags.map(function (f) {
+        var lab = { high: "Action", caution: "Caution", info: "Note" }[f.severity];
+        return '<li><span class="sev ' + f.severity + '">' + lab + "</span><span>" + esc(f.text) + "</span></li>";
+      }).join("") + "</ul>";
+    }
+    if (r.reporting.length) html += '<div class="out-block"><h3>Animals and welfare: what must be reported</h3><ul>' + r.reporting.map(function (x) { return "<li>" + esc(x.charAt(0).toUpperCase() + x.slice(1)) + "</li>"; }).join("") + "</ul></div>";
+    if (mode !== "public") {
+      html += '<div class="out-block"><h3>Draft permit conditions <button type="button" class="btn ghost small" id="copy-cond">Copy conditions</button></h3><ol class="conditions">' + conditions(r).map(function (c) { return "<li>" + c + "</li>"; }).join("") + "</ol></div>";
+      var j = JSON.stringify(disclosure(r), null, 2);
+      html += '<div class="out-block"><h3>Aquatic Disclosure Record (design values) <button type="button" class="btn ghost small" id="copy-json">Copy JSON</button></h3><pre class="json" tabindex="0">' + esc(j) + "</pre></div>";
+    }
+    if (mode === "technical" && nf) {
+      var rows = [["Reduced gravity g′", fmt(nf.g_prime, 4) + " m/s²"], ["Regime (s/H = " + fmt(nf.s_over_H, 2) + ")", nf.regime], ["Jet velocity", fmt(nf.jet_velocity_ms, 2) + " m/s"],
+        ["Dilution, point-plume envelope", fmt(nf.dilution_point, 1)], ["Dilution, line plume", fmt(nf.dilution_line, 1)], ["Jet-dominated at this depth", nf.jet_dominated ? "yes" : "no"],
+        ["Error if total flow used in point law", fmt(nf.total_flow_error_factor, 2) + "×"], ["Upwind numerical diffusion", fmt(r.numerics.k_num_upwind_m2s, 2) + " m²/s"],
+        ["Okubo diffusivity at grid scale", fmt(r.numerics.k_okubo_at_dx_m2s, 4) + " m²/s"], ["Okubo diffusivity at 1 km", fmt(r.numerics.k_okubo_1km_m2s, 2) + " m²/s"],
+        ["Scale where numerical = physical", fmt(r.numerics.crossover_scale_m / 1000, 2) + " km"], ["Estuary 1% volume test", fmt(r.tidal_volume_check.fraction * 100, 3) + "%"],
+        ["DO saturation, ambient / discharge", fmt(r.water_quality.do_sat_ambient_mg_l, 2) + " / " + fmt(r.water_quality.do_sat_discharge_mg_l, 2) + " mg/L"],
+        ["Un-ionised NH₃, ambient / discharge", fmt(r.water_quality.nh3_frac_ambient * 100, 2) + " / " + fmt(r.water_quality.nh3_frac_discharge * 100, 2) + " %"]];
+      html += '<div class="out-block"><h3>Technical detail</h3><div class="scroll"><table class="tech"><tbody>' + rows.map(function (x) { return "<tr><td>" + esc(x[0]) + "</td><td>" + esc(x[1]) + "</td></tr>"; }).join("") + "</tbody></table></div></div>";
+    }
+    html += '<p class="caveat">Screening only: stagnant, unstratified near field (the slack-water case), no far-field transport, no species-specific thresholds. Not legal advice. Engine ' + esc(E.version) + ", tested against the Python reference.</p>";
+    res.innerHTML = html;
+    var cc = $("#copy-cond"); if (cc) cc.addEventListener("click", function () { copy(conditions(r).map(function (c, n) { return (n + 1) + ". " + c.replace(/<[^>]+>/g, ""); }).join("\n\n"), "Conditions"); });
+    var cj = $("#copy-json"); if (cj) cj.addEventListener("click", function () { copy(JSON.stringify(disclosure(r), null, 2), "JSON"); });
+  }
+  renderForm(); run();
+
+  /* nav highlight */
+  if ("IntersectionObserver" in window) {
+    var links = {}; Array.prototype.forEach.call(document.querySelectorAll("nav.primary a"), function (a) { links[a.getAttribute("href").slice(1)] = a; });
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting && links[e.target.id]) { for (var k in links) links[k].removeAttribute("aria-current"); links[e.target.id].setAttribute("aria-current", "true"); } }); }, { rootMargin: "-40% 0px -55% 0px" });
+    Object.keys(links).forEach(function (id) { var s = document.getElementById(id); if (s) io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

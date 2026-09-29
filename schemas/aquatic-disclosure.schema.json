@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/aquatic-guardian/aquatic-guardian/schemas/aquatic-disclosure.schema.json",
+  "title": "Aquatic Disclosure Record",
+  "description": "Facility-level disclosure of a data centre's aquatic, ecological and animal-welfare footprint for one reporting period. Field definitions: docs/METRICS.md. Crosswalk to US S.4214/H.R.9442 DOE reporting and EU Delegated Regulation 2024/1364: docs/CROSSWALK.md. Released under CC0-1.0 so agencies can adopt it without attribution requirements.",
+  "type": "object",
+  "required": ["schema_version", "facility", "reporting_period", "thermal", "intake", "provenance"],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "facility": {
+      "type": "object",
+      "required": ["id", "jurisdictions", "siting", "it_capacity_mw", "cooling_type"],
+      "properties": {
+        "id": {"type": "string"},
+        "name": {"type": "string"},
+        "operator": {"type": "string"},
+        "jurisdictions": {"type": "array", "items": {"type": "string"}, "minItems": 1,
+          "description": "ISO 3166-2 codes, e.g. US-CA, CA-BC, DE."},
+        "location": {"type": "object", "properties": {
+          "lat": {"type": "number", "minimum": -90, "maximum": 90},
+          "lon": {"type": "number", "minimum": -180, "maximum": 180},
+          "water_body": {"type": "string"},
+          "water_type": {"enum": ["marine", "estuarine", "fresh"]}}},
+        "siting": {"enum": ["inland", "onshore_coastal", "nearshore_submerged", "offshore_submerged", "floating"]},
+        "it_capacity_mw": {"type": "number", "minimum": 0},
+        "pue": {"type": "number", "minimum": 1},
+        "cooling_type": {"enum": ["once_through", "hybrid", "closed_loop_air"]},
+        "commissioning_year": {"type": "integer"}
+      }
+    },
+    "reporting_period": {
+      "type": "object", "required": ["start", "end"],
+      "properties": {"start": {"type": "string", "format": "date"}, "end": {"type": "string", "format": "date"}}
+    },
+    "thermal": {
+      "type": "object",
+      "required": ["heat_to_water_mwh", "discharge_delta_t_k"],
+      "properties": {
+        "heat_rejected_mwh": {"type": "number", "minimum": 0},
+        "heat_to_water_mwh": {"type": "number", "minimum": 0},
+        "heat_reused_mwh": {"type": "number", "minimum": 0},
+        "erf": {"type": "number", "minimum": 0, "maximum": 1, "description": "Energy reuse factor, ISO/IEC 30134-6, heat captured before discharge only."},
+        "discharge_delta_t_k": {"$ref": "#/$defs/stats"},
+        "discharge_temperature_c": {"$ref": "#/$defs/stats"},
+        "mixing_zone": {"type": "object", "properties": {
+          "criterion_c": {"type": "number"},
+          "criterion_basis": {"type": "string"},
+          "radius_m": {"type": "number", "minimum": 0},
+          "exceedance_hours": {"type": "number", "minimum": 0},
+          "model": {"type": "string", "description": "Model and version used, e.g. Visual Plumes UM3 v1.0 or aquatic_guardian 0.1.0 screening"}}},
+        "cold_shock_events": {"type": "integer", "minimum": 0}
+      }
+    },
+    "intake": {
+      "type": "object", "required": ["design_intake_m3s"],
+      "properties": {
+        "design_intake_m3s": {"type": "number", "minimum": 0},
+        "actual_intake_m3": {"type": "number", "minimum": 0},
+        "cooling_fraction": {"type": "number", "minimum": 0, "maximum": 1},
+        "through_screen_velocity_ms": {"type": "number", "minimum": 0},
+        "intake_technology": {"type": "string"}
+      }
+    },
+    "biology": {
+      "type": "object",
+      "properties": {
+        "impingement": {"type": "array", "items": {"$ref": "#/$defs/count"}},
+        "entrainment": {"type": "array", "items": {"$ref": "#/$defs/count"}},
+        "aggregation_events": {"type": "integer", "minimum": 0},
+        "protected_species_interactions": {"type": "array", "items": {"type": "object",
+          "properties": {"species": {"type": "string"}, "listing": {"type": "string"}, "n": {"type": "integer"}, "description": {"type": "string"}}}}
+      }
+    },
+    "chemicals": {"type": "array", "items": {"type": "object", "required": ["substance", "purpose", "kg_active"],
+      "properties": {"substance": {"type": "string"},
+        "purpose": {"enum": ["biocide", "antifouling", "corrosion_inhibitor", "coolant", "other"]},
+        "kg_active": {"type": "number", "minimum": 0},
+        "route": {"enum": ["discharge", "hull_leaching", "anode", "none"]}}}},
+    "noise": {"type": "object", "properties": {
+      "source_level_db_re_1upa_1m": {"type": "number"},
+      "band_hz": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+      "monitoring_method": {"type": "string"}}},
+    "emf": {"type": "object", "properties": {
+      "cable_kv": {"type": "number"}, "current_type": {"enum": ["AC", "DC"]},
+      "burial_depth_m": {"type": "number"}, "field_ut_at_1m": {"type": "number"}}},
+    "freshwater": {"type": "object", "properties": {
+      "withdrawal_m3": {"type": "number", "minimum": 0},
+      "consumption_m3": {"type": "number", "minimum": 0},
+      "wue_l_per_kwh": {"type": "number", "minimum": 0}}},
+    "heat_reuse": {"type": "object", "properties": {
+      "end_use": {"enum": ["district_heating", "aquaculture", "greenhouse", "industrial", "other"]},
+      "aquaculture": {"type": "object", "properties": {
+        "species": {"type": "string"},
+        "welfare_standard": {"type": "string", "description": "Named standard, e.g. RSPCA Assured, ASC, or a species-specific EFSA opinion"},
+        "stocking_density_kg_m3": {"type": "number", "minimum": 0},
+        "mortality_pct": {"type": "number", "minimum": 0, "maximum": 100},
+        "stunning_method": {"type": "string"}}}}},
+    "provenance": {"type": "object", "required": ["prepared_by", "method"],
+      "properties": {"prepared_by": {"type": "string"}, "method": {"type": "string"},
+        "tool_versions": {"type": "array", "items": {"type": "string"}},
+        "independently_verified": {"type": "boolean"},
+        "screening_only": {"type": "boolean"}}}
+  },
+  "$defs": {
+    "stats": {"type": "object", "properties": {"mean": {"type": "number"}, "p95": {"type": "number"}, "max": {"type": "number"}}},
+    "count": {"type": "object", "required": ["taxon", "life_stage", "n"], "properties": {
+      "taxon": {"type": "string"}, "species": {"type": "string"},
+      "life_stage": {"enum": ["egg_embryo", "larva", "juvenile", "adult", "unknown"]},
+      "tier": {"enum": [1, 2, 3]}, "n": {"type": "number", "minimum": 0},
+      "method": {"type": "string"}}}
+  }
+}

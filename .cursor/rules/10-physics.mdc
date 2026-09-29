@@ -1,0 +1,15 @@
+---
+description: Rules for the scientific library, tests and browser engine
+globs: src/**/*.py, tests/**/*.py, app/engine.js, benchmarks/**
+alwaysApply: false
+---
+- Every new function gets a docstring naming its source (author, year, equation or table) and its validity range.
+- Every new equation gets a test: a published check value with the source in the test docstring, or a simulation with known truth. Add a row to docs/VERIFICATION.md with the right status (Published value, Simulation, Parity, Needs benchmark, Placeholder).
+- Point-plume laws use per-port fluxes; line-plume laws use flux per unit length. A single port is always a point source.
+- Tidal excursion is 2U/omega per half-cycle; never report oscillatory excursion over whole cycles.
+- Report numerical diffusion beside physical diffusivity whenever a transport scheme is used.
+- Mixing-zone checks use critical design conditions (slack or low-percentile current, summer maximum ambient, maximum discharge).
+- Occupancy analyses put turbidity in the detection sub-model and report naive occupancy beside psi-hat with standard errors.
+- Species parameters default to placeholders and set `placeholder=True`.
+- Any change to screening.py must be mirrored in app/engine.js in the same commit; tests/test_engine_parity.py must pass.
+- Use numpy and scipy only in the library core; new dependencies need a stated reason.

@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aquatic-guardian"
+version = "0.1.0"
+description = "Verified screening physics, ecology and disclosure tools for the aquatic and animal-welfare impacts of data centres"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "scipy>=1.10"]
+
+[project.optional-dependencies]
+test = ["pytest>=7", "jsonschema>=4.18"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.setuptools.package-data]
+aquatic_guardian = ["resources/schemas/*.json", "resources/data/*.json"]

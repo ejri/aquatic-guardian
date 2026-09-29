@@ -1,0 +1,12 @@
+---
+description: Rules for policy text, model clauses and the tracker
+globs: policy/**/*.md, data/*.json, docs/CROSSWALK.md
+alwaysApply: false
+---
+- Model clauses live only between `<!-- clause: id -->` and `<!-- /clause -->` markers, each preceded by a `##` or `###` heading. Clause ids are unique and never renamed once published.
+- Every instrument statement carries its legal status (enacted, proposed, adopted, consultation, guidance) and an "as of" date.
+- Tracker entries in data/instruments.json need a primary-source basis; set `"verify": true` with a `verify_note` when sources conflict or are secondary.
+- Clause drafting: definitions first, "shall" for duties, bracketed values for anything the adopting authority sets, no rhetoric.
+- Describe what bills and rules actually say. Do not characterise a bill's contents without its text or the sponsor's section-by-section.
+- Policy text is CC BY 4.0. Do not paste copyrighted text from sources beyond short quotations.
+- Plain language: short sentences, active voice, no jargon without a gloss.
