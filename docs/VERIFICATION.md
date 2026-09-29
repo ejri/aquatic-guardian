@@ -36,6 +36,7 @@ Status key: **Published value**, reproduces a number printed in the cited source
 | B-2 | Species parameters (TGC, T_opt, MO₂, welfare density) | None reviewed | **Placeholder** | none |
 | E-1 | Sentience tiers | UK 2022 Act, Birch et al. 2021, NY Declaration 2024 | Literature mapping; **needs welfare-scientist review** | `test_sentience_table_never_merges_life_stages` |
 | D-1 | Disclosure and handoff records | Validate against JSON Schema 2020-12 | Simulation | `test_records.py` |
+| D-2 | Notebook library integration + handoffs | Three mentee notebooks execute headlessly (CPU, synthetic); `thermal` / `monitoring` / `aquaculture` handoffs validate | Simulation | `test_notebooks.py` (marker `slow`) |
 | J-1 | Browser engine | 200 randomised scenarios, 17 outputs, rel. tol. 1e-9, identical flags | Parity | `test_js_engine_matches_python` |
 
 ## Before any result leaves the team

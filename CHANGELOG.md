@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.1.0 (2026-09-29)
+- Phase 2: mentee notebooks import `aquatic_guardian` (Colab pin / local editable); physics cells call library APIs; schema handoffs under `notebooks/_handoffs/`; `tests/test_notebooks.py` (`slow`) and CI `notebooks` job.
 - Phase 3: near-field benchmark infrastructure (`benchmarks/integral_jet.py`, comparison sweep, Visual Plumes decks/loader, `docs/BENCHMARK_P3.md`). Library dilution coefficients unchanged; P-3 remains Needs benchmark until UM3 outputs exist.
 - Phase 1: GitHub org set to `ejri`; issue and pull-request templates; CI matrix unchanged (Python 3.10/3.12 + Node 20).
 - Phase 4: R-2 closed against SWRCB Thermal Plan primary text (`data/checks/ca_thermal_plan.md`); W-4 CSV scaffold awaiting Bower & Bidwell (1978) transcription (`data/checks/bower_bidwell_1978.csv`).

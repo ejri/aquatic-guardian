@@ -10,3 +10,7 @@ node_modules/
 .ipynb_checkpoints/
 benchmarks/visual_plumes/decks/*
 !benchmarks/visual_plumes/decks/.gitkeep
+
+# Generated notebook outputs (tests rewrite handoffs; CSVs are teaching artefacts)
+notebooks/_handoffs/*
+!notebooks/_handoffs/.gitkeep

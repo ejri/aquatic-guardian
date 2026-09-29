@@ -12,13 +12,21 @@ requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "scipy>=1.10"]
 
 [project.optional-dependencies]
-test = ["pytest>=7", "jsonschema>=4.18"]
+test = ["pytest>=7", "jsonschema>=4.18", "nbclient>=0.10", "ipykernel>=6.29", "nbformat>=5.10",
+        "pandas>=2.0", "matplotlib>=3.7", "jinja2>=3.1"]
+# Browser tests (tests/test_site.py, marker `site`). axe-core comes from npm, not
+# a CDN: run `npm install` as well, then `python -m playwright install chromium`.
+site = ["pytest>=7", "playwright>=1.40"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+  "slow: executes the notebooks end to end (minutes)",
+  "site: drives site/index.html in a real browser (needs playwright + chromium + npm install)",
+]
 
 [tool.setuptools.package-data]
 aquatic_guardian = ["resources/schemas/*.json", "resources/data/*.json"]

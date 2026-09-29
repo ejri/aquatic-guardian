@@ -4,13 +4,22 @@ The three rebuilt notebooks (Thermal-Tidal, Aquatic Monitoring, Aquaculture Visi
 
 ## 1. First cell of every notebook
 
+Detect Colab vs local. Pin the tag on Colab; locally install the editable repo (parent of `notebooks/`). Print the version. Handoffs write to `notebooks/_handoffs/` (optional Colab Drive path in a comment).
+
 ```python
-!pip -q install "git+https://github.com/ejri/aquatic-guardian.git@v0.1.0"
+import sys, subprocess
+from pathlib import Path
+IN_COLAB = "google.colab" in sys.modules
+if IN_COLAB:
+    subprocess.check_call([sys.executable, "-m", "pip", "-q", "install",
+                           "git+https://github.com/ejri/aquatic-guardian.git@v0.1.0"])
+else:
+    subprocess.check_call([sys.executable, "-m", "pip", "-q", "install", "-e", str(Path("..").resolve())])
 import aquatic_guardian as ag
 print("aquatic_guardian", ag.__version__)
 ```
 
-Pin the tag. A notebook that reports results must state the library version it ran with.
+A notebook that reports results must state the library version it ran with.
 
 ## 2. Replace in-notebook implementations
 
@@ -44,7 +53,8 @@ rec = ag.handoff.make(
     plume={"delta_t_mixing_zone_edge_k": dT_edge, "regime": nf["regime"],
            "near_field_dilution": nf["dilution"],
            "grid": {"dx_m": 25, "k_num_m2s": K_num, "k_phys_m2s": K_phys, "scheme": "tvd"}})
-ag.handoff.write(rec, "/content/drive/MyDrive/aquatic_guardian/thermal_handoff.json")
+ag.handoff.write(rec, "notebooks/_handoffs/thermal_handoff.json")
+# Optional Colab: ag.handoff.write(rec, "/content/drive/MyDrive/aquatic_guardian/thermal_handoff.json")
 ```
 
 ```python
@@ -52,9 +62,8 @@ ag.handoff.write(rec, "/content/drive/MyDrive/aquatic_guardian/thermal_handoff.j
 rec = ag.handoff.make("aquaculture_vision", scenario_id="august-p10-current",
                       assumptions=[...], placeholders=sp_placeholders,
                       recommended_loop_inlet_ceiling_c=T_ceiling, binding_constraint="do")
-ag.handoff.write(rec, ".../aquaculture_handoff.json")
+ag.handoff.write(rec, "notebooks/_handoffs/aquaculture_handoff.json")
 ```
-
 `ag.handoff.read()` rejects a file that does not validate. A non-empty `placeholders` list means the result is not ready to leave the team.
 
 ## 4. From notebook to disclosure record
