@@ -43,10 +43,14 @@ F_TO_K = 5.0 / 9.0
 
 
 def ca_thermal_plan_new_coastal() -> dict:
-    """California Thermal Plan, coastal waters, new discharges (SWRCB 1972, as amended):
-    discharge no more than 20 F above natural; no increase above 4 F at the
-    shoreline, the ocean substrate, or the ocean surface beyond 1,000 ft from
-    the discharge system. Verify against the current Plan text before use.
+    """California Thermal Plan, coastal waters, new discharges.
+
+    Source: SWRCB Water Quality Control Plan for Control of Temperature in the
+    Coastal and Interstate Waters and Enclosed Bays and Estuaries of California,
+    Specific Water Quality Objectives §3.B.(3)–(4). Exact text:
+    data/checks/ca_thermal_plan.md. Discharge ≤ 20 °F above natural; receiving-
+    water rise ≤ 4 °F at shoreline, ocean substrate, or ocean surface beyond
+    1,000 ft from the discharge system.
     """
     return {"criterion_c": None, "allowed_increment_k": 4.0 * F_TO_K,
             "max_discharge_delta_k": 20.0 * F_TO_K,

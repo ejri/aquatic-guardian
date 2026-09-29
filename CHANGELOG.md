@@ -1,6 +1,8 @@
 # Changelog
 
 ## 0.1.0 (2026-09-29)
+- Phase 1: GitHub org set to `ejri`; issue and pull-request templates; CI matrix unchanged (Python 3.10/3.12 + Node 20).
+- Phase 4: R-2 closed against SWRCB Thermal Plan primary text (`data/checks/ca_thermal_plan.md`); W-4 CSV scaffold awaiting Bower & Bidwell (1978) transcription (`data/checks/bower_bidwell_1978.csv`).
 - Framework v0.1 (public consultation draft): five layers, three coverage tiers, sentience tiers.
 - Model language for US federal and state, permits, EU, Canada, BBNJ, ISO/IEC and the UK.
 - Python library with verified screening physics, water quality, occupancy, imaging, tracking and bioenergetics modules; 40 tests.

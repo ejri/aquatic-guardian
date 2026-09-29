@@ -24,10 +24,10 @@ Status key: **Published value**, reproduces a number printed in the cited source
 | W-1 | DO saturation (Garcia & Gordon 1992, Benson & Krause) | 9.09 mg/L at 20 °C fresh; 14.62 at 0 °C | Published value | `test_do_freshwater_20c`, `test_do_freshwater_0c` |
 | W-2 | DO in seawater | 20 °C/35: 7.2 to 7.5; 10 °C/35: 8.8 to 9.2 mg/L | Published value (range) | `test_do_seawater_ranges` |
 | W-3 | Un-ionised ammonia, freshwater (Emerson et al. 1975) | Table values at 20 °C pH 7 and 25 °C pH 8 | Published value | `test_emerson_table` |
-| W-4 | Salinity correction (Khoo et al. 1977) | Lowers fraction; order of magnitude of Bower & Bidwell (1978) | **Needs table check** against Bower & Bidwell before citing values | `test_salinity_lowers_unionised_fraction` |
+| W-4 | Salinity correction (Khoo et al. 1977) | Lowers fraction; order of magnitude of Bower & Bidwell (1978) | **Needs table check** — CSV scaffold in `data/checks/bower_bidwell_1978.csv` (rows still TRANSCRIBE); secondary sources cite ~4.2% NH₃ at 25 °C, pH 8, S≈35 but primary pages 1012–1016 not yet transcribed | `test_salinity_lowers_unionised_fraction`, `test_unionised_fraction_vs_bower_bidwell` (skips until transcribed) |
 | W-5 | EPA 2013 freshwater ammonia criteria | 17 and 1.9 mg TAN/L at pH 7, 20 °C | Published value | `test_epa2013_criteria_at_reference_conditions` |
 | R-1 | WA marine increment rule, WAC 173-201A-210 | 12/(T−2), headroom and 0.3 °C cases | Published rule text | `test_wa_increment_rule` |
-| R-2 | CA Thermal Plan, new coastal discharges | 4 °F and 20 °F unit conversion | **Needs check** against current Plan text | `test_ca_thermal_plan_units` |
+| R-2 | CA Thermal Plan, new coastal discharges | 4 °F and 20 °F at/ beyond 1,000 ft; unit conversion | **Published value** — SWRCB Thermal Plan §3.B.(3)–(4) transcribed in `data/checks/ca_thermal_plan.md` (PDF accessed 2026-09-29) | `test_ca_thermal_plan_units`, `test_ca_thermal_plan_text_matches_criteria` |
 | O-1 | Occupancy with detection correction (MacKenzie et al. 2002) | Naive analysis shows a 17-point false impact; pooled model finds no zone effect and recovers the turbidity slope | Simulation | `test_turbidity_masquerades_as_impact_without_detection_model` |
 | V-1 | Image formation inversion (Akkaynak & Treibitz) | Exact round trip where t ≥ 0.1; low-transmittance frames flagged | Simulation | `test_image_inversion_round_trip_and_flagging` |
 | K-1 | Null polarisation baseline | RMS 1/√N and mean √π/(2√N) | Simulation | `test_null_polarisation` |
