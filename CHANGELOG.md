@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.1.0 (2026-09-29)
+- Phase 9: `.zenodo.json` for GitHub–Zenodo DOI minting; draft release notes in `docs/RELEASE_NOTES_0.1.0.md`.
 - Phase 5: site sources moved to `web/parts/`, so `site/` holds only the published files; `app/build.py` now also builds `site/404.html`; `netlify.toml` with a publish directory, no build command and a Content-Security-Policy that allows nothing but the page itself and Google Fonts; `tests/test_site.py` (`site`) drives Chromium and axe-core from a local `node_modules` copy; CI `site` job; `docs/DEPLOY.md`; `scripts/screenshots.py` and `docs/screenshots/`.
 - Phase 5 fixes found by axe-core: the two code blocks and the wide tables are now keyboard-scrollable, and caution labels use a darkened `--heat-text` (5.6:1 instead of 4.1:1 on the light background). No design token changed value.
 - Phase 6: `jurisdictions` and `intake_rules` sections in `data/criteria.json`, mirrored in `app/engine.js` and checked field for field by the parity test; a Jurisdiction select at the top of the Rules fieldset that sets the temperature rule and shows its status and source; §316(b) and 40 CFR 125.84 flags now appear only for US jurisdictions, a Fisheries Act s.34/35/36 note for Canadian ones, and a caution wherever the increment is user-supplied rather than a published limit. Washington and California carry cited rules; British Columbia, the EU, Oregon and "other" are `placeholder` with `verify: true`.
@@ -12,7 +13,7 @@
 - Phase 4: R-2 closed against SWRCB Thermal Plan primary text (`data/checks/ca_thermal_plan.md`); W-4 CSV scaffold awaiting Bower & Bidwell (1978) transcription (`data/checks/bower_bidwell_1978.csv`).
 - Framework v0.1 (public consultation draft): five layers, three coverage tiers, sentience tiers.
 - Model language for US federal and state, permits, EU, Canada, BBNJ, ISO/IEC and the UK.
-- Python library with verified screening physics, water quality, occupancy, imaging, tracking and bioenergetics modules; 40 tests.
+- Python library with verified screening physics, water quality, occupancy, imaging, tracking and bioenergetics modules; 119 automated checks (including browser and notebook jobs).
 - Six technical corrections from the September 2026 fact-check (docs/CORRECTIONS.md).
 - Aquatic Disclosure Schema 0.1.0 and notebook handoff schema 0.1.0.
 - Browser screening engine with parity tests; public website and screening app.

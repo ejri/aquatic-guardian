@@ -1,0 +1,27 @@
+{
+  "title": "Aquatic Guardian: a plug-in aquatic, ecological and sentience module for data-centre regulation",
+  "description": "Verified screening physics, water quality, occupancy, imaging, tracking, bioenergetics, disclosure schemas, policy model language and a public screening website for the aquatic and animal-welfare impacts of data centres. A Sentient Futures project.",
+  "license": "Apache-2.0",
+  "upload_type": "software",
+  "keywords": [
+    "data centres",
+    "thermal discharge",
+    "cooling water",
+    "animal welfare",
+    "aquatic ecology",
+    "sentience",
+    "environmental regulation",
+    "screening"
+  ],
+  "creators": [
+    {"name": "Elchami, Ibrahim"},
+    {"name": "Aquatic Guardian contributors"}
+  ],
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/ejri/aquatic-guardian",
+      "resource_type": "software"
+    }
+  ]
+}
