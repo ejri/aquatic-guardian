@@ -8,7 +8,7 @@ authors:
   - family-names: Elchami
     given-names: Ibrahim
   - name: "Aquatic Guardian contributors"
-repository-code: "https://github.com/<org>/aquatic-guardian"
+repository-code: "https://github.com/ejri/aquatic-guardian"
 references:
   - type: report
     title: "Governing the Ocean Server Farm"

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/aquatic-guardian/aquatic-guardian/schemas/notebook-handoff.schema.json",
+  "$id": "https://github.com/ejri/aquatic-guardian/schemas/notebook-handoff.schema.json",
   "title": "Aquatic Guardian notebook handoff",
   "description": "Structured exchange between the Thermal-Tidal, Aquatic Monitoring and Aquaculture Vision notebooks. Run order: thermal -> monitoring and aquaculture; aquaculture returns a loop-inlet ceiling to thermal.",
   "type": "object",

@@ -31,7 +31,7 @@ python app/build.py       # rebuild site/index.html from policy text, data and e
 In Colab:
 
 ```python
-!pip -q install "git+https://github.com/<org>/aquatic-guardian.git@v0.1.0"
+!pip -q install "git+https://github.com/ejri/aquatic-guardian.git@v0.1.0"
 import aquatic_guardian as ag
 r = ag.screening.screen({"it_load_mw": 24, "delta_t_k": 8, "t_ambient_c": 12})
 r["near_field"]["delta_t_near_field_k"], [f["text"] for f in r["flags"]]

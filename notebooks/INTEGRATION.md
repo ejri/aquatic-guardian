@@ -5,7 +5,7 @@ The three rebuilt notebooks (Thermal-Tidal, Aquatic Monitoring, Aquaculture Visi
 ## 1. First cell of every notebook
 
 ```python
-!pip -q install "git+https://github.com/<org>/aquatic-guardian.git@v0.1.0"
+!pip -q install "git+https://github.com/ejri/aquatic-guardian.git@v0.1.0"
 import aquatic_guardian as ag
 print("aquatic_guardian", ag.__version__)
 ```

@@ -1,0 +1,35 @@
+name: Tracker correction
+description: Correct an instrument tracker entry with a primary-source citation
+title: "[tracker] "
+labels: ["tracker"]
+body:
+  - type: input
+    id: instrument_id
+    attributes:
+      label: Instrument id
+      description: The `id` field in data/instruments.json
+      placeholder: e.g. us-s4214
+    validations:
+      required: true
+  - type: textarea
+    id: what_changed
+    attributes:
+      label: What changed
+      description: Status, date, title, citation or other fields that need updating
+    validations:
+      required: true
+  - type: input
+    id: primary_source
+    attributes:
+      label: Primary-source link
+      description: URL of the bill text, gazette, guidance or official page
+    validations:
+      required: true
+  - type: input
+    id: date_checked
+    attributes:
+      label: Date checked
+      description: ISO date when you verified the primary source (YYYY-MM-DD)
+      placeholder: 2026-09-29
+    validations:
+      required: true

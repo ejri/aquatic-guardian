@@ -1,0 +1,32 @@
+name: Scientific issue
+description: Report a bug or discrepancy in a verified science module
+title: "[science] "
+labels: ["science"]
+body:
+  - type: input
+    id: module
+    attributes:
+      label: Module
+      description: Package module under src/aquatic_guardian/ (e.g. plume, water_quality, occupancy)
+      placeholder: plume
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+      description: Published value, equation result or property you expected, with source if known
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed
+      description: What the library or test produced, including version if possible
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source
+      description: Citation or register item id (e.g. P-3, W-4) if applicable

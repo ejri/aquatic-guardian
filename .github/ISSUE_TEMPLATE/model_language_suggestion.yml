@@ -1,0 +1,34 @@
+name: Model language suggestion
+description: Propose a change to a model clause for a jurisdiction
+title: "[clause] "
+labels: ["policy"]
+body:
+  - type: input
+    id: clause_id
+    attributes:
+      label: Clause id
+      description: Id between the <!-- clause: id --> markers, or "new" if proposing a new clause
+      placeholder: us-federal-disclosure
+    validations:
+      required: true
+  - type: input
+    id: jurisdiction
+    attributes:
+      label: Jurisdiction
+      description: e.g. US federal, California, EU, Canada, UK, BBNJ
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_text
+    attributes:
+      label: Proposed text
+      description: Draft clause text using the instrument's own definitions
+    validations:
+      required: true
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale
+      description: Why this language is needed and which instrument it attaches to
+    validations:
+      required: true

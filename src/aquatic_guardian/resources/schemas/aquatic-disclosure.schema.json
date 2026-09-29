@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/aquatic-guardian/aquatic-guardian/schemas/aquatic-disclosure.schema.json",
+  "$id": "https://github.com/ejri/aquatic-guardian/schemas/aquatic-disclosure.schema.json",
   "title": "Aquatic Disclosure Record",
   "description": "Facility-level disclosure of a data centre's aquatic, ecological and animal-welfare footprint for one reporting period. Field definitions: docs/METRICS.md. Crosswalk to US S.4214/H.R.9442 DOE reporting and EU Delegated Regulation 2024/1364: docs/CROSSWALK.md. Released under CC0-1.0 so agencies can adopt it without attribution requirements.",
   "type": "object",
