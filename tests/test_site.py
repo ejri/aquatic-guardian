@@ -95,7 +95,11 @@ def _open(browser, url: Path, **context_kwargs) -> Site:
     for host in FONT_HOSTS:
         page.route(f"https://{host}/**", lambda route: route.abort())
     page.goto(url.as_uri())
-    page.wait_for_selector('[data-route="home"].on, [data-route].on')
+    # Audience index activates a route; the 404 page has no data-route panels.
+    if page.locator("[data-route]").count():
+        page.wait_for_selector('[data-route="home"].on, [data-route].on', timeout=60_000)
+    else:
+        page.wait_for_selector("main h1", timeout=60_000)
     return Site(page, errors)
 
 

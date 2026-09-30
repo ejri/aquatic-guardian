@@ -63,7 +63,7 @@
     ["i-tb", "i-z"].forEach(function (id) { $("#" + id).addEventListener("input", img); }); img();
     var h = "<caption class=\"small muted\" style=\"caption-side:top;text-align:left;padding:.6rem .75rem\">Conditioning table from the notebook: transmittance t (top) and noise gain 1/t (below); red cells are unrecoverable (t &lt; 0.1). Illustrative β values.</caption><thead><tr><th>Water (β<sub>D</sub>, m⁻¹)</th>" + M.conditioning[0].rows.map(function (r) { return "<th>" + r.z_m + " m</th>"; }).join("") + "</tr></thead><tbody>";
     M.conditioning.forEach(function (w) { h += "<tr><td>" + esc(w.water) + " (" + w.beta_d + ")</td>" + w.rows.map(function (r) {
-      return '<td style="background:' + (r.recoverable ? "rgba(127,224,176," + (0.08 + 0.25 * r.t) + ")" : "rgba(255,142,110,.22)") + '"><b>' + (r.t < 0.001 ? r.t.toExponential(0) : r.t) + "</b><br><span class='small muted'>×" + (r.gain > 9999 ? r.gain.toExponential(0) : r.gain) + "</span></td>"; }).join("") + "</tr>"; });
+      return '<td style="background:' + (r.recoverable ? "rgba(127,224,176," + (0.08 + 0.25 * r.t) + ")" : "rgba(255,142,110,.22)") + '"><b>' + (r.t < 0.001 ? r.t.toExponential(0) : r.t) + "</b><br><span class='small' style='color:var(--deep-ink)'>×" + (r.gain > 9999 ? r.gain.toExponential(0) : r.gain) + "</span></td>"; }).join("") + "</tr>"; });
     $("#cond-table").innerHTML = h + "</tbody>";
   };
 })();

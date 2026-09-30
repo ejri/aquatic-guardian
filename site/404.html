@@ -59,7 +59,7 @@ header.site .wrap{display:flex;align-items:center;gap:.4rem 1.25rem;min-height:4
 .brand small{display:block;font-size:.72rem;color:var(--deep-muted);letter-spacing:.02em}
 nav.primary{display:flex;gap:.3rem;margin-left:auto;overflow-x:auto;scrollbar-width:none}
 nav.primary::-webkit-scrollbar{display:none}
-nav.primary a{color:var(--deep-ink);text-decoration:none;font-size:.93rem;font-weight:500;white-space:nowrap;padding:.5rem .8rem;border-radius:999px}
+nav.primary a{color:var(--deep-ink);text-decoration:none;font-size:.93rem;font-weight:500;white-space:nowrap;padding:.55rem .85rem;border-radius:999px;min-height:2.75rem;display:inline-flex;align-items:center}
 nav.primary a:hover{background:var(--deep-3)}
 nav.primary a[aria-current="page"]{background:var(--glow);color:#1b1100;font-weight:700}
 
@@ -312,7 +312,9 @@ legend{font-weight:700;margin-bottom:.5rem;padding:0}
 .flags{list-style:none;padding:0;margin:0 0 1.4rem}
 .flags li{display:grid;grid-template-columns:5.2rem 1fr;gap:.7rem;padding:.55rem 0;border-bottom:1px solid var(--line);font-size:.95rem}
 .sev{font-weight:800;font-size:.82rem}
-.sev.high{color:var(--warn)}.sev.caution{color:var(--gold)}.sev.info{color:var(--muted)}
+.sev.high{color:var(--warn)}.sev.caution{color:#7A5200}.sev.info{color:var(--muted)}
+:root[data-theme="dark"] .sev.caution,.deep .sev.caution{color:var(--gold)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sev.caution{color:var(--gold)}}
 .conditions{font-family:var(--serif);line-height:1.65;padding-left:1.3rem}
 .conditions li{margin-bottom:.6rem}
 .err{border-left:4px solid var(--warn);background:color-mix(in srgb,var(--warn) 10%,transparent);padding:.8rem 1rem;margin-bottom:1rem}
@@ -331,7 +333,7 @@ footer.site{background:var(--deep);color:var(--deep-muted);padding:3rem 0 3.5rem
 footer.site .wrap{display:grid;gap:1.5rem}
 @media (min-width:900px){footer.site .wrap{grid-template-columns:2fr 1fr 1fr}}
 footer.site b{color:var(--deep-ink)}
-footer.site a{color:var(--ice)}
+footer.site a{color:var(--ice);display:inline-flex;align-items:center;min-height:1.75rem;padding:.2rem 0;line-height:1.35}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 1.2rem);transform:translateX(-50%);background:var(--glow);color:#1b1100;font-weight:700;padding:.6rem 1.1rem;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:60}
 .toast.show{opacity:1}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.btn:hover{transform:none}}
@@ -351,7 +353,7 @@ footer.site a{color:var(--ice)}
 <main id="main" class="wrap" style="padding:3rem 1.25rem 4rem">
   <h1>Page not found</h1>
   <p class="lede" style="max-width:var(--measure)">That address is not part of this site. Choose an audience on the home page.</p>
-  <p><a class="btn" href="index.html">Back to Aquatic Guardian</a></p>
+  <p><a class="btn" href="/">Back to Aquatic Guardian</a></p>
 </main>
 <footer class="site"><div class="wrap"><p>A Sentient Futures project. Screening results are not a permit decision.</p></div></footer>
 </body>

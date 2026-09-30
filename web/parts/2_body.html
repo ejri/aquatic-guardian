@@ -280,7 +280,7 @@
       <p class="lede" style="margin-bottom:1.3rem">Select an event for details. The line marks today.</p>
       <p class="small muted" id="tracker-note" style="margin-bottom:1rem"></p>
       <div class="row" style="margin-bottom:.8rem"><label for="tl-filter" class="small">Show</label><select id="tl-filter"><option value="all">All jurisdictions</option></select></div>
-      <div class="timeline"><svg id="tl" viewBox="0 0 1000 300" role="img" aria-label="Timeline of instruments"></svg><div class="tl-legend"><span><i style="background:var(--ok)"></i>in force</span><span><i style="background:var(--gold)"></i>proposed or adopted, not yet in force</span><span><i style="background:var(--warn)"></i>open consultation</span><span><i style="background:var(--accent)"></i>programme or standard</span><span><i style="background:var(--muted)"></i>failed</span></div></div>
+      <div class="timeline"><svg id="tl" viewBox="0 0 1000 300" role="group" aria-label="Timeline of instruments"></svg><div class="tl-legend"><span><i style="background:var(--ok)"></i>in force</span><span><i style="background:var(--gold)"></i>proposed or adopted, not yet in force</span><span><i style="background:var(--warn)"></i>open consultation</span><span><i style="background:var(--accent)"></i>programme or standard</span><span><i style="background:var(--muted)"></i>failed</span></div></div>
       <p class="tl-detail" id="tl-detail" aria-live="polite">Select a point on the timeline.</p>
       <div class="scroll" style="margin-top:1rem"><table id="tracker"><thead><tr><th>Instrument</th><th>Status</th><th>Hook for this framework</th><th>What to ask for</th><th>Last checked</th></tr></thead><tbody></tbody></table></div>
     </div>
@@ -504,7 +504,7 @@
                 <div class="inst-view">
                   <div class="dual"><figure><canvas id="img-obs" width="320" height="200"></canvas><figcaption><b>What the camera records</b><span id="img-t"></span></figcaption></figure>
                     <figure><canvas id="img-rest" width="320" height="200"></canvas><figcaption><b>Restored</b><span id="img-g"></span></figcaption></figure></div>
-                  <div class="scroll" style="margin-top:1rem"><table id="cond-table"></table></div>
+                  <div class="scroll" style="margin-top:1rem" tabindex="0" role="region" aria-label="Image conditioning table"><table id="cond-table"></table></div>
                 </div>
                 <div class="inst-ctrl">
                   <div class="ctl"><label for="i-tb">Turbidity <output id="i-tb-o"></output></label><input type="range" id="i-tb" min="1" max="8" step="0.25" value="2"></div>
