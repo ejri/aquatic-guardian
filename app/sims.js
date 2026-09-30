@@ -153,6 +153,18 @@
     return m ? Math.hypot(sx / m, sy / m) : NaN;
   }
 
+  /* Camera siting, mirrors tracking.fov_width / tracking.camera_screen */
+  function fovWidth(d, deg, flat) {
+    var half = deg * Math.PI / 360;
+    if (flat) half = Math.asin(Math.sin(half) / 1.333);
+    return 2 * d * Math.tan(half);
+  }
+  function cameraScreen(d, deg, px, fps, v, arena, flat) {
+    var w = fovWidth(d, deg, flat), ppf = v * px / w / fps, whole = arena <= w, dwell = whole ? Infinity : w / v;
+    var risk = whole && ppf < 15 ? "low" : (dwell < 3 || ppf > 30 ? "high" : "moderate");
+    return { fov_m: w, px_per_frame: ppf, whole_arena: whole, dwell_s: dwell, risk: risk };
+  }
+
   /* Seeded RNG for reproducible demos */
   function rng(seed) {
     var a = seed >>> 0;
@@ -163,7 +175,7 @@
 
   var api = { advect1d: advect1d, effectiveK: effectiveK, Transport2D: Transport2D, imgForward: imgForward, imgInvert: imgInvert,
     SPECIES: SPECIES, growthFactor: growthFactor, carrying: carrying, yieldIndex: yieldIndex, KalmanCV: KalmanCV,
-    kalmanSeries: kalmanSeries, polarisation: polarisation, rng: rng };
+    kalmanSeries: kalmanSeries, polarisation: polarisation, fovWidth: fovWidth, cameraScreen: cameraScreen, rng: rng };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.AGSims = api;
 })(typeof window !== "undefined" ? window : this);

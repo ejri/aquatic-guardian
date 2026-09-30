@@ -145,7 +145,7 @@
     var z = depth, sJet = z / (JET_DECAY * d);
     var sPt = gp > 0 ? Math.max(C_POINT * Math.pow(Bf, 1 / 3) * Math.pow(z, 5 / 3) / Q, sJet) : sJet;
     var sLn = gp > 0 ? C_LINE * Math.pow(b, 1 / 3) * z / q : NaN;
-    var S = reg === "point" ? sPt : (reg === "line" ? sLn : Math.min(sPt, sLn));
+    var S = reg === "point" ? sPt : Math.min(sPt, sLn);  /* Correction 7 */
     S = Math.max(S, 1);
     return { g_prime: gp, regime: reg, s_over_H: r, dilution_point: sPt, dilution_line: sLn,
       dilution: S, delta_t_near_field_k: dt / S, jet_dominated: lM > depth, jet_velocity_ms: uj,
@@ -246,7 +246,7 @@
     return fl;
   }
 
-  var api = { version: "0.2.0", DEFAULTS: DEFAULTS, screen: screen, doSat: doSat, nh3Frac: nh3Frac,
+  var api = { version: "0.2.1", DEFAULTS: DEFAULTS, screen: screen, doSat: doSat, nh3Frac: nh3Frac,
     density: density, rhoCp: rhoCp, reducedGravity: reducedGravity, nearField: nearField, dilutionAt: dilutionAt, okubo: okubo,
     okuboCross: okuboCross, kNum: kNum, temperatureRule: temperatureRule, OMEGA_M2: OMEGA,
     JURISDICTIONS: JURISDICTIONS, INTAKE_RULES: INTAKE_RULES, jurisdiction: jurisdiction };

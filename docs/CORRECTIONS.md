@@ -1,4 +1,4 @@
-# Technical corrections adopted in version 0.1
+# Technical corrections
 
 Six changes from the research fact-check (29 September 2026), each implemented in the library and covered by a test.
 
@@ -13,3 +13,5 @@ Six changes from the research fact-check (29 September 2026), each implemented i
 **5. Ammonia speciation.** Use the Emerson et al. (1975) pKa with the seawater ionic-strength correction, and evaluate US freshwater criteria with the EPA 2013 equations. EPA saltwater criteria date from 1989 and were not revised in 2013; CCME has no marine ammonia guideline.
 
 **6. Open-water heat reuse.** Replace "beneficial reuse of waste heat in open water is structurally incoherent because tidal dispersion removes heat within ~1 km" with: *Beneficial reuse of data-centre heat is only practical before discharge, at source temperature, through closed-loop heat exchange. Heat discharged to open water should be treated as a regulated thermal load, not a resource.* The thermodynamic point stands; the 1 km figure depended on the site and on numerical diffusion.
+
+**7. Merged plumes cannot out-dilute isolated ones (0.2.1).** Found while building the PLUMES 2.0 benchmark cases. The line-plume asymptote assumes the plumes merge right at the seabed. When ports are spaced so the plumes only merge part-way up (port spacing between about 0.11 and 1 times the rise height), it predicted more dilution than isolated round plumes would get, which is impossible because merging reduces entrainment. For 10 ports 4 m apart in 20 m of water it gave 25× where isolated plumes give 17×. The library now uses the lesser of the two in both the line and transitional bands. The default 24 MW design's screening rise goes from 0.32 °C to 0.46 °C, still inside Washington's 1.2 °C increment. *Test:* `test_merged_dilution_never_exceeds_isolated_plumes`.

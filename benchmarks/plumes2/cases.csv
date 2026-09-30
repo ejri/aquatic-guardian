@@ -1,0 +1,17 @@
+case_id,purpose,number_of_ports,port_diameter_m,port_spacing_m,port_elevation_m,port_depth_m,vertical_angle_deg,horizontal_angle_deg,total_effluent_flow_m3s,effluent_temperature_c,effluent_salinity_psu,ambient_temperature_c,ambient_salinity_psu,water_depth_m,current_ms,library_regime,library_min_dilution_at_surface,library_rise_k_at_surface
+A1,"single port, reference",1,0.3,,0.5,19.5,90,0,0.084,20.0,30.0,12.0,30.0,20.0,0.01,point,16.8,0.476
+A2,"single port, weak buoyancy",1,0.3,,0.5,19.5,90,0,0.084,16.0,30.0,12.0,30.0,20.0,0.01,point,12.95,0.309
+A3,"single port, strong buoyancy",1,0.3,,0.5,19.5,90,0,0.084,24.0,30.0,12.0,30.0,20.0,0.01,point,19.74,0.608
+A4,"single port, jet-dominated, shallow",1,0.5,,0.5,7.5,90,0,0.448,27.0,30.0,12.0,30.0,8.0,0.01,point,2.68,5.6
+A5,"single port, plume-dominated, deep",1,0.15,,0.5,39.5,90,0,0.02,20.0,30.0,12.0,30.0,40.0,0.01,point,141.85,0.056
+A6,"single large pipe, whole 24 MW flow",1,1.0,,0.5,19.5,90,0,0.84,20.0,30.0,12.0,30.0,20.0,0.01,point,3.62,2.21
+B1,"10 ports, line regime (s/H 0.2)",10,0.3,4.0,0.5,19.5,90,0,0.84,20.0,30.0,12.0,30.0,20.0,0.01,line,16.8,0.476
+B2,"10 ports, transitional (s/H 0.6)",10,0.3,12.0,0.5,19.5,90,0,0.84,20.0,30.0,12.0,30.0,20.0,0.01,transitional,16.8,0.476
+B3,"10 ports, point regime (s/H 1.25)",10,0.3,25.0,0.5,19.5,90,0,0.84,20.0,30.0,12.0,30.0,20.0,0.01,point,16.8,0.476
+B4,"20 ports, line, 48 MW",20,0.3,2.0,0.5,19.5,90,0,1.68,20.0,30.0,12.0,30.0,20.0,0.01,line,15.72,0.509
+B5,"4 ports, shallow, transitional (s/H 0.6)",4,0.25,6.0,0.5,9.5,90,0,0.3,20.0,30.0,12.0,30.0,10.0,0.01,transitional,6.79,1.179
+B6,"30 ports, line, ~120 MW, deeper",30,0.35,5.0,0.5,29.5,90,0,4.2,20.0,30.0,12.0,30.0,30.0,0.01,line,23.83,0.336
+C1,A1 in a 0.1 m/s current,1,0.3,,0.5,19.5,90,0,0.084,20.0,30.0,12.0,30.0,20.0,0.1,point,16.8,0.476
+C2,A1 in a 0.3 m/s current,1,0.3,,0.5,19.5,90,0,0.084,20.0,30.0,12.0,30.0,20.0,0.3,point,16.8,0.476
+C3,B1 in a 0.1 m/s current,10,0.3,4.0,0.5,19.5,90,0,0.84,20.0,30.0,12.0,30.0,20.0,0.1,line,16.8,0.476
+C4,B1 in a 0.3 m/s current,10,0.3,4.0,0.5,19.5,90,0,0.84,20.0,30.0,12.0,30.0,20.0,0.3,line,16.8,0.476

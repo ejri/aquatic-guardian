@@ -82,3 +82,32 @@ def kalman_cv(obs: np.ndarray, dt: float, sigma_x: float, q: float) -> np.ndarra
 
 def polarisation_series(vel: np.ndarray) -> np.ndarray:
     return np.array([polarisation(v[:, 0], v[:, 1]) for v in vel])
+
+
+N_WATER = 1.333
+
+
+def fov_width(distance_m: float, fov_deg: float, flat_port: bool = False) -> float:
+    """Horizontal field-of-view width at a given distance.
+
+    In air (or behind a dome port) the width is 2 d tan(theta/2). Behind a flat
+    port underwater, refraction at the port (Snell's law, n = 1.333) narrows the
+    half-angle to asin(sin(theta/2) / n): about 25% narrower for small angles
+    and about 32% narrower for a 70-degree lens.
+    """
+    half = math.radians(fov_deg) / 2.0
+    if flat_port:
+        half = math.asin(math.sin(half) / N_WATER)
+    return 2.0 * distance_m * math.tan(half)
+
+
+def camera_screen(distance_m: float, fov_deg: float, image_px: int, fps: float, speed_ms: float,
+                  arena_m: float, flat_port: bool = False) -> dict:
+    """Camera siting diagnostics used by the Aquaculture Vision notebook and the web Lab.
+    Risk thresholds are heuristics, not published criteria."""
+    w = fov_width(distance_m, fov_deg, flat_port)
+    px_per_frame = speed_ms * image_px / w / fps
+    whole = arena_m <= w
+    dwell = math.inf if whole else w / speed_ms
+    risk = "low" if (whole and px_per_frame < 15) else ("high" if (dwell < 3 or px_per_frame > 30) else "moderate")
+    return {"fov_m": w, "px_per_frame": px_per_frame, "whole_arena": whole, "dwell_s": dwell, "risk": risk}

@@ -56,6 +56,17 @@ def test_total_flow_substitution_error_is_n_two_thirds():
     assert s_true / s_wrong == pytest.approx(plume.total_flow_error_factor(n), rel=1e-12)
 
 
+def test_merged_dilution_never_exceeds_isolated_plumes():
+    """Correction 7: for any spacing where plumes can merge, the screening
+    dilution is no larger than the isolated round-plume envelope at the same height."""
+    for s in (1, 2, 3, 4, 6, 8, 12, 16):
+        for H in (8, 20, 40):
+            d = plume.Diffuser(0.84, 10, 0.3, s)
+            nf = plume.near_field(d, H, 12, 8, 30)
+            iso = max(plume.dilution_point(nf["fluxes"], H), plume.dilution_jet(0.3, H))
+            assert nf["dilution"] <= iso * (1 + 1e-12)
+
+
 def test_line_plume_uses_flux_per_length():
     d = plume.Diffuser(1.0, 20, 0.2, 2.0)
     f = plume.fluxes(d, 0.02)

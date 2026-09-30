@@ -14,7 +14,8 @@ Status key: **Published value**, reproduces a number printed in the cited source
 | I-2 | Estuary 1 % tidal-volume test (40 CFR 125.84) | Implemented as written | Needs legal check of current text | none |
 | P-1 | Port-spacing regime (Tian, Roberts & Daviero 2004) | s/H ≤ 0.3 line, ≥ 1.0 point | Published value | `test_regime_boundaries` |
 | P-2 | Per-port versus total flow (Correction 1) | Error factor exactly N^(2/3) | Simulation | `test_total_flow_substitution_error_is_n_two_thirds` |
-| P-3 | Dilution coefficients 0.089 (point) and 0.38 (line) | Fischer et al. (1979) asymptotic minimum dilution; MTT integral similarity (∝ z, ∝ z^{5/3}); library vs integral sweep in `docs/BENCHMARK_P3.md`; 8 integral *proxy* CSVs under `benchmarks/visual_plumes/outputs/` (not UM3) | **Needs benchmark** against real Visual Plumes UM3 / NRFIELD (and ideally a lab set). Integral proxy exercises the merge path only — see `outputs/PROVENANCE.json` | `test_pure_jet_dilution_scales_linearly_with_z`, `test_pure_plume_dilution_scales_as_z_to_the_five_thirds` |
+| P-3 | Dilution coefficients 0.089 (point) and 0.38 (line) | Fischer et al. (1979) asymptotic minimum dilution; PLUMES 2.0 (UM3) kit in `benchmarks/plumes2/` (legacy Visual Plumes is unsupported) | **Needs benchmark** against PLUMES 2.0 centreline dilution — send `results.csv` | `test_cases_csv_matches_current_library`, `test_compare_reports_verdicts_on_synthetic_results` |
+| P-5 | Merged plumes cannot out-dilute isolated ones (Correction 7) | In line and transitional regimes dilution = min(point envelope, line); default 10 ports × 4 m in 20 m gives 17.5× (0.46 °C) not 25.6× (0.32 °C) | Simulation | `test_merged_dilution_never_exceeds_isolated_plumes` |
 | P-4 | Stratified trapping, crossflow and bottom attachment | Not modelled | **Out of scope**; use UM3/CORMIX | none |
 | T-1 | M2 excursion 2U/ω (Correction 2) | 10.7 km ↔ 0.75 m/s | Published value | `test_tidal_excursion` |
 | N-1 | Okubo (1971) diffusivity | 0.58 m²/s at 1 km; crossover ~3 km for 2.1 m²/s | Published value | `test_okubo_values` |
@@ -39,7 +40,9 @@ Status key: **Published value**, reproduces a number printed in the cited source
 | D-2 | Notebook library integration + handoffs | Three mentee notebooks execute headlessly (CPU, synthetic); `thermal` / `monitoring` / `aquaculture` handoffs validate | Simulation | `test_notebooks.py` (marker `slow`) |
 | J-1 | Browser engine | 200 randomised scenarios spread over every jurisdiction, 17 outputs, rel. tol. 1e-9, identical flag ids and flag text | Parity | `test_js_engine_matches_python` |
 | J-2 | Jurisdiction tables in `app/engine.js` | The mirrored `JURISDICTIONS` and `INTAKE_RULES` tables equal the `jurisdictions` and `intake_rules` sections of `data/criteria.json` field for field, and the resolved lookup matches Python for every jurisdiction | Parity | `test_js_jurisdiction_tables_match_criteria_json`, `test_js_jurisdiction_lookup_matches_python` |
-| J-3 | Lab simulation kernels (`app/sims.js`) | 1-D transport both directions, imaging, bioenergetics and Kalman match the Python library to 1e-12 (Kalman 1e-9); 2-D tidal upwind spreading matches the numerical-diffusion formula within 5 % | Parity | `test_sims_parity.py` |
+| J-3 | Lab simulation kernels (`app/sims.js`) | 1-D transport both directions, imaging, bioenergetics, Kalman match Python to 1e-12 (Kalman 1e-9); 2-D tidal upwind matches numerical-diffusion formula within 5 %; TVD matches Python both ways; heat conserved | Parity | `test_sims_parity.py` |
+| J-4 | Browser 2-D flux-limited scheme + source bookkeeping | Matches Python row by row to 1e-6 with the tide either way; heat conserved; heat added at the outfall accounted for exactly | Parity | `test_transport2d_tvd_matches_python_reference_both_directions`, `test_transport2d_source_bookkeeping_is_exact` |
+| K-4 | Camera FOV with flat-port refraction | Snell n=1.333; browser/Python agree; reconstructed notebook preset ≈ 37 cm and 34.5 px/frame | Parity | `test_camera_parity_and_refraction` |
 | R-3 | Jurisdiction rule mapping | Washington and California carry a cited rule; British Columbia, the EU, Oregon, other US states and "other" map to a user-supplied increment, are marked `placeholder` with `verify: true`, and raise a flag saying the result cannot show compliance | **Placeholder for five of seven jurisdictions** — BC, EU and Oregon values are permit-specific or not yet transcribed | `test_jurisdictions_never_assert_an_untranscribed_rule` |
 | R-4 | Flags cite only law that applies | §316(b) and 40 CFR 125.84 flags appear only where the jurisdiction's intake rule is `us_cwa_316b`; the Fisheries Act note only where it is `ca_fisheries_act`; neither appears for the EU or "other" | Property test over every jurisdiction | `test_intake_rule_only_cites_law_that_applies_there`, `test_screening_flags_only_cite_the_selected_jurisdictions_law`, `test_no_flag_cites_a_law_that_does_not_apply_there` (browser) |
 | G-1 | Policy briefs quote clauses exactly | Every clause id in `policy/model-language/` appears in exactly one brief, byte for byte, in the brief for its own file; the committed `briefs/*.md` match a fresh generation; every instrument and recommendation reaches its brief; `verify` entries carry their warning into print | Simulation | `test_briefs.py` |
@@ -50,7 +53,7 @@ Status key: **Published value**, reproduces a number printed in the cited source
 
 ## Before any result leaves the team
 
-1. P-3 benchmark completed and the coefficient source recorded.
+1. P-3 benchmark completed against PLUMES 2.0 (`benchmarks/plumes2/README.md`) and the coefficient source recorded.
 2. W-4 confirmed via LaMotte's attributed Bower & Bidwell (1978) seawater table (pp. 1012–1016); R-2 checked against the SWRCB Thermal Plan primary text.
 3. All placeholder species parameters replaced and reviewed.
 4. Site tidal currents taken from a NOAA CO-OPS or DFO/CHS station, not assumed.

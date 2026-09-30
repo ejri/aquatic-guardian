@@ -1,26 +1,23 @@
 # Changelog
 
+## 0.2.1 (2026-09-29)
+- Correction 7: merged plumes can no longer out-dilute isolated ones; the default design's screening rise rises from 0.32 °C to 0.46 °C (library, browser engine, Lab, results regenerated).
+- Lab: new "near versus far" panel showing the near-field peak and far-field layer average side by side, live, with why they differ.
+- Lab camera geometry: flat-port refraction option; the "before fix" preset is now labelled as reconstructed, with its assumed specs stated.
+- Camera geometry moved into the library (`tracking.fov_width`, `tracking.camera_screen`) and mirrored in `app/sims.js`.
+- Permanent tests for the browser 2-D solver's flux-limited scheme (both tide directions, heat conservation, source bookkeeping).
+- `benchmarks/plumes2/`: case matrix, run guide, results template and comparison script for benchmarking against EPA PLUMES 2.0 (UM3). default suite green (`pytest -q -m "not slow and not site"`).
+
 ## 0.2.0 (2026-09-29)
-- Audience site: home plus Public / Officials / Lab (researchers) / Industry routes in `web/parts/`, deep-water dark for simulations, Barlow Condensed display type, oceanographic heat colour scale; live hero plume; nine Lab simulations in `app/sims.js` with parity tests; notebook findings recomputed via `app/notebook_results.py` → `data/notebook_results.json` (Colab-only findings labelled reported).
-- Screening Tool on Officials and Industry carries the Phase 6 jurisdiction picker again; §316(b) and Fisheries Act flags only where the selected intake rule applies; placeholder jurisdictions never claim a design "passes".
-- Tracker restores `stale_after_days`, `last_checked` and empty-`sources` → `verify: true`; recommendations markers restored for briefs; W-4 remains Published value via LaMotte / Bower & Bidwell (S=34‰).
+- Website rebuilt as audience-specific sections: public (follow-the-water walkthrough, sentience tiers, letters to representatives, EU consultation countdown), officials (jurisdiction toolkit, timeline of instruments, screening with draft permit conditions, recommendations), researchers (the Lab) and industry (design comparison, temperature-rise trade-off, disclosure record, heat reuse).
+- The Lab shows results from all three notebooks, recomputed with fixed seeds by `app/notebook_results.py`, plus nine live simulations: tidal plume (TVD versus upwind), near field with the per-port bug, numerical diffusion, safety margin, turbidity confound, underwater imaging, camera geometry, school tracking with a Kalman filter, and yield versus loop temperature.
+- New library functions: `tracking.simulate_school`, `tracking.kalman_cv`, signed-current transport in `numerics.advect_diffuse_1d`.
+- New browser kernels in `app/sims.js`, parity-tested against the Python library; 51 checks in total.
 
 ## 0.1.0 (2026-09-29)
-- W-4: `data/checks/bower_bidwell_1978.csv` filled from the confirmed LaMotte seawater table (S=34‰, ionic strength 0.701 m), attributed to Bower & Bidwell (1978) pp. 1012–1016; full grid in `data/checks/BOWER_BIDWELL_PROVENANCE.md`.
-- P-3: integral MTT *proxy* CSVs under `benchmarks/visual_plumes/outputs/` (not EPA Visual Plumes); P-3 remains Needs benchmark until real UM3 runs.
-- Phase 9: `.zenodo.json` for GitHub–Zenodo DOI minting; draft release notes in `docs/RELEASE_NOTES_0.1.0.md`.
-- Phase 5: site sources moved to `web/parts/`, so `site/` holds only the published files; `app/build.py` now also builds `site/404.html`; `netlify.toml` with a publish directory, no build command and a Content-Security-Policy that allows nothing but the page itself and Google Fonts; `tests/test_site.py` (`site`) drives Chromium and axe-core from a local `node_modules` copy; CI `site` job; `docs/DEPLOY.md`; `scripts/screenshots.py` and `docs/screenshots/`.
-- Phase 5 fixes found by axe-core: the two code blocks and the wide tables are now keyboard-scrollable, and caution labels use a darkened `--heat-text` (5.6:1 instead of 4.1:1 on the light background). No design token changed value.
-- Phase 6: `jurisdictions` and `intake_rules` sections in `data/criteria.json`, mirrored in `app/engine.js` and checked field for field by the parity test; a Jurisdiction select at the top of the Rules fieldset that sets the temperature rule and shows its status and source; §316(b) and 40 CFR 125.84 flags now appear only for US jurisdictions, a Fisheries Act s.34/35/36 note for Canadian ones, and a caution wherever the increment is user-supplied rather than a published limit. Washington and California carry cited rules; British Columbia, the EU, Oregon and "other" are `placeholder` with `verify: true`.
-- Phase 7: `app/briefs.py` builds one printable brief per model-language file into `briefs/`, assembled from `policy/FRAMEWORK.md` §1, the file's own status preamble, `data/instruments.json`, the clause markers and `policy/RECOMMENDATIONS.md`; PDF and DOCX when pandoc is installed. Recommendation rows carry hidden `<!-- instruments: id -->` markers so nothing restates a status. "Download briefs" links added to the site's Open source section; the page still makes no network request of its own.
-- Phase 8: `last_checked` and `sources` on every tracker entry, `stale_after_days`, and `schemas/instruments.schema.json` validated in tests; `scripts/tracker_report.py` lists stale entries, entries marked `verify`, and dates that have passed while the status still reads as forthcoming; weekly `.github/workflows/tracker.yml` keeps one "Tracker review due" issue current; the site tracker shows "last checked" per row with a note at the top. No URL was invented: all 16 entries have an empty `sources` array and are marked `verify: true` until a person adds primary sources.
-- Phase 2: mentee notebooks import `aquatic_guardian` (Colab pin / local editable); physics cells call library APIs; schema handoffs under `notebooks/_handoffs/`; `tests/test_notebooks.py` (`slow`) and CI `notebooks` job.
-- Phase 3: near-field benchmark infrastructure (`benchmarks/integral_jet.py`, comparison sweep, Visual Plumes decks/loader, `docs/BENCHMARK_P3.md`). Library dilution coefficients unchanged; P-3 remains Needs benchmark until UM3 outputs exist.
-- Phase 1: GitHub org set to `ejri`; issue and pull-request templates; CI matrix unchanged (Python 3.10/3.12 + Node 20).
-- Phase 4: R-2 closed against SWRCB Thermal Plan primary text (`data/checks/ca_thermal_plan.md`); W-4 CSV scaffold awaiting Bower & Bidwell (1978) transcription (`data/checks/bower_bidwell_1978.csv`).
 - Framework v0.1 (public consultation draft): five layers, three coverage tiers, sentience tiers.
 - Model language for US federal and state, permits, EU, Canada, BBNJ, ISO/IEC and the UK.
-- Python library with verified screening physics, water quality, occupancy, imaging, tracking and bioenergetics modules; 119 automated checks (including browser and notebook jobs).
+- Python library with verified screening physics, water quality, occupancy, imaging, tracking and bioenergetics modules; 40 tests.
 - Six technical corrections from the September 2026 fact-check (docs/CORRECTIONS.md).
 - Aquatic Disclosure Schema 0.1.0 and notebook handoff schema 0.1.0.
 - Browser screening engine with parity tests; public website and screening app.

@@ -5,6 +5,16 @@
   var OMEGA = E.OMEGA_M2;
   function bind(id, f, unit) { var el = $("#" + id), o = $("#" + id + "-o"); function up() { o.textContent = f(+el.value) + (unit || ""); } el.addEventListener("input", up); up(); return el; }
 
+  U.recon = { near: null, far: null, layer: 5, nmw: 28, tmw: 28 };
+  U.reconDraw = function () {
+    var r = U.recon; if (r.near === null || r.far === null || !document.getElementById("rc-near")) return;
+    var allow = E.temperatureRule("wa_marine", 12, "excellent", 1).allowed_increment_k;
+    $("#rc-near").textContent = fmt(r.near, 2) + " °C"; $("#rc-far").textContent = fmt(r.far, 3) + " °C";
+    $("#rc-near-b").textContent = fmt(r.near, 2); $("#rc-far-b").textContent = fmt(r.far, 3); $("#rc-allow-b").textContent = fmt(allow, 2);
+    $("#rc-ratio").textContent = r.far > 0 ? fmt(r.near / r.far, 1) + "×" : "n/a";
+    $("#rc-allow").textContent = "allowed at the mixing-zone edge (WA marine, 12 °C): " + fmt(allow, 2) + " °C";
+    $("#rc-layer").textContent = "surface layer " + r.layer + " m deep, cells 50 m wide" + (r.nmw !== r.tmw ? "; heat differs between sims (" + r.nmw + " vs " + r.tmw + " MW)" : "");
+  };
   U.labThermal = function () {
     var R = D.results.thermal;
 
@@ -40,6 +50,7 @@
       $("#tide-phase-l").textContent = Math.abs(u) < 0.06 ? "slack water, heat pools" : u > 0 ? "into the cycle, flooding east" : "into the cycle, ebbing west";
       var ra = Math.max(pk.a, pk.la), rb = Math.max(pk.b, pk.lb);
       $("#tide-ringa").textContent = fmt(ra, 3); $("#tide-ringb").textContent = fmt(rb, 3);
+      U.recon.far = ra; U.recon.layer = p.H; U.recon.tmw = p.mw; U.reconDraw();
       $("#tide-knum").textContent = fmt(E.kNum(p.U0, dx, dtOf(p)), 2); $("#tide-exc").textContent = fmt(2 * p.U0 / OMEGA / 1000, 2);
       $("#tide-a-r").textContent = "scale 0 to " + fmt(scale, 2) + " °C"; $("#tide-b-r").textContent = rb < ra ? "ring peak " + fmt(100 * (1 - rb / Math.max(ra, 1e-9)), 0) + "% too low" : "";
     }
@@ -57,13 +68,14 @@
       var mw = +$("#n-mw").value, dT = +$("#n-dt0").value, n = +$("#n-n").value, s = +$("#n-s0").value, H = +$("#n-hh").value, d = 0.3;
       $("#n-mw-o").textContent = mw + " MW"; $("#n-dt0-o").textContent = fmt(dT, 1) + " °C"; $("#n-n-o").textContent = n; $("#n-s0-o").textContent = fmt(s, 1) + " m"; $("#n-hh-o").textContent = H + " m";
       var flow = mw * 1e6 / (E.rhoCp(12, 30) * dT), nf = E.nearField(flow, n, d, s, H, 12, dT, 30, 0.3), sur = E.dilutionAt(flow, n, d, s, H, 12, dT, 30);
+      U.recon.near = nf.delta_t_near_field_k; U.recon.nmw = mw; U.reconDraw();
       $("#n-reg").textContent = nf.regime; $("#n-sh").textContent = "= " + fmt(nf.s_over_H, 2); $("#n-s").textContent = fmt(nf.dilution, 1);
-      $("#n-dt").textContent = fmt(nf.delta_t_near_field_k, 2); $("#n-bug").textContent = fmt(dT / sur.total_flow_bug, 2);
+      $("#n-dt").textContent = fmt(nf.delta_t_near_field_k, 2); $("#n-bug").textContent = fmt(dT / sur.plume_law_total_flow_bug, 2); $("#n-bug-ok").textContent = fmt(dT / sur.plume_law_per_port, 2);
       var svg = $("#near-svg"); while (svg.firstChild) svg.removeChild(svg.firstChild);
       var N = U.svgNode, top = 26, bot = 318, sy = (bot - top) / H, L = n > 1 ? n * s : d, spread = 0.11, span = L + 2 * spread * H;
       var sx = Math.min(sy, 660 / span), cx = 360, x0 = cx - (L / 2) * sx;
       var defs = N("defs", {}, svg), gid = "ng" + Math.random().toString(36).slice(2), gr = N("linearGradient", { id: gid, x1: 0, y1: 1, x2: 0, y2: 0 }, defs);
-      [0, 0.08, 0.2, 0.45, 1].forEach(function (f) { var z = Math.max(0.3, f * H), dz = E.dilutionAt(flow, n, d, s, z, 12, dT, 30), Sz = nf.regime === "line" && z > (s / 2) / spread ? dz.line : dz.point;
+      [0, 0.08, 0.2, 0.45, 1].forEach(function (f) { var z = Math.max(0.3, f * H), dz = E.dilutionAt(flow, n, d, s, z, 12, dT, 30), Sz = nf.regime !== "point" && z > (s / 2) / spread ? Math.min(dz.line, dz.point) : dz.point;
         N("stop", { offset: f, "stop-color": U.rgb(U.cmap(Math.sqrt(1 / Math.max(Sz, 1)))), "stop-opacity": 0.85 }, gr); });
       N("rect", { x: 0, y: top, width: 720, height: bot - top, fill: "#06303d" }, svg);
       N("rect", { x: 0, y: bot, width: 720, height: 22, fill: "#0A1A16" }, svg);

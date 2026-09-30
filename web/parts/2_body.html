@@ -335,7 +335,7 @@
   <section class="block">
     <div class="wrap lab">
       <nav class="lab-index" aria-label="Lab contents">
-        <h4>Thermal-Tidal</h4><a href="#/lab/sim-tide">Tidal plume</a><a href="#/lab/sim-near">Near field</a><a href="#/lab/sim-num">Numerical diffusion</a><a href="#/lab/sim-margin">Safety margin</a>
+        <h4>Thermal-Tidal</h4><a href="#/lab/sim-tide">Tidal plume</a><a href="#/lab/sim-near">Near field</a><a href="#/lab/sim-recon">Near versus far</a><a href="#/lab/sim-num">Numerical diffusion</a><a href="#/lab/sim-margin">Safety margin</a>
         <h4>Aquatic Monitoring</h4><a href="#/lab/sim-occ">Turbidity confound</a><a href="#/lab/sim-img">Underwater imaging</a>
         <h4>Aquaculture Vision</h4><a href="#/lab/sim-cam">Camera geometry</a><a href="#/lab/sim-school">School tracking</a><a href="#/lab/sim-bio">Yield and temperature</a>
         <h4>Evidence</h4><a href="#/lab/lab-verify">Verification</a><a href="#/lab/lab-repo">Use the code</a>
@@ -358,7 +358,7 @@
                   </div>
                   <div class="readouts">
                     <div class="ro"><b id="tide-phase">0.0 h</b><span id="tide-phase-l">tide, flooding</span></div>
-                    <div class="ro hot"><b id="tide-ringa">0</b><span>peak rise on 300 m ring per tide, TVD (°C)</span></div>
+                    <div class="ro hot"><b id="tide-ringa">0</b><span>far field: layer average at 300 m, peak per tide, TVD (°C)</span></div>
                     <div class="ro bad"><b id="tide-ringb">0</b><span>same ring, upwind (°C)</span></div>
                     <div class="ro"><b id="tide-knum">0</b><span>upwind numerical diffusion (m²/s)</span></div>
                     <div class="ro"><b id="tide-exc">0</b><span>excursion per half-cycle (km)</span></div>
@@ -378,14 +378,15 @@
             </div>
 
             <div class="inst" id="sim-near">
-              <div class="inst-head"><h3>Near field: how the diffuser dilutes the heat</h3><span class="tag">stagnant, unstratified asymptotes, Fischer et al. (1979); regime test Tian et al. (2004)</span></div>
+              <div class="inst-head"><h3>Near field: how the diffuser dilutes the heat</h3><span class="tag">stagnant, unstratified asymptotes, Fischer et al. (1979); regime test Tian et al. (2004); PLUMES 2.0 benchmark pending</span></div>
               <div class="inst-body">
                 <div class="inst-view"><svg id="near-svg" viewBox="0 0 720 340" style="width:100%;height:auto;display:block;background:#021017;border-radius:8px" role="img" aria-label="Diffuser plumes rising through the water column"></svg>
                   <div class="readouts">
                     <div class="ro"><b id="n-reg">line</b><span>regime (s/H <span id="n-sh"></span>)</span></div>
                     <div class="ro hot"><b id="n-s">0</b><span>dilution at the surface</span></div>
-                    <div class="ro hot"><b id="n-dt">0</b><span>rise at the surface (°C)</span></div>
-                    <div class="ro bad"><b id="n-bug">0</b><span>what the old bug would report (°C)</span></div>
+                    <div class="ro hot"><b id="n-dt">0</b><span>near-field peak above the diffuser (°C)</span></div>
+                    <div class="ro"><b id="n-bug-ok">0</b><span>plume law, per-port flow (°C)</span></div>
+                    <div class="ro bad"><b id="n-bug">0</b><span>plume law, total flow: the old bug (°C)</span></div>
                   </div>
                 </div>
                 <div class="inst-ctrl">
@@ -396,7 +397,42 @@
                   <div class="ctl"><label for="n-hh">Depth <output id="n-hh-o"></output></label><input type="range" id="n-hh" min="5" max="60" step="1" value="20"></div>
                 </div>
               </div>
-              <p class="finding"><b>Notebook finding.</b> The cell used total diffuser flow in a law that needs the flow of one port. That understates dilution by N<sup>2/3</sup>: 4.6-fold for ten ports, so the red number above is what a regulator would have been shown.</p>
+              <p class="finding"><b>Notebook finding.</b> The cell used total diffuser flow in a law that needs the flow of one port. That understates dilution by N<sup>2/3</sup>, 4.6-fold for ten ports: compare the last two readouts, which apply the plume law both ways to this design. The screening total above also allows for jet mixing and merging, which is why it differs from both.</p>
+            </div>
+
+            <div class="inst" id="sim-recon">
+              <div class="inst-head"><h3>Two numbers, two places: why the near- and far-field rises are both right</h3><span class="tag">live values from the two simulations above</span></div>
+              <div class="inst-view">
+                <svg id="recon-svg" viewBox="0 0 900 250" style="width:100%;height:auto;display:block;background:#021017;border-radius:8px" role="img" aria-labelledby="recon-t">
+                  <title id="recon-t">Side view: the near-field peak is measured at the boil directly above the diffuser; the far-field value is the average over the warm surface layer 300 metres away</title>
+                  <defs><linearGradient id="rg-plume" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#e8fa5b"/><stop offset=".4" stop-color="#eb7958"/><stop offset="1" stop-color="#b15f82"/></linearGradient>
+                    <linearGradient id="rg-layer" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#eb7958" stop-opacity=".9"/><stop offset=".5" stop-color="#b15f82" stop-opacity=".6"/><stop offset="1" stop-color="#2c3395" stop-opacity=".25"/></linearGradient></defs>
+                  <rect x="0" y="40" width="900" height="190" fill="#06303d"/><rect x="0" y="230" width="900" height="20" fill="#0A1A16"/>
+                  <line x1="0" x2="900" y1="40" y2="40" stroke="#9ED8E6" stroke-width="1.5"/>
+                  <rect x="150" y="40" width="720" height="34" fill="url(#rg-layer)"/>
+                  <path d="M190 228 C196 170 205 110 150 42 L260 42 C215 110 222 170 228 228 Z" fill="url(#rg-plume)" opacity=".9"/>
+                  <rect x="180" y="226" width="58" height="6" rx="3" fill="#6B8E99"/>
+                  <line x1="548" x2="548" y1="30" y2="92" stroke="#fff" stroke-dasharray="4 4" stroke-width="1.5"/>
+                  <circle cx="209" cy="48" r="7" fill="none" stroke="#fff" stroke-width="2"/>
+                  <text x="20" y="24" fill="#F7B24A" style="font:800 22px var(--display)" id="rc-near">…</text>
+                  <text x="20" y="44" fill="#DCEAEE" style="font:12px var(--sans)" dy="-2"> </text>
+                  <text x="236" y="112" fill="#DCEAEE" style="font:600 13px var(--sans)">Near field: peak where the rising plume</text>
+                  <text x="236" y="129" fill="#DCEAEE" style="font:600 13px var(--sans)">first hits the surface, minutes after release</text>
+                  <text x="560" y="24" fill="#9ED8E6" style="font:800 22px var(--display)" id="rc-far">…</text>
+                  <text x="560" y="112" fill="#DCEAEE" style="font:600 13px var(--sans)">Far field: average over the warm surface</text>
+                  <text x="560" y="129" fill="#DCEAEE" style="font:600 13px var(--sans)">layer, 300 m away, hours later, per tide</text>
+                  <text x="560" y="150" fill="#8AA7B0" style="font:12px var(--sans)" id="rc-layer">layer 5 m deep, cells 50 m wide</text>
+                  <text x="20" y="218" fill="#8AA7B0" style="font:12px var(--sans)">diffuser</text>
+                  <text x="880" y="218" text-anchor="end" fill="#8AA7B0" style="font:12px var(--sans)" id="rc-allow">allowed at the mixing-zone edge: 1.20 °C</text>
+                </svg>
+                <div class="readouts">
+                  <div class="ro hot"><b id="rc-near-b">0</b><span>near-field peak above the diffuser (°C)</span></div>
+                  <div class="ro"><b id="rc-far-b">0</b><span>far-field layer average at 300 m (°C)</span></div>
+                  <div class="ro"><b id="rc-allow-b">0</b><span>allowed at the mixing-zone edge (°C)</span></div>
+                  <div class="ro"><b id="rc-ratio">0</b><span>near ÷ far</span></div>
+                </div>
+              </div>
+              <p class="finding"><b>Why they differ.</b> The near-field number is the centreline peak where the plume boils up above the diffuser: the most concentrated warm water anywhere, and the one screening uses because it is conservative. The far-field number is an average over a 5 m surface layer and a 50 m grid cell, 300 m downstream, after the tide has spread the heat. An average over a larger volume is always lower than the peak inside it. Regulators test compliance at a mixing-zone edge the permit defines, which usually falls between the two. That is why a full study couples a near-field model to a far-field one instead of choosing between them.</p>
             </div>
 
             <div class="inst" id="sim-num">
@@ -496,7 +532,9 @@
                   <svg class="chart" id="purity-chart" viewBox="0 0 640 150" style="width:100%;height:auto;margin-top:1rem" role="img" aria-label="Reported track purity after the fix"></svg>
                 </div>
                 <div class="inst-ctrl">
-                  <div class="row" style="margin-bottom:1rem"><button type="button" class="btn line sm" id="cam-bad">Notebook, before fix</button><button type="button" class="btn glow sm" id="cam-good">Whole arena in view</button></div>
+                  <div class="row" style="margin-bottom:.5rem"><button type="button" class="btn line sm" id="cam-bad">Notebook, before fix (reconstructed)</button><button type="button" class="btn glow sm" id="cam-good">Whole arena in view</button></div>
+                  <p class="small muted" style="margin:0 0 1rem">The notebook reported a 37 cm view and 34 px per frame, but not the camera itself. The first preset back-solves plausible specs to reproduce those numbers: 1280 px image, 70° lens, no refraction, fish at 0.3 m/s, 30 fps.</p>
+                  <div class="ctl"><label for="c-flat" style="justify-content:flex-start;gap:.6rem;color:var(--deep-ink)"><input type="checkbox" id="c-flat" style="width:1.1rem;height:1.1rem;accent-color:var(--glow)"> Flat port underwater (refraction narrows the view)</label></div>
                   <div class="ctl"><label for="c-d">Camera distance <output id="c-d-o"></output></label><input type="range" id="c-d" min="0.1" max="3" step="0.005" value="0.265"></div>
                   <div class="ctl"><label for="c-a">Lens field of view <output id="c-a-o"></output></label><input type="range" id="c-a" min="30" max="120" step="1" value="70"></div>
                   <div class="ctl"><label for="c-ar">Arena width <output id="c-ar-o"></output></label><input type="range" id="c-ar" min="0.3" max="5" step="0.1" value="2"></div>
@@ -549,7 +587,7 @@
 
         <article class="nb" id="lab-repo">
           <div class="nb-head"><div><p class="nb-num">Open source</p><h2>Use the code</h2><p class="lede">Every simulation here imports the same library your notebook can. Pin the version you report.</p></div></div>
-          <pre class="json">!pip -q install "git+https://github.com/ejri/aquatic-guardian.git@v0.2.0"
+          <pre class="json">!pip -q install "git+https://github.com/ejri/aquatic-guardian.git@v0.2.1"
 import aquatic_guardian as ag
 r = ag.screening.screen({"it_load_mw": 24, "delta_t_k": 8, "t_ambient_c": 12})
 fit = ag.occupancy.fit(y, psi_covariates=zone, detection_covariates=turbidity)
@@ -623,7 +661,7 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
     </div>
     <div>
       <h2 class="section">Get involved</h2>
-      <ul class="serif"><li>Run a Visual Plumes benchmark of the near-field coefficients.</li><li>Supply species temperature thresholds and welfare parameters.</li><li>Correct the policy tracker with a primary source.</li><li>Test the model language against a real file in your office.</li><li>Translate the framework.</li></ul>
+      <ul class="serif"><li>Run the PLUMES 2.0 benchmark of the near-field coefficients (Windows 10 or 11; guide in <code>benchmarks/plumes2/</code>).</li><li>Supply species temperature thresholds and welfare parameters.</li><li>Correct the policy tracker with a primary source.</li><li>Test the model language against a real file in your office.</li><li>Translate the framework.</li></ul>
       <p class="small muted">Code Apache-2.0. Text and data CC BY 4.0. Schemas CC0. Cite with CITATION.cff.</p>
     </div>
   </div></section>
@@ -632,7 +670,7 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
 
 <footer class="site">
   <div class="wrap">
-    <div><b>Aquatic Guardian 0.2.0</b>, 29 September 2026. A Sentient Futures project.<br>Screening results are for scoping and public understanding. They are not legal advice and do not replace a regulatory mixing-zone study, a §316 demonstration, a Fisheries Act authorisation or species-expert review.</div>
+    <div><b>Aquatic Guardian 0.2.1</b>, 29 September 2026. A Sentient Futures project.<br>Screening results are for scoping and public understanding. They are not legal advice and do not replace a regulatory mixing-zone study, a §316 demonstration, a Fisheries Act authorisation or species-expert review.</div>
     <div><b>Audiences</b><br><a href="#/public">Public</a><br><a href="#/officials">Officials</a><br><a href="#/lab">Researchers</a><br><a href="#/industry">Industry</a></div>
     <div><b>Project</b><br><a href="#/about">About</a><br><a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Phase 1 site</a></div>
   </div>

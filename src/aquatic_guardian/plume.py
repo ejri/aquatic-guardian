@@ -10,6 +10,10 @@ Correction 1 (docs/CORRECTIONS.md): point-plume formulas take PER-PORT fluxes
 (q = Q_T/L, m, b = g' q). Substituting total diffuser flow Q_T into a
 point-plume law underestimates dilution by N**(2/3).
 
+Correction 7: in the line and transitional bands the lesser of the line and
+point-envelope dilutions is used, because merged plumes cannot out-dilute
+isolated ones.
+
 Dilution coefficients are the stagnant, unstratified asymptotic values quoted in
 Fischer et al. (1979) for minimum (centreline) dilution: 0.089 for a round
 plume and 0.38 for a line plume. They are parameters, not constants: lab and
@@ -115,10 +119,12 @@ def near_field(d: Diffuser, depth_m: float, t_ambient_c: float, delta_t_k: float
     s_line = dilution_line(f, z) if gp > 0 else float("nan")
     if reg == "point":
         s = s_point
-    elif reg == "line":
-        s = s_line
     else:
-        s = min(s_point, s_line)   # conservative bracket in the transitional band
+        # Correction 7: merging reduces entrainment, so merged plumes cannot dilute
+        # more than isolated ones. The line asymptote assumes merging from the bed;
+        # when plumes only merge part-way up (s/z between ~0.11 and 1) it overstates
+        # dilution, so the lesser of the two is used in both line and transitional bands.
+        s = min(s_point, s_line)
     s = max(s, 1.0)
     return {
         "g_prime": gp, "fluxes": f, "length_scales": ls, "regime": reg,

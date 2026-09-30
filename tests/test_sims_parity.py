@@ -69,3 +69,50 @@ def test_transport2d_conserves_heat_with_closed_boundaries_and_matches_upwind_fo
       return S.effectiveK(c0,row(),x,400*25);"""
     k = run_js(body, {})
     assert k == pytest.approx(numerics.k_num_upwind(0.3, 25.0, 25.0), rel=0.05)
+
+
+# ---- 2-D tidal solver: permanent version of the check run on 29 Sep 2026 ----
+def _row_js(u):
+    nx, ny = 400, 6
+    c0 = np.exp(-0.5 * ((np.arange(nx) - 200) / 6.0) ** 2)
+    body = f"""const T=new S.Transport2D({nx},{ny},25); const c0=P.c0;
+      for(let j=0;j<{ny};j++) for(let i=0;i<{nx};i++) T.c[j*{nx}+i]=c0[i];
+      const m0=T.total(); for(let s=0;s<300;s++) T.step({u},0,25,'tvd',null);
+      return {{row:Array.from(T.c.slice(0,{nx})), m0:m0, m1:T.total()}};"""
+    return c0, run_js(body, {"c0": c0.tolist()})
+
+
+@node
+@pytest.mark.parametrize("u", [0.3, -0.3])
+def test_transport2d_tvd_matches_python_reference_both_directions(u):
+    """The 2-D Lab solver's flux-limited scheme reproduces the Python 1-D TVD
+    solver row by row (float32 grid), with the tide running either way, and
+    neither gains nor loses heat before the pulse reaches a boundary."""
+    c0, r = _row_js(u)
+    py = numerics.advect_diffuse_1d(c0, u, 0.0, 25.0, 25.0, 300, "tvd")
+    np.testing.assert_allclose(r["row"], py, rtol=0, atol=1e-6)
+    assert r["m1"] == pytest.approx(r["m0"], rel=1e-6)
+
+
+@node
+def test_transport2d_source_bookkeeping_is_exact():
+    body = """const T=new S.Transport2D(96,48,50);
+      for(let s=0;s<200;s++) T.step(0,0.5,60,'tvd',{i:48,j:12,rate:1e-4});
+      return [T.total(), 1e-4*60*200];"""
+    tot, injected = run_js(body, {})
+    assert tot == pytest.approx(injected, rel=1e-6)
+
+
+@node
+def test_camera_parity_and_refraction():
+    from aquatic_guardian import tracking
+    cases = [(0.265, 70, 1280, 30, 0.3, 2.0, False), (1.3, 70, 1280, 30, 0.3, 1.2, True), (0.5, 90, 1920, 60, 0.6, 3.0, True)]
+    js = run_js("return P.c.map(a=>S.cameraScreen(...a));", {"c": cases})
+    for a, j in zip(cases, js):
+        py = tracking.camera_screen(*a)
+        assert j["fov_m"] == pytest.approx(py["fov_m"], rel=1e-12) and j["risk"] == py["risk"]
+    # the reconstructed notebook preset reproduces the reported 37 cm view and ~34 px per frame
+    pre = tracking.camera_screen(0.265, 70, 1280, 30, 0.3, 2.0, False)
+    assert pre["fov_m"] == pytest.approx(0.371, abs=0.002) and pre["px_per_frame"] == pytest.approx(34.5, abs=0.5)
+    # a flat port narrows a 70-degree lens by about 32 %
+    assert tracking.fov_width(1, 70, True) / tracking.fov_width(1, 70, False) == pytest.approx(0.681, abs=0.005)
