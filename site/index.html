@@ -216,6 +216,7 @@ th{font-weight:700;background:var(--surface-2)}
 /* public: cross-section */
 .xsec{background:var(--deep);border-radius:16px;overflow:hidden;border:1px solid var(--deep-line)}
 .xsec svg{display:block;width:100%;height:auto}
+.xsec .muted,.xsec .lede{color:var(--deep-muted)}
 .hot-btn{cursor:pointer}
 .hot-btn circle.ring{fill:var(--glow);stroke:#1b1100;stroke-width:2}
 .hot-btn[aria-pressed="true"] circle.ring{fill:#fff}
@@ -485,7 +486,7 @@ footer.site a{color:var(--ice)}
         <span class="small muted">Assumes seawater once-through cooling, PUE 1.15, 8 °C rise.</span>
       </div>
       <div class="xsec">
-        <svg id="xsec" viewBox="0 0 1200 520" role="img" aria-labelledby="xsec-t">
+        <svg id="xsec" viewBox="0 0 1200 520" role="group" aria-labelledby="xsec-t">
           <title id="xsec-t">Cross-section: a coastal data centre draws seawater through an offshore intake, warms it, and discharges it through a diffuser, where a warm plume rises and is carried by the tide.</title>
           <defs>
             <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#061B24"/><stop offset="1" stop-color="#0B2A36"/></linearGradient>

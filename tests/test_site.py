@@ -48,7 +48,11 @@ class Site:
 
     def go(self, route: str) -> None:
         self.page.evaluate(f"location.hash = '#/{route}'")
-        self.page.wait_for_selector(f'[data-route="{route}"].on')
+        self.page.wait_for_selector(f'[data-route="{route}"].on', timeout=60_000)
+        # Audience tools mount on first visit; wait a beat for screening output.
+        if route in ("officials", "industry"):
+            tool = "official" if route == "officials" else "technical"
+            self.page.wait_for_selector(f'[data-tool="{tool}"] .res-summary, [data-tool="{tool}"] .err', timeout=60_000)
 
     def tool_select(self, field: str, value: str, tool: str = "official") -> None:
         sel = f'[data-tool="{tool}"] [data-k="{field}"]'
@@ -132,8 +136,8 @@ def test_no_horizontal_scroll_on_a_390px_phone(browser, route):
 def test_every_input_has_a_label(site, route):
     site.go(route)
     unlabelled = site.page.evaluate(
-        """() => {
-      const root = document.querySelector('[data-route="' + arguments[0] + '"].on')
+        """(route) => {
+      const root = document.querySelector('[data-route="' + route + '"].on')
         || document;
       const bad = [];
       for (const el of root.querySelectorAll("input, select, textarea")) {
