@@ -9,12 +9,16 @@ drifts from the repository's single sources of truth.
 `--check` fails if a published file or a mirrored package resource is stale.
 """
 from __future__ import annotations
-import json, re, sys
+import base64, json, mimetypes, re, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PARTS = ROOT / "web" / "parts"
+ASSETS = ROOT / "web" / "assets"
 SITE = ROOT / "site"
+# Placeholders in web/parts: src="__ASSET:sf-mark.png__" → data URI (keeps the
+# published page self-contained; CSP already allows img-src data:).
+ASSET_TOKEN = re.compile(r"__ASSET:([A-Za-z0-9._-]+)__")
 # Audience page: head, body (routes), data hooks, core UI, hero, lab notebooks, start.
 INDEX_PARTS = (
     "1_head.html", "2_body.html", "3_data.html", "4_core.html",
@@ -120,6 +124,20 @@ def site_data() -> dict:
     }
 
 
+def data_uri(name: str) -> str:
+    path = ASSETS / name
+    if not path.is_file():
+        raise SystemExit(f"missing web/assets/{name}")
+    mime = mimetypes.guess_type(name)[0] or "application/octet-stream"
+    return f"data:{mime};base64,{base64.b64encode(path.read_bytes()).decode('ascii')}"
+
+
+def embed_assets(html: str) -> str:
+    def repl(m: re.Match[str]) -> str:
+        return data_uri(m.group(1))
+    return ASSET_TOKEN.sub(repl, html)
+
+
 def build(page: str) -> str:
     missing = [n for n in PAGES[page] if not (PARTS / n).exists()]
     if missing:
@@ -144,7 +162,7 @@ def build(page: str) -> str:
             "/*__DATA__*/",
             "window.AG_DATA = " + json.dumps(site_data(), ensure_ascii=False) + ";",
         )
-    return out
+    return embed_assets(out)
 
 
 MIRROR = [

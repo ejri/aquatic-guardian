@@ -1,0 +1,17 @@
+case_id,regime,rise_m,library_min_dilution,um3_centerline_dilution,um3_flux_avg_dilution,ratio_um3_over_library,conservative,useful,merged_reported,termination,dilution_grows_with_current,merging_consistent
+A1,point,19.5,16.8,19.4711,32.9927,1.159,True,True,,surface hit,,
+A2,point,19.5,12.95,16.7106,28.3152,1.291,True,True,,surface hit,,
+A3,point,19.5,19.74,21.5788,36.564,1.093,True,True,,surface hit,,
+A4,point,7.5,2.68,3.6116,6.1197,1.348,True,True,,surface hit,,
+A5,point,39.5,141.85,130.8702,221.7523,0.923,False,True,,surface hit,,
+A6,point,19.5,3.62,5.433,9.2059,1.501,True,True,,surface hit,,
+B1,line,19.5,16.8,14.6579,31.9815,0.872,False,True,yes,surface hit,,True
+B2,transitional,19.5,16.8,19.4711,32.9927,1.159,True,True,no,surface hit,,False
+B3,point,19.5,16.8,19.4711,32.9927,1.159,True,True,no,surface hit,,True
+B4,line,19.5,15.72,11.0446,23.9565,0.703,False,True,yes,surface hit,,True
+B5,transitional,9.5,6.79,8.8348,14.9701,1.302,True,True,no,surface hit,,False
+B6,line,29.5,23.83,18.4649,40.4349,0.775,False,True,yes,surface hit,,True
+C1,point,19.5,16.8,23.7608,40.2614,1.414,True,True,,surface hit,True,
+C2,point,19.5,16.8,36.7626,62.2922,2.188,True,False,,surface hit,True,
+C3,line,19.5,16.8,16.833,36.8115,1.002,True,True,yes,surface hit,True,True
+C4,line,19.5,16.8,21.9427,48.1569,1.306,True,True,yes,surface hit,True,True

@@ -8,6 +8,18 @@ EPA now distributes the original Visual Plumes (version 1.0, 2001) as a legacy m
 
 It contains UM3 and the Brooks far-field model only. NRFIELD (the empirical multiport model) is not in PLUMES 2.0; if you want it too, the San Francisco Estuary Institute hosts a web port of Visual Plumes, which the PLUMES 2.0 manual also mentions.
 
+### Linux / macOS note (no Fortran in the public zip)
+
+The published `PLUMES2.0-main.zip` ships **only** `plumes2.0v1.exe` (Windows GUI). There is no Fortran source to compile. For a local Linux/macOS dry-run of the same 16 cases, use the Lee & Chu integral proxy:
+
+```bash
+python benchmarks/plumes2/run_python_lcv.py
+# writes results_python_lcv.csv — labelled python-lcv-lee-chu-not-epa
+python benchmarks/plumes2/compare.py benchmarks/plumes2/results_python_lcv.csv
+```
+
+That proxy is useful for engineering checks. It **does not** close register item P-3; only real PLUMES 2.0 centreline dilutions do.
+
 ## What you need
 
 - A PC running Windows 10 or 11. Administrator rights help; see step 2.

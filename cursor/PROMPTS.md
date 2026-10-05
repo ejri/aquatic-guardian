@@ -71,6 +71,8 @@ Run everything and report: cells changed per notebook, any result that moved and
 
 ## Phase 3. Independent near-field benchmark (register item P-3)
 
+The PLUMES 2.0 kit already exists in `benchmarks/plumes2/`. If you have run it, start with: "Read benchmarks/plumes2/README.md, run compare.py on my results.csv, and apply the outcome rules in the README." The prompt below adds an independent integral model as a second check.
+
 Use plan mode.
 
 ```text

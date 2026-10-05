@@ -4,6 +4,8 @@
 
 All inputs, the run guide, the results template and the comparison script live in **`benchmarks/plumes2/`**. Start with that folder's README.
 
+The public PLUMES 2.0 zip is Windows-only (no Fortran sources). On Linux/macOS you can dry-run the same cases with `python benchmarks/plumes2/run_python_lcv.py` (Lee & Chu integral proxy → `results_python_lcv.csv`). That does **not** close P-3.
+
 ## Pass criteria (checked by `compare.py`)
 
 1. **Never too optimistic** — in near-stagnant cases, library dilution ≤ UM3 centreline dilution.

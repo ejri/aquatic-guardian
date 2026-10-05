@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.2 (2026-10-05)
+- Sentient Futures mark, wordmark and lockup embedded in the audience site (header, home "why" section, About, footer, favicon); build injects them as data URIs so the page stays self-contained.
+
 ## 0.2.1 (2026-09-29)
 - Correction 7: merged plumes can no longer out-dilute isolated ones; the default design's screening rise rises from 0.32 °C to 0.46 °C (library, browser engine, Lab, results regenerated).
 - Lab: new "near versus far" panel showing the near-field peak and far-field layer average side by side, live, with why they differ.

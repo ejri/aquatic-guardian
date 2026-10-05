@@ -17,3 +17,9 @@ benchmarks/visual_plumes/decks/*
 # Generated notebook outputs (tests rewrite handoffs; CSVs are teaching artefacts)
 notebooks/_handoffs/*
 !notebooks/_handoffs/.gitkeep
+
+# Local EPA PLUMES 2.0 download (Windows binary + manuals; not committed)
+plumes2/PLUMES2.0-main/
+plumes2/*.zip
+plumes2/*.pdf
+plumes2/*.exe

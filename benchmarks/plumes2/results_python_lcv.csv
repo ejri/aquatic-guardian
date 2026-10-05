@@ -1,0 +1,17 @@
+case_id,plumes2_version,run_date,flux_avg_dilution,centerline_dilution,plume_diameter_m,centerline_depth_at_termination_m,termination,merged,notes
+A1,python-lcv-lee-chu-not-epa,2026-09-29,32.9927,19.4711,4.8241,0.0,surface hit,,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+A2,python-lcv-lee-chu-not-epa,2026-09-29,28.3152,16.7106,4.819,0.0,surface hit,,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+A3,python-lcv-lee-chu-not-epa,2026-09-29,36.564,21.5788,4.7606,0.0,surface hit,,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+A4,python-lcv-lee-chu-not-epa,2026-09-29,6.1197,3.6116,2.0752,0.0,surface hit,,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+A5,python-lcv-lee-chu-not-epa,2026-09-29,221.7523,130.8702,8.9631,0.0,surface hit,,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+A6,python-lcv-lee-chu-not-epa,2026-09-29,9.2059,5.433,5.253,0.0,surface hit,,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+B1,python-lcv-lee-chu-not-epa,2026-09-29,31.9815,14.6579,4.0,0.0,surface hit,yes,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+B2,python-lcv-lee-chu-not-epa,2026-09-29,32.9927,19.4711,4.8241,0.0,surface hit,no,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+B3,python-lcv-lee-chu-not-epa,2026-09-29,32.9927,19.4711,4.8241,0.0,surface hit,no,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+B4,python-lcv-lee-chu-not-epa,2026-09-29,23.9565,11.0446,2.0,0.0,surface hit,yes,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+B5,python-lcv-lee-chu-not-epa,2026-09-29,14.9701,8.8348,2.3826,0.0,surface hit,no,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+B6,python-lcv-lee-chu-not-epa,2026-09-29,40.4349,18.4649,5.0,0.0,surface hit,yes,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+C1,python-lcv-lee-chu-not-epa,2026-09-29,40.2614,23.7608,5.7106,0.0,surface hit,,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+C2,python-lcv-lee-chu-not-epa,2026-09-29,62.2922,36.7626,8.2294,0.0,surface hit,,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+C3,python-lcv-lee-chu-not-epa,2026-09-29,36.8115,16.833,4.0,0.0,surface hit,yes,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
+C4,python-lcv-lee-chu-not-epa,2026-09-29,48.1569,21.9427,4.0,0.0,surface hit,yes,Python Lee–Chu integral (benchmarks/integral_jet) + merge/crossflow; NOT EPA PLUMES 2.0 — cannot close P-3.
