@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **Tracker**: every instrument in `data/instruments.json` now has an opened
+  primary-source URL (`verify: false`). SCIP status is applications closed
+  (ISED, 1 June 2026); the AI Compute Challenge is still accepting applications.
+  EnEfG status is “In force” (no draft amendment was confirmed). AB 93 veto
+  consideration was stricken from file on 22 January 2026.
 - **CI**: `verify` installs `pytest` for the relay job (it was missing, so the job exited 127).
   Checkout / setup-python / setup-node now use Node 24-compatible action majors; Node on the
   runner is 22.

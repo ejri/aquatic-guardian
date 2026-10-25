@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-29",
+  "as_of": "2026-10-25",
   "note": "Status tracker for instruments the Aquatic Guardian module is designed to attach to. 'verify' marks facts with conflicting or secondary sources. Update through pull requests with a primary-source link.",
   "instruments": [
     {
@@ -18,10 +18,22 @@
       "hook": "DOE facility reporting already names 'wastewater discharge and thermal outputs' and 'cooling chemicals used'; definition covers liquid cooling.",
       "action": "Define the thermal, intake and biology metrics; add submerged and seawater-cooled facilities to the definition; define 'harm the environment' to include sentient aquatic animals.",
       "doc": "policy/model-language/us-federal.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://www.congress.gov/bill/119th-congress/senate-bill/4214",
+          "title": "S.4214 — 119th Congress (2025–2026): Artificial Intelligence Data Center Moratorium Act",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://www.congress.gov/119/bills/s4214/BILLS-119s4214is.htm",
+          "title": "S.4214 introduced text (GovInfo / Congress.gov)",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "us-hr9442",
@@ -39,10 +51,22 @@
       "hook": "House companion to S.4214 with the same reporting duty.",
       "action": "Same definitional amendments as S.4214; also package as a stand-alone transparency amendment.",
       "doc": "policy/model-language/us-federal.md",
-      "verify": true,
-      "verify_note": "Cosponsor count differs between sources (13 vs 14).",
-      "last_checked": "2026-09-29",
-      "sources": []
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://www.congress.gov/bill/119th-congress/house-bill/9442",
+          "title": "H.R.9442 — 119th Congress (2025–2026): Artificial Intelligence Data Center Moratorium Act",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://www.govinfo.gov/content/pkg/BILLS-119hr9442ih/html/BILLS-119hr9442ih.htm",
+          "title": "H.R.9442 introduced text (GovInfo)",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "us-eo14318",
@@ -60,10 +84,16 @@
       "hook": "NEPA categorical exclusions do not waive ESA §7, MMPA, EFH, CZMA consistency or CWA §316.",
       "action": "Publish a checklist of statutory consultations that still apply to coastal and submerged projects.",
       "doc": "policy/model-language/us-federal.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://www.govinfo.gov/content/pkg/FR-2025-07-28/html/2025-14212.htm",
+          "title": "Executive Order 14318 of July 23, 2025 (90 FR 35385)",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "us-cwa316",
@@ -81,10 +111,22 @@
       "hook": "§316(b) already counts impinged and entrained organisms; a once-through data centre above ~3-4 MW likely exceeds the 2 MGD trigger.",
       "action": "EPA guidance confirming §316(b) applies to data centres; add taxon, life-stage and tier fields to monitoring reports.",
       "doc": "policy/model-language/permit-conditions.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://www.govinfo.gov/content/pkg/USCODE-2023-title33/html/USCODE-2023-title33-chap26-subchapIII-sec1326.htm",
+          "title": "33 U.S.C. §1326 — Thermal discharges (CWA §316)",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://www.govinfo.gov/content/pkg/FR-2014-08-15/html/2014-12164.htm",
+          "title": "79 FR 48300 — Cooling water intake structures at existing facilities (40 CFR Parts 122 and 125)",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "us-ca-ab93",
@@ -96,16 +138,26 @@
       "dates": [
         {
           "date": "2025-10-11",
-          "event": "Vetoed; SB 57 (data centre energy) signed the same day"
+          "event": "Vetoed by the Governor"
+        },
+        {
+          "date": "2026-01-22",
+          "event": "Consideration of Governor's veto stricken from file"
         }
       ],
       "hook": "A reintroduced disclosure bill is the obvious California vehicle.",
       "action": "Reintroduce with the Aquatic Disclosure metric set; apply Once-Through Cooling Policy logic to seawater-cooled data centres.",
       "doc": "policy/model-language/us-state-model-bill.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://leginfo.legislature.ca.gov/faces/billStatusClient.xhtml?bill_id=202520260AB93",
+          "title": "AB-93 Water resources: data centers (2025–2026) — California Legislature",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "us-wa-wac173",
@@ -114,14 +166,31 @@
       "type": "rule",
       "status": "In force",
       "stage": "enacted",
-      "dates": [],
+      "dates": [
+        {
+          "date": "2024-12-15",
+          "event": "WAC 173-201A-210 last amended (WSR 24-23-037)"
+        }
+      ],
       "hook": "Marine 1-DMax categories and the 12/(T-2) point-source increment at the mixing-zone edge.",
       "action": "Ecology mixing-zone approvals for data centres use critical conditions and report sentience-tier biology.",
       "doc": "policy/model-language/permit-conditions.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://app.leg.wa.gov/WAC/default.aspx?cite=173-201A",
+          "title": "Chapter 173-201A WAC — Water quality standards for surface waters",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://app.leg.wa.gov/WAC/default.aspx?cite=173-201A-210",
+          "title": "WAC 173-201A-210 — Marine water designated uses and criteria",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "eu-rating",
@@ -143,10 +212,22 @@
       "hook": "Labels built from Article 12 EED reporting for data centres >= 500 kW; review adds indicators.",
       "action": "Propose a thermal-discharge-to-surface-water indicator for the 2028 review.",
       "doc": "policy/model-language/eu.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://energy.ec.europa.eu/topics/energy-efficiency/energy-efficiency-targets-directive-and-rules/energy-efficiency-directive/energy-performance-data-centres_en",
+          "title": "Energy performance of data centres — European Commission",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://energy.ec.europa.eu/document/download/b073ba9b-82a8-45cb-b8ba-78dad149e941_en?filename=C_2026_3472_1_EN_ACT_part1_v9.pdf",
+          "title": "C(2026) 3472 — Delegated Regulation establishing a common Union rating scheme for data centres",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "eu-mps",
@@ -164,11 +245,23 @@
       "hook": "Binding floor for data centres; legislative proposal expected spring 2027.",
       "action": "Submit the Aquatic Guardian consultation response (draft in repository).",
       "doc": "policy/model-language/eu.md",
-      "verify": true,
+      "verify": false,
       "deadline": "2026-12-14",
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://energy.ec.europa.eu/resources/consultations_en",
+          "title": "European Commission energy consultations — Data centres in Europe, minimum performance standards",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://energy.ec.europa.eu/topics/energy-efficiency/energy-efficiency-targets-directive-and-rules/energy-efficiency-directive/energy-performance-data-centres_en",
+          "title": "Energy performance of data centres — European Commission",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "eu-cada",
@@ -186,17 +279,23 @@
       "hook": "Acceleration zones with 12-month permitting that cover water abstraction, wastewater discharge and heat authorisations.",
       "action": "Amend zone designation criteria to require Water Framework and Habitats Directive thermal and intake screening first.",
       "doc": "policy/model-language/eu.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A52026PC0502",
+          "title": "COM(2026) 502 final — Proposal for a Cloud and AI Development Act",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "de-enefg",
       "jurisdiction": "Germany",
       "name": "Energieeffizienzgesetz (EnEfG) data centre requirements",
       "type": "statute",
-      "status": "In force; amendment in draft",
+      "status": "In force",
       "stage": "enacted",
       "dates": [
         {
@@ -215,10 +314,22 @@
       "hook": "Clearest heat-reuse mandate in force.",
       "action": "Credit aquaculture reuse toward ERF only with a named welfare standard.",
       "doc": "policy/model-language/eu.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://www.gesetze-im-internet.de/enefg/",
+          "title": "Energieeffizienzgesetz (EnEfG) — Gesetze im Internet",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://www.gesetze-im-internet.de/enefg/__11.html",
+          "title": "EnEfG §11 — Klimaneutrale Rechenzentren",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "ca-bc-bill31",
@@ -245,11 +356,26 @@
       "action": "Add an aquatic-impact sub-score and a closed-loop heat-reuse credit to the next call, co-developed with First Nations.",
       "doc": "policy/model-language/canada.md",
       "verify": false,
-      "verify_note": "2025 Call for Power results announced 13 May 2026 (BC Hydro participants page). 2026 Call for Demand: 15 applications (~800 MW); applicants moving to the next stage notified; final outcome notifications delayed past mid-September 2026 pending government transition (BC Hydro emerging-industries page, checked 2026-10-17).",
-      "last_checked": "2026-10-17",
+      "last_checked": "2026-10-25",
       "sources": [
-        "https://www.bchydro.com/work-with-us/selling-clean-energy/2025-call-for-power/participants.html",
-        "https://app.bchydro.com/accounts-billing/electrical-connections/large-load/emerging-industries-connections.html"
+        {
+          "url": "https://news.gov.bc.ca/releases/2025ECS0049-001216",
+          "title": "Bill 31 received royal assent on 27 November 2025 — BC Gov News",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://www.bchydro.com/work-with-us/selling-clean-energy/2025-call-for-power/participants.html",
+          "title": "2025 Call for Power Participants — BC Hydro",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://app.bchydro.com/accounts-billing/electrical-connections/large-load/emerging-industries-connections.html",
+          "title": "2026 Call for Demand for Emerging Industries — BC Hydro",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
       ]
     },
     {
@@ -259,27 +385,40 @@
       "type": "statute",
       "status": "In force",
       "stage": "enacted",
-      "dates": [],
+      "dates": [
+        {
+          "date": "2024-11-27",
+          "event": "Last amended (S.C. 2024, c. 30)"
+        }
+      ],
       "hook": "'Deleterious substance' expressly includes water changed by heat; s.35 covers habitat damage.",
       "action": "DFO guidance confirming heated cooling water is within s.36; authorisation conditions for intakes.",
       "doc": "policy/model-language/canada.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://laws-lois.justice.gc.ca/eng/acts/f-14/",
+          "title": "Fisheries Act (R.S.C., 1985, c. F-14) — Justice Laws Canada",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://laws-lois.justice.gc.ca/eng/acts/f-14/page-4.html#h-227077",
+          "title": "Fisheries Act s.34 — definition of deleterious substance (includes water changed by heat)",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "ca-scip",
       "jurisdiction": "Canada (federal)",
       "name": "AI Sovereign Compute Infrastructure Program and AI Compute Challenge",
       "type": "funding programme",
-      "status": "Applications closed; agreements pending",
+      "status": "SCIP applications closed; AI Compute Challenge still accepting applications",
       "stage": "programme",
       "dates": [
-        {
-          "date": "2026-04-15",
-          "event": "SCIP launched"
-        },
         {
           "date": "2026-06-01",
           "event": "SCIP applications closed"
@@ -288,10 +427,22 @@
       "hook": "Contribution agreements include sustainability criteria.",
       "action": "Attach aquatic disclosure and heat-reuse conditions to funded facilities.",
       "doc": "policy/model-language/canada.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://www.ised-isde.canada.ca/site/ised/en/ai-sovereign-compute-infrastructure-program",
+          "title": "AI Sovereign Compute Infrastructure Program — ISED (applications closed 1 June 2026)",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://www.ised-isde.canada.ca/site/ised/en/ai-compute-challenge",
+          "title": "AI Compute Challenge — ISED (applications accepted on an ongoing basis)",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "intl-bbnj",
@@ -313,10 +464,16 @@
       "hook": "EIA obligations beyond national jurisdiction; relevant to floating or high-seas compute.",
       "action": "COP-1 submission asking for guidance on continuous heat-rejecting infrastructure.",
       "doc": "policy/model-language/international.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://www.un.org/bbnjagreement/en",
+          "title": "BBNJ Agreement — United Nations (entered into force 17 January 2026)",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "intl-iso30134",
@@ -325,14 +482,37 @@
       "type": "standard",
       "status": "Published series; no thermal-discharge KPI",
       "stage": "standard",
-      "dates": [],
+      "dates": [
+        {
+          "date": "2026-01-16",
+          "event": "ISO/IEC 30134-2:2026 (PUE) published"
+        }
+      ],
       "hook": "WUE covers consumptive freshwater only; nothing covers heat to water or intake biology.",
       "action": "Propose a technical report on thermal-discharge and intake KPIs to ISO/IEC JTC 1/SC 39.",
       "doc": "policy/model-language/international.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://www.iso.org/standard/63450.html",
+          "title": "ISO/IEC 30134-1:2016 — Data centres KPIs, Part 1: Overview and general requirements",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://www.iso.org/standard/30134-2",
+          "title": "ISO/IEC 30134-2:2026 — Power usage effectiveness (PUE)",
+          "accessed": "2026-10-25",
+          "primary": true
+        },
+        {
+          "url": "https://www.iso.org/standard/77692.html",
+          "title": "ISO/IEC 30134-9:2022 — Water usage effectiveness (WUE)",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     },
     {
       "id": "uk-sentience",
@@ -341,14 +521,29 @@
       "type": "statute",
       "status": "In force",
       "stage": "enacted",
-      "dates": [],
+      "dates": [
+        {
+          "date": "2022-04-28",
+          "event": "Royal Assent"
+        },
+        {
+          "date": "2023-05-22",
+          "event": "Main provisions in force (S.I. 2023/563)"
+        }
+      ],
       "hook": "Committee scrutinises government policy for effects on vertebrates, cephalopods and decapods; data centres are Critical National Infrastructure.",
       "action": "Request a Committee review of data-centre siting and cooling policy.",
       "doc": "policy/model-language/international.md",
-      "verify": true,
-      "last_checked": "2026-09-29",
-      "sources": [],
-      "verify_note": "Needs a primary-source URL before this status can be treated as verified."
+      "verify": false,
+      "last_checked": "2026-10-25",
+      "sources": [
+        {
+          "url": "https://www.legislation.gov.uk/ukpga/2022/22",
+          "title": "Animal Welfare (Sentience) Act 2022 (c. 22)",
+          "accessed": "2026-10-25",
+          "primary": true
+        }
+      ]
     }
   ],
   "stale_after_days": 60

@@ -65,6 +65,6 @@ Status key: **Published value**, reproduces a number printed in the cited source
 3. All placeholder species parameters replaced and reviewed.
 4. Site tidal currents taken from a NOAA CO-OPS or DFO/CHS station, not assumed.
 5. Conditional-finding templates for thermal / monitoring / aquaculture research completed where still open.
-6. A primary-source URL recorded for every entry in `data/instruments.json`. All 16 entries currently have an empty `sources` array and `verify: true`; `scripts/tracker_report.py` lists them. Nobody can check a status or a date in the tracker without searching for the source again.
+6. A primary-source URL recorded for every entry in `data/instruments.json`. Each of the 16 entries now has at least one opened issuing-body or official-text URL; `verify` is false. Recheck with `scripts/tracker_report.py` when statuses move.
 7. Oregon's OAR 340-041-0028(7) transcription confirmed against the Secretary of State primary text (still `verify: true`); British Columbia and member-state EU temperature rules transcribed from primary text (register item R-3).
 8. The site's headline count of automated checks confirmed against the suite before release; it is written by hand in `web/parts/2_body.html`.
