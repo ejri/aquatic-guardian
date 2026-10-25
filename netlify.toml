@@ -1,25 +1,42 @@
-# Netlify configuration for the Aquatic Guardian website.
-#
-# Nothing is built on Netlify: site/ already contains the finished files, and CI
-# runs `python app/build.py --check` on every push, so a stale site/index.html
-# fails the build before it can be deployed. Edit web/parts/*.html instead.
-#
-# Connection steps are in docs/DEPLOY.md.
-
 [build]
   publish = "site"
   command = ""
+  functions = "netlify/functions"
 
-# The page is self-contained. The only permitted network requests are the Google
-# Fonts stylesheet (fonts.googleapis.com) and the font files it references
-# (fonts.gstatic.com). Scripts and styles are inline, so 'unsafe-inline' is
-# required; there is no remote script origin of any kind.
+# The policy ships as Report-Only: watch the browser console (or a report endpoint)
+# for a week of normal use, then rename the header to Content-Security-Policy.
+# Add your relay origin (https://... and wss://...) to connect-src once deployed.
+# Same-origin /.netlify/functions/proxy covers Coral Reef Watch / CO-OPS / IWLS without Fly.
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; frame-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'"
-    Referrer-Policy = "no-referrer"
+    Content-Security-Policy-Report-Only = "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.youtube.com https://s.ytimg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://i.ytimg.com; frame-src https://www.youtube-nocookie.com https://www.youtube.com; connect-src 'self' https://marine-api.open-meteo.com https://coastwatch.pfeg.noaa.gov https://coastwatch.noaa.gov https://pae-paha.pacioos.hawaii.edu https://api.tidesandcurrents.noaa.gov https://api-iwls.dfo-mpo.gc.ca https://cdn.jsdelivr.net; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), display-capture=(self)"
+    Referrer-Policy = "strict-origin-when-cross-origin"
     X-Content-Type-Options = "nosniff"
-    Permissions-Policy = "accelerometer=(), ambient-light-sensor=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), serial=(), usb=(), xr-spatial-tracking=()"
-    Cross-Origin-Opener-Policy = "same-origin"
-    X-Frame-Options = "DENY"
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=900"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/notebooks/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/models/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[redirects]]
+  from = "/api/proxy"
+  to = "/.netlify/functions/proxy"
+  status = 200
+  force = true

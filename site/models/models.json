@@ -1,0 +1,44 @@
+{
+  "as_of": "2026-10-17",
+  "default": "brackish-yolov8n",
+  "models": [
+    {
+      "id": "brackish-yolov8n",
+      "label": "Brackish underwater (YOLOv8n)",
+      "file": "models/brackish-yolov8n.onnx",
+      "size": 320,
+      "labels": ["crab", "fish", "jellyfish", "shrimp", "small_fish", "starfish"],
+      "source": "https://huggingface.co/dronefreak/brackish-yolov8n",
+      "license": "See model card; trained on Brackish Underwater (Denmark)",
+      "note": "Classes: crab, fish, jellyfish, shrimp, small_fish, starfish. Single-camera / brackish water — treat open-ocean detections as screening only."
+    },
+    {
+      "id": "motion",
+      "label": "Motion only (no neural net)",
+      "file": null,
+      "size": 320,
+      "labels": ["moving object"],
+      "note": "Background subtraction. Works offline with no model download."
+    }
+  ],
+  "candidates": [
+    {
+      "id": "marine-detect-fishinv",
+      "label": "Marine Detect Fish+Invertebrates (Indo-Pacific)",
+      "url": "https://github.com/Orange-OpenSource/marine-detect",
+      "note": "17 bio-indicator classes; .pt only — export to ONNX before shipping."
+    },
+    {
+      "id": "marine-detect-megafauna",
+      "label": "Marine Detect MegaFauna (shark, turtle, ray)",
+      "url": "https://github.com/Orange-OpenSource/marine-detect",
+      "note": "Requires ONNX export."
+    },
+    {
+      "id": "fathomnet-mbari",
+      "label": "FathomNet / MBARI-315k YOLOv8",
+      "url": "https://huggingface.co/FathomNet/MBARI-315k-yolov8",
+      "note": "Deep-sea taxa; large; not yet bundled."
+    }
+  ]
+}

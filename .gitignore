@@ -20,6 +20,12 @@ notebooks/_handoffs/*
 
 # Local EPA PLUMES 2.0 download (Windows binary + manuals; not committed)
 plumes2/PLUMES2.0-main/
+plumes2/PLUMES2.0_12_22_2025/
 plumes2/*.zip
 plumes2/*.pdf
 plumes2/*.exe
+epa_ssmc-plumes2.0_usermanual.pdf
+
+# Accidental curl dump and a browser "Save Page As" of the Learn tab
+-q/
+learning_materials/Learn computer vision · Aquatic Guardian_files/

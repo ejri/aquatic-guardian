@@ -1,55 +1,94 @@
-# Aquatic Guardian
+# Aquatic Guardian v1.0
 
-**A plug-in aquatic, ecological and animal-welfare module for data-centre regulation.** Version 0.2.0, 29 September 2026. A Sentient Futures project.
+Live underwater cameras, live ocean conditions, computer vision, and a Python rebuild of the EPA's PLUMES 2.0,
+added to the v0.2.1 site (a Sentient Futures project).
 
-Governments are writing data-centre rules now, mostly about energy, grids and communities. Almost all of a data centre's electricity leaves as heat, and where that heat goes into seawater, rivers or lakes, or the servers sit in the water, it reaches animals directly. Aquatic Guardian supplies the definitions, metrics, screening methods, permit conditions and model clauses to add that footprint to the instruments already on the table: the US AI Data Center Moratorium Act (S.4214 / H.R.9442), the EU data-centre rating scheme and minimum performance standards, the Cloud and AI Development Act, British Columbia's competitive power allocation, CWA §316 and the Fisheries Act.
+## What's in this release
 
-It builds on *Governing the Ocean Server Farm* (Elchami, Kaplan and Daher, Sentient Futures, April 2026).
-
-## What is in the repository
-
-| Deliverable | Where |
+| Path | What it is |
 |---|---|
-| Policy framework, recommendations and model language for the US (federal and state), permits, the EU, Canada, BBNJ, ISO/IEC and the UK | `policy/` |
-| Verified screening library (heat budget, intake, near-field plume, tidal excursion, numerical diffusion, DO, ammonia, temperature rules, occupancy, underwater imaging, tracking metrics, bioenergetics, sentience reporting) | `src/aquatic_guardian/` |
-| 125 automated checks against published values and known-truth simulations, including browser-engine and Lab-simulation parity | `tests/`, `docs/VERIFICATION.md` |
-| The six technical corrections adopted from the fact-check | `docs/CORRECTIONS.md` |
-| Aquatic Disclosure Schema (CC0) and notebook handoff schema | `schemas/`, `docs/METRICS.md`, `docs/CROSSWALK.md` |
-| Instrument tracker and criteria table, each entry with its source | `data/` |
-| How the three Colab notebooks import the library and exchange validated JSON | `notebooks/INTEGRATION.md` |
-| Website with audience sections (public, officials, researchers, industry), live Lab simulations and the screening app, as one self-contained page | `site/index.html`, built from `web/parts/` by `app/build.py` |
-| Notebook results recomputed with fixed seeds for the Lab | `app/notebook_results.py` → `data/notebook_results.json` |
-| Agent brief, Cursor project rules and a phased Cursor prompt pack | `AGENTS.md`, `.cursor/rules/`, `cursor/PROMPTS.md` |
+| `site/` | The deployable website: v0.2.1 plus **Live ocean** (`#/observe`), **Learn** (`#/learn`), and the **PLUMES 2.0, rebuilt** Lab instrument (`#/lab/sim-plumes`) |
+| `site/js/learn.js` | Learn tab: tour, path finder, module pages and in-page demos |
+| `site/css/learn.css` | Learn tab styles, scoped to `[data-route="learn"]` with `lc-` classes |
+| `site/notebooks/` | Nine Colab notebooks for the Learn tab (copied from `learning_materials/` at build) |
+| `learning_materials/learn-route/` | Learn tab source: `learn.html`, `learn.css`, `learn.js` |
+| `site/js/plumes2.js` | Browser PLUMES engine, a parity-tested mirror of `plumes2py` |
+| `site/js/observatory.js` | Live ocean page: map, player, tabs |
+| `site/js/ocean-data.js` | Open-Meteo Marine, NOAA Coral Reef Watch (ERDDAP), NOAA CO-OPS, DFO IWLS clients |
+| `site/js/vision.js` | Tab capture / file / relay vision, motion or ONNX detector, Kalman tracker, behaviour metrics |
+| `site/js/plumes-lab.js` | Lab instrument with EPA reference overlay and PLUMES-format output |
+| `site/data/streams.json` | 29 streams, 7 ocean data-centre sites, region gaps |
+| `site/data/world.json` | Equal Earth world map from Natural Earth 1:110m (public domain), no tile server |
+| `python/plumes2py/` | Python rebuild of PLUMES 2.0 with extended metrics and multi-run analyses |
+| `relay/` | Optional FastAPI server: PLUMES API, allow-listed data proxy, permission-gated vision workers |
+| `tools/integrate_v1.py` | Applies the v1.0 additions to a built v0.2.1 `index.html` (idempotent) |
+| `VALIDATION.md` | How the rebuild matches PLUMES 2.0, and four discrepancies found in the EPA materials |
+| `docs/STREAMS.md` | Stream rules, operator permission template, regional gaps, nightly checks |
 
-## Quick start
+## Run it locally
 
 ```bash
-pip install -e ".[test]"
-pytest -q                 # default suite (skip slow notebooks and opt-in browser)
-python app/build.py       # rebuild site/index.html from policy text, data, engine and Lab results
-python app/notebook_results.py   # regenerate data/notebook_results.json for the Lab
+python scripts/dev_server.py 8765   # site + allow-listed /api/proxy (Coral Reef Watch etc.)
+# then open http://127.0.0.1:8765/#/observe  and  #/learn
+cd python && pip install -e . && python -m pytest -q      # 53 tests
+node tests/parity.test.mjs                                # browser engine vs Python: 1,500 values
+python -m pytest -q relay/tests                           # 7 tests (pip install -r relay/requirements.txt)
+python tests/browser/test_site.py /tmp/shots              # headless Chromium, external APIs stubbed (pip install playwright)
+python tests/browser/test_learn.py /tmp/learn-shots       # rebuilt #/learn route
 ```
 
-In Colab:
+## Deploy
 
-```python
-!pip -q install "git+https://github.com/ejri/aquatic-guardian.git@v0.2.0"
-import aquatic_guardian as ag
-r = ag.screening.screen({"it_load_mw": 24, "delta_t_k": 8, "t_ambient_c": 12})
-r["near_field"]["delta_t_near_field_k"], [f["text"] for f in r["flags"]]
+**Website (Netlify).** Publish directory `site`, no build command (`netlify.toml` is included). It ships a
+Content-Security-Policy in *Report-Only* mode: run it for a week, check the console for violations, then rename
+the header to `Content-Security-Policy`.
+
+**Your build pipeline.** `site/index.html` was produced by `tools/integrate_v1.py` from the built v0.2.1 page.
+Port the blocks it inserts (they are plain strings at the top of the script) into your templates, or run the script
+as a post-build step: `python tools/integrate_v1.py build/index.html site/index.html`. It stops with the anchor's
+name if a template change moves an insertion point.
+
+**Relay (optional).** Needed for: browsers whose CORS blocks a data source, the full Python engine, and
+server-side vision on permitted streams.
+
+```bash
+fly launch --copy-config --dockerfile relay/Dockerfile      # from the repository root
+fly secrets set ONC_TOKEN=...                               # optional, Ocean Networks Canada API
 ```
 
-## Single sources of truth
+Then in `site/index.html` set `window.AG_RELAY = "https://ag-relay.fly.dev"` and add that origin
+(`https://` and `wss://`) to `connect-src` in `netlify.toml`. Vision workers start only with `AG_RUN_WORKERS=1`
+**and** a granted permission recorded in `relay/permitted_streams.json`.
 
-- Model language lives only in `policy/model-language/*.md`, between `<!-- clause: id -->` markers. The website extracts it at build time.
-- The tracker lives only in `data/instruments.json`.
-- Screening logic lives in `src/aquatic_guardian/screening.py`; `app/engine.js` mirrors it and `tests/test_engine_parity.py` fails if they diverge.
-- CI (`.github/workflows/ci.yml`) runs the tests and fails if the built site or bundled resources are stale.
+**Nightly stream check.** Add a `YOUTUBE_API_KEY` repository secret; `.github/workflows/streams-health.yml`
+opens a pull request when streams end or move.
 
-## Status and limits
+## How the pieces fit
 
-Screening results are for scoping and public understanding. The near-field coefficients await a Visual Plumes UM3 or NRFIELD benchmark; stratified trapping and far-field transport are not modelled; every species welfare parameter is still a placeholder. None of this is legal advice or a substitute for a regulatory mixing-zone study, a §316 demonstration, a Fisheries Act authorisation or species-expert review. See `docs/VERIFICATION.md` for what must be done before any result leaves the team.
+```
+Live ocean page ─┬─ YouTube privacy-enhanced player / operator link (never pixel-read)
+                 ├─ ocean-data.js ── Open-Meteo, Coral Reef Watch, CO-OPS, IWLS ──(blocked?)── relay /api/proxy
+                 ├─ vision.js ── shared tab | local file | relay /ws/vision/{id} (permitted streams only)
+                 └─ plumes2.js ── live SST + current → data-centre scenario → UM3 → Brooks → rule screening
+Lab ──────────── plumes2.js on a PLUMES 2.0-style form, EPA reference overlay
+python/plumes2py ── reference implementation; relay /api/plumes/* serves it
+```
 
-## Licences and citation
+## Data and credits
 
-Code: Apache-2.0 (`LICENSE`). Policy text, docs and site text: CC BY 4.0. Schemas: CC0. Data: CC BY 4.0 (`LICENSE-docs.md`). Cite with `CITATION.cff`.
+Streams belong to their operators (explore.org, Monterey Bay Aquarium, Ocean Networks Canada, Coral Morphologic,
+The MEGA Lab, Ocean Exploration Trust, Schmidt Ocean Institute, The Nature Conservancy Australia, James Cook
+University, California Academy of Sciences and others) and are credited on the page. Ocean data: Open-Meteo
+(CC BY 4.0), NOAA Coral Reef Watch and CO-OPS (US public domain), Fisheries and Oceans Canada (Open Government
+Licence – Canada). Map: Natural Earth (public domain). Code Apache-2.0, text CC BY 4.0, as in v0.2.1.
+
+## Known limits
+
+- The forced-entrainment scale (0.81) is fitted to one EPA case; run the 16-case benchmark
+  (`python/scripts/compare_plumes2.py --fit`) before relying on it outside similar conditions.
+- Stream ids change; entries marked unverified were not confirmed live. Several regions have no verified stream.
+- Vision metrics are behaviour indicators against each view's own baseline, not welfare scores; species
+  thresholds marked as placeholders need species literature or veterinary review.
+- The data-centre scenario is steady-state screening (one design current, no slack-water re-entrainment), not a
+  permit decision. Pod mode is a screening approximation; UM3 is not designed for distributed hull heat.
+- External APIs were stubbed in automated tests; check the live page against real responses after deploying.

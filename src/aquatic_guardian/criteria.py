@@ -95,12 +95,28 @@ def custom_increment(allowed_increment_k: float, label: str = "permit-specific i
     return {"criterion_c": None, "allowed_increment_k": float(allowed_increment_k), "basis": label}
 
 
+def or_marine_increment() -> dict:
+    """OAR 340-041-0028(7): ocean and bay waters, 0.3 °C above natural.
+
+    Transcribed from a secondary host (oregon.public.law); confirm against the
+    Oregon Secretary of State rule text before relying on it (verify=True on
+    the jurisdiction row in data/criteria.json).
+    """
+    return {
+        "criterion_c": None,
+        "allowed_increment_k": 0.3,
+        "basis": "OAR 340-041-0028(7): 0.3 C above natural (verify)",
+    }
+
+
 def temperature_rule(rule: str, t_background_c: float, wa_category: str = "excellent",
                      custom_increment_k: float = 1.0) -> dict:
     if rule == "wa_marine":
         return wa_marine_allowed_increment(t_background_c, wa_category)
     if rule == "ca_new_coastal":
         return ca_thermal_plan_new_coastal()
+    if rule == "or_marine":
+        return or_marine_increment()
     if rule == "custom":
         return custom_increment(custom_increment_k)
     raise ValueError(rule)

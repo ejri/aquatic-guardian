@@ -1,0 +1,17 @@
+{
+  "note": "A vision worker starts only for entries whose permission.status is 'granted' with granted_by and date filled in. Keep the operator's written permission on file (docs/STREAMS.md has the request template). Sources: an HLS URL the operator provides, or youtube:VIDEO_ID where the operator has agreed to server-side analysis of their YouTube stream.",
+  "streams": [
+    {
+      "id": "utila-top",
+      "source": "youtube:1zcIUk66HX4",
+      "fps": 2,
+      "permission": {"status": "pending", "granted_by": null, "date": null, "scope": "behaviour metrics only; no frames stored or redistributed", "reference": null}
+    },
+    {
+      "id": "onc-folger",
+      "source": null,
+      "fps": 2,
+      "permission": {"status": "pending", "granted_by": null, "date": null, "scope": "behaviour metrics on scheduled clips via Oceans 3.0", "reference": null}
+    }
+  ]
+}

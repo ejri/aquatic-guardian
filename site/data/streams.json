@@ -1,0 +1,1627 @@
+{
+ "as_of": "2026-10-17",
+ "note": "Explore.org Oceans cams integrated from https://explore.org/livecams/oceans/ (YouTube live ids confirmed 2026-10-17). ONC schedules from oceannetworks.ca. Update via scripts/healthcheck_streams.py and scripts/integrate_explore_oceans.py.",
+ "regions": [
+  {
+   "id": "ne-pacific",
+   "label": "Northeast Pacific",
+   "gap": null
+  },
+  {
+   "id": "hawaii",
+   "label": "Hawai\u02bbi",
+   "gap": null
+  },
+  {
+   "id": "caribbean",
+   "label": "Caribbean",
+   "gap": null
+  },
+  {
+   "id": "gulf-florida",
+   "label": "Gulf and Florida",
+   "gap": null
+  },
+  {
+   "id": "north-atlantic",
+   "label": "North Atlantic",
+   "gap": null
+  },
+  {
+   "id": "mediterranean",
+   "label": "Mediterranean",
+   "gap": null
+  },
+  {
+   "id": "red-sea",
+   "label": "Red Sea",
+   "gap": null
+  },
+  {
+   "id": "indian-ocean",
+   "label": "Indian Ocean",
+   "gap": null
+  },
+  {
+   "id": "se-asia",
+   "label": "Southeast Asia",
+   "gap": "No verified public open-ocean stream yet."
+  },
+  {
+   "id": "east-asia",
+   "label": "Japan and East Asia",
+   "gap": "Aquarium candidates (e.g. Okinawa Churaumi) not yet verified; no open-ocean feed found."
+  },
+  {
+   "id": "australia",
+   "label": "Australia",
+   "gap": null
+  },
+  {
+   "id": "south-pacific",
+   "label": "South Pacific",
+   "gap": null
+  },
+  {
+   "id": "southern-africa",
+   "label": "Southern Africa",
+   "gap": "No verified stream. Two Oceans Aquarium (Cape Town) is an unverified aquarium candidate."
+  },
+  {
+   "id": "polar",
+   "label": "Polar",
+   "gap": null
+  },
+  {
+   "id": "deep-sea",
+   "label": "Deep sea",
+   "gap": null
+  },
+  {
+   "id": "aquaculture",
+   "label": "Salmon farms",
+   "gap": "Salmon-pen cameras are proprietary; none is public. Use recorded clips in the Lab instead."
+  }
+ ],
+ "streams": [
+  {
+   "kind": "open_ocean",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "wrasse",
+    "sergeant majors",
+    "trumpetfish",
+    "stingrays",
+    "moray eels",
+    "turtles"
+   ],
+   "depth_m": 7.6,
+   "schedule": "Usually live; best in daylight",
+   "coops": null,
+   "iwls_code": null,
+   "note": "",
+   "id": "utila-top",
+   "name": "Utila reef, top of the wall",
+   "operator": "explore.org / Utopia Village",
+   "region": "caribbean",
+   "lat": 16.09,
+   "lon": -86.93,
+   "ecosystem": "Mesoamerican Reef wall",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "1zcIUk66HX4",
+    "channel_id": "UCSyg9cb3Iq-NtlbxqNB9wGw",
+    "url": "https://www.youtube.com/watch?v=1zcIUk66HX4",
+    "explore_url": "https://explore.org/livecams/oceans/"
+   },
+   "sal_psu": 36.0
+  },
+  {
+   "kind": "open_ocean",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "stingrays",
+    "reef fish"
+   ],
+   "depth_m": 6.1,
+   "schedule": "Usually live; best in daylight",
+   "coops": null,
+   "iwls_code": null,
+   "note": "",
+   "id": "utila-sandy",
+   "name": "Utila reef, sandy channel",
+   "operator": "explore.org / Utopia Village",
+   "region": "caribbean",
+   "lat": 16.091,
+   "lon": -86.932,
+   "ecosystem": "Sand channel to reef wall",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "jzx_n25g3kA",
+    "channel_id": "UCSyg9cb3Iq-NtlbxqNB9wGw",
+    "url": "https://www.youtube.com/watch?v=jzx_n25g3kA",
+    "explore_url": "https://explore.org/livecams/oceans/"
+   },
+   "sal_psu": 36.0
+  },
+  {
+   "kind": "open_ocean",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "reef fish",
+    "eagle rays"
+   ],
+   "depth_m": 9.1,
+   "schedule": "Usually live; best in daylight",
+   "coops": null,
+   "iwls_code": null,
+   "note": "",
+   "id": "utila-edge",
+   "name": "Utila reef, edge of the wall",
+   "operator": "explore.org / Utopia Village",
+   "region": "caribbean",
+   "lat": 16.089,
+   "lon": -86.931,
+   "ecosystem": "Reef wall edge",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "Sq-X4Ga1oyc",
+    "channel_id": "UCSyg9cb3Iq-NtlbxqNB9wGw",
+    "url": "https://www.youtube.com/watch?v=Sq-X4Ga1oyc",
+    "explore_url": "https://explore.org/livecams/oceans/"
+   },
+   "sal_psu": 36.0
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "Caribbean reef fish",
+    "coral"
+   ],
+   "depth_m": null,
+   "schedule": "Intermittent",
+   "coops": null,
+   "iwls_code": null,
+   "note": "YouTube live id ended (was wANBWGe8zhI); check explore.org for a new broadcast.",
+   "id": "bonaire",
+   "name": "Bonaire reef",
+   "operator": "explore.org",
+   "region": "caribbean",
+   "lat": 12.15,
+   "lon": -68.28,
+   "ecosystem": "Caribbean fringing reef",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "wANBWGe8zhI",
+    "url": "https://www.youtube.com/watch?v=wANBWGe8zhI",
+    "explore_url": "https://explore.org/livecams/oceans/bonaire-underwater",
+    "title": "Bonaire Underwater Cam powered by EXPLORE.org"
+   },
+   "sal_psu": 36.0,
+   "status": "offline"
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "sand tiger sharks",
+    "barracuda",
+    "amberjack"
+   ],
+   "depth_m": 15,
+   "schedule": "Seasonal; depends on maintenance",
+   "coops": null,
+   "iwls_code": null,
+   "note": "YouTube live id ended (was og8bbxl0iW8); check explore.org shark cam for a new broadcast.",
+   "id": "frying-pan",
+   "name": "Frying Pan Tower shark cam",
+   "operator": "explore.org",
+   "region": "north-atlantic",
+   "lat": 33.49,
+   "lon": -77.59,
+   "ecosystem": "Atlantic continental shelf",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "og8bbxl0iW8",
+    "url": "https://www.youtube.com/live/og8bbxl0iW8",
+    "explore_url": "https://explore.org/livecams/oceans/shark-cam",
+    "title": "Shark Cam powered by EXPLORE.org"
+   },
+   "sal_psu": 36.0,
+   "status": "offline"
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "beluga whales"
+   ],
+   "depth_m": 1,
+   "schedule": "Summer boat tours only (tide-dependent); not continuous",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Seasonal Explore.org Beluga Boat tours (Churchill River), not a 24/7 stream. Off-season: highlights only. See explore.org/livecams/beluga-whales/beluga-boat-cam-underwater.",
+   "id": "beluga",
+   "name": "Churchill River belugas",
+   "operator": "explore.org / Polar Bears International",
+   "region": "polar",
+   "lat": 58.77,
+   "lon": -94.2,
+   "ecosystem": "Arctic estuary",
+   "provider": {
+    "type": "external",
+    "url": "https://explore.org/livecams/oceans/beluga-boat-cam-underwater"
+   },
+   "sal_psu": 20.0,
+   "status": "seasonal"
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "garibaldi",
+    "sea lions",
+    "kelp bass"
+   ],
+   "depth_m": 8,
+   "schedule": "Intermittent",
+   "coops": "9411340",
+   "iwls_code": null,
+   "note": "YouTube live id ended (was aaUERtNMn7o); check explore.org Anacapa cam for a new broadcast.",
+   "id": "anacapa",
+   "name": "Anacapa Island kelp forest",
+   "operator": "US National Park Service / explore.org",
+   "region": "ne-pacific",
+   "lat": 34.01,
+   "lon": -119.36,
+   "ecosystem": "Giant kelp forest",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "aaUERtNMn7o",
+    "url": "https://www.youtube.com/live/aaUERtNMn7o",
+    "explore_url": "https://explore.org/livecams/oceans/channel-islands-national-park-anacapa-ocean",
+    "title": "Anacapa Island Cove - Channel Islands National Park Cams powered by EXPLORE.org"
+   },
+   "sal_psu": 33.5,
+   "status": "offline"
+  },
+  {
+   "kind": "aquarium",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "sardines",
+    "leopard sharks",
+    "wolf-eels",
+    "rockfish"
+   ],
+   "depth_m": 8.5,
+   "schedule": "Live 7 a.m. to 7 p.m. Pacific; recorded otherwise",
+   "coops": "9413450",
+   "iwls_code": null,
+   "note": "",
+   "id": "mba-kelp",
+   "name": "Monterey Bay Aquarium kelp forest",
+   "operator": "Monterey Bay Aquarium",
+   "region": "ne-pacific",
+   "lat": 36.618,
+   "lon": -121.902,
+   "ecosystem": "Kelp forest exhibit fed with Monterey Bay seawater",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "w3LjpFhySTg",
+    "url": "https://www.youtube.com/live/w3LjpFhySTg"
+   },
+   "sal_psu": 33.5
+  },
+  {
+   "kind": "surface",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "sea otters",
+    "harbor seals",
+    "humpback whales",
+    "seabirds"
+   ],
+   "depth_m": 0,
+   "schedule": "Live 7 a.m. to 7 p.m. Pacific",
+   "coops": "9413450",
+   "iwls_code": null,
+   "note": "",
+   "id": "mba-bay",
+   "name": "Monterey Bay from the aquarium deck",
+   "operator": "Monterey Bay Aquarium",
+   "region": "ne-pacific",
+   "lat": 36.6185,
+   "lon": -121.9015,
+   "ecosystem": "Open bay, surface view",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "fVa6-zCBR7A",
+    "url": "https://www.youtube.com/watch?v=fVa6-zCBR7A"
+   },
+   "sal_psu": 33.5,
+   "status": "live"
+  },
+  {
+   "kind": "aquarium",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "sevengill sharks",
+    "bat rays",
+    "tuna",
+    "sea turtles",
+    "sea nettles"
+   ],
+   "depth_m": null,
+   "schedule": "Live 7 a.m. to 7 p.m. Pacific",
+   "coops": null,
+   "iwls_code": null,
+   "note": "",
+   "id": "mba-cams",
+   "name": "Monterey Bay Aquarium shark, open sea and jelly cams",
+   "operator": "Monterey Bay Aquarium",
+   "region": "ne-pacific",
+   "lat": 36.6175,
+   "lon": -121.9025,
+   "ecosystem": "Exhibits",
+   "provider": {
+    "type": "external",
+    "url": "https://www.montereybayaquarium.org/cams-videos/live-cams"
+   },
+   "sal_psu": 33.5
+  },
+  {
+   "kind": "open_ocean",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "brain corals",
+    "parrotfish",
+    "snapper",
+    "barracuda"
+   ],
+   "depth_m": 2.7,
+   "schedule": "24/7, one of the longest-running underwater streams",
+   "coops": "8723214",
+   "iwls_code": null,
+   "note": "Coral Morphologic YouTube live from PortMiami riprap (~3 m).",
+   "id": "coral-city",
+   "name": "Coral City Camera, PortMiami",
+   "operator": "Coral Morphologic",
+   "region": "gulf-florida",
+   "lat": 25.77,
+   "lon": -80.16,
+   "ecosystem": "Urban coral reef on a shipping channel",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "7i8ARjIeM2k",
+    "url": "https://www.youtube.com/live/7i8ARjIeM2k",
+    "explore_url": "https://www.coralcitycamera.com/",
+    "title": "Coral City Camera (Miami's Free-Range Aquarium Underwater Livestream)"
+   },
+   "sal_psu": 35.5
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "yellow tang",
+    "surgeonfish",
+    "green turtles"
+   ],
+   "depth_m": null,
+   "schedule": "Advertised 24/7",
+   "coops": "1617433",
+   "iwls_code": null,
+   "note": "",
+   "id": "mega-kona",
+   "name": "Kona reef cam with smart buoy",
+   "operator": "The MEGA Lab / Aqualink",
+   "region": "hawaii",
+   "lat": 19.6,
+   "lon": -155.98,
+   "ecosystem": "Hawaiian fringing reef",
+   "provider": {
+    "type": "external",
+    "url": "https://themegalab.org/livestream"
+   },
+   "sal_psu": 34.8
+  },
+  {
+   "kind": "expedition",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "cusk eels",
+    "dumbo octopus",
+    "deep-sea corals",
+    "sponges"
+   ],
+   "depth_m": 4000,
+   "schedule": "24/7 during expeditions only; 2026 field season runs June to October",
+   "coops": null,
+   "iwls_code": null,
+   "note": "",
+   "id": "nautilus",
+   "name": "Nautilus Live ROV dives",
+   "operator": "Ocean Exploration Trust",
+   "region": "deep-sea",
+   "lat": 20.0,
+   "lon": -160.0,
+   "ecosystem": "Abyssal plain and seamounts (2026 season)",
+   "provider": {
+    "type": "external",
+    "url": "https://nautiluslive.org/"
+   },
+   "sal_psu": 34.7
+  },
+  {
+   "kind": "expedition",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "deep-sea fauna"
+   ],
+   "depth_m": 3000,
+   "schedule": "Expedition-dependent",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Position shown is indicative (2026 tropical Atlantic leg).",
+   "id": "falkor",
+   "name": "R/V Falkor (too) ROV SuBastian",
+   "operator": "Schmidt Ocean Institute",
+   "region": "deep-sea",
+   "lat": 10.0,
+   "lon": -30.0,
+   "ecosystem": "Varies by expedition",
+   "provider": {
+    "type": "external",
+    "url": "https://schmidtocean.org/"
+   },
+   "sal_psu": 35.0
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "rockfish",
+    "lingcod",
+    "plumose anemones"
+   ],
+   "depth_m": 23,
+   "schedule": "Camera is on for 5 minutes every hour on the hour (Ocean Networks Canada).",
+   "coops": null,
+   "iwls_code": "08545",
+   "note": "Watch on Oceans 3.0 / ONC Live Cameras; timed clips, not a continuous YouTube embed.",
+   "id": "onc-folger",
+   "name": "Folger Pinnacle, Barkley Sound",
+   "operator": "Ocean Networks Canada",
+   "region": "ne-pacific",
+   "lat": 48.81,
+   "lon": -125.28,
+   "ecosystem": "Northeast Pacific rocky reef",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "sal_psu": 31.5,
+   "status": "scheduled"
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "tubeworms",
+    "scale worms",
+    "limpets"
+   ],
+   "depth_m": 2200,
+   "schedule": "Camera records for four minutes every four hours (Ocean Networks Canada).",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Hydrothermal vent camera on ONC Live Cameras. Related: Endeavour Mothra is on for four minutes every four hours.",
+   "id": "onc-endeavour",
+   "name": "Tempo Mini \u2014 Main Endeavour Field",
+   "operator": "Ocean Networks Canada",
+   "region": "deep-sea",
+   "lat": 47.95,
+   "lon": -129.1,
+   "ecosystem": "Hydrothermal vents",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "sal_psu": 34.6,
+   "status": "scheduled"
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "salmon",
+    "rockfish",
+    "invertebrates"
+   ],
+   "depth_m": null,
+   "schedule": "Offline until further notice (Ocean Networks Canada Live Cameras list, 2026-10-17).",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Listed offline on ONC Live Cameras with Barkley Canyon Mid-East, Node Fish Acoustics, and Barkley Upper Slope.",
+   "id": "onc-campbell",
+   "name": "Campbell River community observatory",
+   "operator": "Ocean Networks Canada",
+   "region": "ne-pacific",
+   "lat": 50.04,
+   "lon": -125.24,
+   "ecosystem": "Discovery Passage, Salish Sea",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "sal_psu": 30.0,
+   "status": "offline"
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "fjord fauna"
+   ],
+   "depth_m": null,
+   "schedule": "Camera is on for five minutes every hour on the hour (Ocean Networks Canada).",
+   "coops": null,
+   "iwls_code": null,
+   "note": "ONC + Haisla Nation community observatory; watch on ONC Live Cameras.",
+   "id": "onc-kitamaat",
+   "name": "Kitamaat Village community observatory",
+   "operator": "Ocean Networks Canada and Haisla Nation",
+   "region": "ne-pacific",
+   "lat": 53.97,
+   "lon": -128.65,
+   "ecosystem": "Douglas Channel fjord",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "sal_psu": 25.0,
+   "status": "scheduled"
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "nearshore fauna"
+   ],
+   "depth_m": null,
+   "schedule": "Camera is on for five minutes every hour on the hour (Ocean Networks Canada).",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Watch on ONC Live Cameras.",
+   "id": "onc-digby",
+   "name": "Digby Island, Prince Rupert",
+   "operator": "Ocean Networks Canada",
+   "region": "ne-pacific",
+   "lat": 54.29,
+   "lon": -130.4,
+   "ecosystem": "North Coast nearshore",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "sal_psu": 30.0,
+   "status": "scheduled"
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "Arctic cod",
+    "sculpins",
+    "jellies"
+   ],
+   "depth_m": null,
+   "schedule": "Short scheduled clips via ONC community observatories (confirm current slot on Live Cameras).",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Arctic coastal camera; watch on ONC Live Cameras when the schedule is active.",
+   "id": "onc-cambridge",
+   "name": "Cambridge Bay under the ice",
+   "operator": "Ocean Networks Canada",
+   "region": "polar",
+   "lat": 69.11,
+   "lon": -105.06,
+   "ecosystem": "Arctic coastal, seasonal sea ice",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "sal_psu": 28.0
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "sablefish",
+    "rockfish"
+   ],
+   "depth_m": null,
+   "schedule": "Camera is on for five minutes every hour on the hour (Ocean Networks Canada).",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Barkley Canyon Axis is live on schedule. Mid-East, Node Fish Acoustics, and Upper Slope remain offline until further notice.",
+   "id": "onc-barkley-canyon",
+   "name": "Barkley Canyon Axis",
+   "operator": "Ocean Networks Canada",
+   "region": "deep-sea",
+   "lat": 48.3,
+   "lon": -126.05,
+   "ecosystem": "Submarine canyon slope",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "status": "scheduled",
+   "sal_psu": 34.2
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "southern temperate reef fish",
+    "Australasian gannets (surface)"
+   ],
+   "depth_m": null,
+   "schedule": "Live with recorded footage when offline",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Temperate reef; not the Great Barrier Reef.",
+   "id": "tnc-popes-eye",
+   "name": "Pope's Eye reef, Port Phillip Bay",
+   "operator": "The Nature Conservancy Australia",
+   "region": "australia",
+   "lat": -38.28,
+   "lon": 144.69,
+   "ecosystem": "Temperate rocky reef",
+   "provider": {
+    "type": "external",
+    "url": "https://www.natureaustralia.org.au/what-we-do/our-priorities/oceans/ocean-stories/reef-cam-underwater/"
+   },
+   "sal_psu": 35.5
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "coral trout",
+    "rockcod",
+    "blacktip reef sharks",
+    "green turtles",
+    "fusiliers"
+   ],
+   "depth_m": null,
+   "schedule": "6 a.m. to 6 p.m. AEST; recorded otherwise",
+   "coops": null,
+   "iwls_code": null,
+   "note": "",
+   "id": "jcu-orpheus",
+   "name": "Orpheus Island, Great Barrier Reef",
+   "operator": "James Cook University, Classroom on the Reef",
+   "region": "australia",
+   "lat": -18.61,
+   "lon": 146.49,
+   "ecosystem": "Inshore Great Barrier Reef",
+   "provider": {
+    "type": "external",
+    "url": "https://www.jcu.edu.au/classroom-on-the-reef/livecams"
+   },
+   "sal_psu": 35.3
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "Indo-Pacific reef fish"
+   ],
+   "depth_m": null,
+   "schedule": "Unconfirmed",
+   "coops": null,
+   "iwls_code": null,
+   "note": "",
+   "id": "coral-gardeners",
+   "name": "Coral Gardeners restoration reef, Mo'orea",
+   "operator": "Coral Gardeners",
+   "region": "south-pacific",
+   "lat": -17.5,
+   "lon": -149.83,
+   "ecosystem": "Restored lagoon reef",
+   "provider": {
+    "type": "external",
+    "url": "https://coralgardeners.org/"
+   },
+   "sal_psu": 36.0
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "Picasso triggerfish",
+    "goatfish",
+    "cleaner wrasse"
+   ],
+   "depth_m": null,
+   "schedule": "New HD seafloor network deployed June 2026; access unconfirmed",
+   "coops": null,
+   "iwls_code": null,
+   "note": "",
+   "id": "eilat",
+   "name": "Gulf of Eilat reef network",
+   "operator": "Interuniversity Institute for Marine Sciences / SPNI",
+   "region": "red-sea",
+   "lat": 29.5,
+   "lon": 34.92,
+   "ecosystem": "Thermally resilient Red Sea reef",
+   "provider": {
+    "type": "external",
+    "url": "https://www.iui-eilat.ac.il/"
+   },
+   "sal_psu": 40.5
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "Indian Ocean reef fish"
+   ],
+   "depth_m": null,
+   "schedule": "Daily live sessions, not 24/7",
+   "coops": null,
+   "iwls_code": null,
+   "note": "",
+   "id": "maldives-mci",
+   "name": "Live from the Reef, Baa Atoll",
+   "operator": "Maldives Coral Institute with Stream Ocean",
+   "region": "indian-ocean",
+   "lat": 4.88,
+   "lon": 72.93,
+   "ecosystem": "Reef restoration site",
+   "provider": {
+    "type": "external",
+    "url": "https://www.youtube.com/@maldivescoralinstitute7179/streams"
+   },
+   "sal_psu": 34.5
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "reef fish"
+   ],
+   "depth_m": null,
+   "schedule": "Daylight",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Embedding and redistribution need a licence from SkylineWebcams.",
+   "id": "meeru",
+   "name": "Meeru Island house reef",
+   "operator": "SkylineWebcams",
+   "region": "indian-ocean",
+   "lat": 4.45,
+   "lon": 73.72,
+   "ecosystem": "Atoll house reef",
+   "provider": {
+    "type": "external",
+    "url": "https://www.skylinewebcams.com/"
+   },
+   "sal_psu": 34.5
+  },
+  {
+   "kind": "open_ocean",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "damselfish",
+    "bream",
+    "wrasse"
+   ],
+   "depth_m": null,
+   "schedule": "Daylight",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Embedding and redistribution need a licence from SkylineWebcams.",
+   "id": "karavostasi",
+   "name": "Karavostasi, Crete",
+   "operator": "SkylineWebcams",
+   "region": "mediterranean",
+   "lat": 35.4,
+   "lon": 24.6,
+   "ecosystem": "Mediterranean rocky reef and seagrass",
+   "provider": {
+    "type": "external",
+    "url": "https://www.skylinewebcams.com/"
+   },
+   "sal_psu": 38.8
+  },
+  {
+   "kind": "aquarium",
+   "embed": true,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "anthias",
+    "tangs",
+    "corals"
+   ],
+   "depth_m": null,
+   "schedule": "",
+   "coops": null,
+   "iwls_code": null,
+   "note": "",
+   "id": "calacademy-reef",
+   "name": "Philippine coral reef exhibit",
+   "operator": "California Academy of Sciences",
+   "region": "ne-pacific",
+   "lat": 37.77,
+   "lon": -122.466,
+   "ecosystem": "Indo-Pacific reef exhibit",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "99aULx3GORo",
+    "url": "https://www.youtube.com/watch?v=99aULx3GORo"
+   },
+   "sal_psu": 34.0
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "deep-sea fauna"
+   ],
+   "depth_m": null,
+   "schedule": "Camera is on for five minutes every hour on the hour (Ocean Networks Canada).",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Watch on ONC Live Cameras.",
+   "id": "onc-cascadia",
+   "name": "Cascadia Basin",
+   "operator": "Ocean Networks Canada",
+   "region": "deep-sea",
+   "lat": 47.76,
+   "lon": -127.76,
+   "ecosystem": "Abyssal Cascadia Basin",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "status": "scheduled",
+   "sal_psu": 34.5
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "nearshore fauna"
+   ],
+   "depth_m": null,
+   "schedule": "Camera is on for five minutes every hour on the hour (Ocean Networks Canada).",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Watch on ONC Live Cameras.",
+   "id": "onc-china-creek",
+   "name": "China Creek",
+   "operator": "Ocean Networks Canada",
+   "region": "ne-pacific",
+   "lat": 48.93,
+   "lon": -125.02,
+   "ecosystem": "Barkley Sound nearshore",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "status": "scheduled",
+   "sal_psu": 31.0
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "fjord fauna"
+   ],
+   "depth_m": null,
+   "schedule": "Camera is on for five minutes every hour on the hour (Ocean Networks Canada).",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Watch on ONC Live Cameras.",
+   "id": "onc-hartley-bay",
+   "name": "Hartley Bay",
+   "operator": "Ocean Networks Canada",
+   "region": "ne-pacific",
+   "lat": 53.42,
+   "lon": -129.25,
+   "ecosystem": "Gitga'at territory, Douglas Channel area",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "status": "scheduled",
+   "sal_psu": 28.0
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "nearshore fauna"
+   ],
+   "depth_m": null,
+   "schedule": "Camera is on for five minutes every hour on the hour (Ocean Networks Canada).",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Atlantic community observatory; watch on ONC Live Cameras.",
+   "id": "onc-holyrood",
+   "name": "Holyrood Bay",
+   "operator": "Ocean Networks Canada",
+   "region": "north-atlantic",
+   "lat": 47.39,
+   "lon": -53.14,
+   "ecosystem": "Newfoundland coastal",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "status": "scheduled",
+   "sal_psu": 31.0
+  },
+  {
+   "kind": "scheduled",
+   "embed": false,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "vent fauna"
+   ],
+   "depth_m": 2200,
+   "schedule": "Camera is on for four minutes every four hours (Ocean Networks Canada).",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Endeavour Mothra hydrothermal camera on ONC Live Cameras.",
+   "id": "onc-mothra",
+   "name": "Endeavour Mothra",
+   "operator": "Ocean Networks Canada",
+   "region": "deep-sea",
+   "lat": 47.92,
+   "lon": -129.11,
+   "ecosystem": "Hydrothermal vents, Endeavour segment",
+   "provider": {
+    "type": "external",
+    "url": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+   },
+   "status": "scheduled",
+   "sal_psu": 34.6
+  },
+  {
+   "id": "utila-front-dock",
+   "name": "Utila reef, front of the dock",
+   "kind": "open_ocean",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "wrasse",
+    "sergeant majors",
+    "parrotfish",
+    "stingrays"
+   ],
+   "depth_m": 4,
+   "schedule": "Usually live; best in daylight",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Explore Oceans \u00b7 Utopia Village Front-of-Dock cams.",
+   "operator": "explore.org / Utopia Village",
+   "region": "caribbean",
+   "lat": 16.091,
+   "lon": -86.928,
+   "ecosystem": "Mesoamerican Reef, dock side",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "Kf-x20Yq0_A",
+    "channel_id": "UCSyg9cb3Iq-NtlbxqNB9wGw",
+    "url": "https://www.youtube.com/watch?v=Kf-x20Yq0_A",
+    "explore_url": "https://explore.org/livecams/oceans/",
+    "title": "Utopia Village Front-of-Dock Underwater Reef Cams powered by EXPLORE.org"
+   },
+   "sal_psu": 36.0
+  },
+  {
+   "id": "utila-back-dock",
+   "name": "Utila reef, back of the dock",
+   "kind": "open_ocean",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "reef fish",
+    "sergeant majors",
+    "moray eels"
+   ],
+   "depth_m": 4,
+   "schedule": "Usually live; best in daylight",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Explore Oceans \u00b7 Utopia Village Back-of-Dock cams.",
+   "operator": "explore.org / Utopia Village",
+   "region": "caribbean",
+   "lat": 16.092,
+   "lon": -86.929,
+   "ecosystem": "Mesoamerican Reef, dock side",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "Lv9t0hZTvz4",
+    "channel_id": "UCSyg9cb3Iq-NtlbxqNB9wGw",
+    "url": "https://www.youtube.com/watch?v=Lv9t0hZTvz4",
+    "explore_url": "https://explore.org/livecams/oceans/",
+    "title": "Utopia Village Back-of-Dock Underwater Reef Cams powered by EXPLORE.org"
+   },
+   "sal_psu": 36.0
+  },
+  {
+   "id": "utila-back-channel",
+   "name": "Utila reef, back channel",
+   "kind": "open_ocean",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "reef fish",
+    "parrotfish",
+    "trumpetfish"
+   ],
+   "depth_m": 6,
+   "schedule": "Usually live; best in daylight",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Explore Oceans \u00b7 Utopia Village Back Channel cams.",
+   "operator": "explore.org / Utopia Village",
+   "region": "caribbean",
+   "lat": 16.088,
+   "lon": -86.932,
+   "ecosystem": "Mesoamerican Reef channel",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "nmjlQlYygB4",
+    "channel_id": "UCSyg9cb3Iq-NtlbxqNB9wGw",
+    "url": "https://www.youtube.com/watch?v=nmjlQlYygB4",
+    "explore_url": "https://explore.org/livecams/oceans/",
+    "title": "Utopia Village Back Channel Underwater Reef Cams powered by EXPLORE.org"
+   },
+   "sal_psu": 36.0
+  },
+  {
+   "id": "catalina-wrigley",
+   "name": "USC Wrigley Catalina Marine Reserve",
+   "kind": "open_ocean",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "kelp bass",
+    "garibaldi",
+    "sheephead",
+    "sea stars"
+   ],
+   "depth_m": null,
+   "schedule": "Usually live",
+   "coops": "9410660",
+   "iwls_code": null,
+   "note": "Explore Oceans \u00b7 USC Wrigley Institute marine reserve cam.",
+   "operator": "explore.org / USC Wrigley Institute",
+   "region": "ne-pacific",
+   "lat": 33.445,
+   "lon": -118.485,
+   "ecosystem": "Southern California kelp and rocky reef",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "JH_NzhSsqis",
+    "channel_id": "UCSyg9cb3Iq-NtlbxqNB9wGw",
+    "url": "https://www.youtube.com/watch?v=JH_NzhSsqis",
+    "explore_url": "https://explore.org/livecams/oceans/catalina-marine-reserve",
+    "title": "USC Wrigley Catalina Marine Reserve powered by EXPLORE.org"
+   },
+   "sal_psu": 33.5
+  },
+  {
+   "id": "homosassa-uw",
+   "name": "Homosassa Springs underwater manatees",
+   "kind": "open_ocean",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "West Indian manatees",
+    "mullet",
+    "snook"
+   ],
+   "depth_m": 2,
+   "schedule": "Usually live; manatees densest in cool months",
+   "coops": "8727520",
+   "iwls_code": null,
+   "note": "Explore Oceans / Save the Manatee. Freshwater spring flowing to the Gulf.",
+   "operator": "explore.org / Homosassa Springs Wildlife State Park",
+   "region": "gulf-florida",
+   "lat": 28.799,
+   "lon": -82.588,
+   "ecosystem": "Florida spring run",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "Fz6sl9YJZE0",
+    "url": "https://www.youtube.com/watch?v=Fz6sl9YJZE0",
+    "explore_url": "https://explore.org/livecams/oceans/homosassa-springs-underwater-manatees",
+    "title": "Underwater Manatee Cam At Homosassa Springs powered by EXPLORE.org"
+   },
+   "sal_psu": 0.5
+  },
+  {
+   "id": "homosassa-aw",
+   "name": "Homosassa Springs above-water manatees",
+   "kind": "surface",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "West Indian manatees",
+    "birds"
+   ],
+   "depth_m": 0,
+   "schedule": "Usually live",
+   "coops": "8727520",
+   "iwls_code": null,
+   "note": "Explore Oceans surface view of the Homosassa manatee run.",
+   "operator": "explore.org / Homosassa Springs Wildlife State Park",
+   "region": "gulf-florida",
+   "lat": 28.8,
+   "lon": -82.587,
+   "ecosystem": "Florida spring run, surface",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "nbF12irhVys",
+    "url": "https://www.youtube.com/watch?v=nbF12irhVys",
+    "explore_url": "https://explore.org/livecams/oceans/homosassa-springs-underwater-manatees",
+    "title": "LIVE Manatees at Homosassa Springs - Above Water Cam | explore.org"
+   },
+   "sal_psu": 0.5
+  },
+  {
+   "id": "aop-tropical-reef",
+   "name": "Aquarium of the Pacific tropical reef",
+   "kind": "aquarium",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "tropical reef fish",
+    "anthias",
+    "wrasses"
+   ],
+   "depth_m": null,
+   "schedule": "Usually live",
+   "coops": "9410660",
+   "iwls_code": null,
+   "note": "Explore Oceans / Aquarium of the Pacific exhibit (not open ocean).",
+   "operator": "explore.org / Aquarium of the Pacific",
+   "region": "ne-pacific",
+   "lat": 33.7622,
+   "lon": -118.1969,
+   "ecosystem": "Tropical reef exhibit, Long Beach",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "DHUnz4dyb54",
+    "url": "https://www.youtube.com/watch?v=DHUnz4dyb54",
+    "explore_url": "https://explore.org/livecams/aquarium-of-the-pacific/pacific-aquarium-tropical-reef-camera",
+    "title": "Tropical Reef Camera powered by EXPLORE.org"
+   },
+   "sal_psu": 35.0
+  },
+  {
+   "id": "aop-blue-cavern",
+   "name": "Aquarium of the Pacific Blue Cavern",
+   "kind": "aquarium",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "California reef fish",
+    "garibaldi",
+    "rockfish"
+   ],
+   "depth_m": null,
+   "schedule": "Usually live",
+   "coops": "9410660",
+   "iwls_code": null,
+   "note": "YouTube live id unavailable (was H59B9Uoewwg).",
+   "operator": "explore.org / Aquarium of the Pacific",
+   "region": "ne-pacific",
+   "lat": 33.7625,
+   "lon": -118.1965,
+   "ecosystem": "Southern California reef exhibit",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "H59B9Uoewwg",
+    "url": "https://www.youtube.com/watch?v=H59B9Uoewwg",
+    "explore_url": "https://explore.org/livecams/oceans/",
+    "title": "LIVE Blue Cavern at the Aquarium of the Pacific | explore.org"
+   },
+   "sal_psu": 33.5,
+   "status": "offline"
+  },
+  {
+   "id": "aop-jellyfish",
+   "name": "Aquarium of the Pacific sea nettles",
+   "kind": "aquarium",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "Pacific sea nettles",
+    "jellies"
+   ],
+   "depth_m": null,
+   "schedule": "Usually live",
+   "coops": null,
+   "iwls_code": null,
+   "note": "YouTube live id unavailable (was IYG9fnz40-E).",
+   "operator": "explore.org / Aquarium of the Pacific",
+   "region": "ne-pacific",
+   "lat": 33.7618,
+   "lon": -118.1972,
+   "ecosystem": "Jellyfish exhibit",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "IYG9fnz40-E",
+    "url": "https://www.youtube.com/watch?v=IYG9fnz40-E",
+    "explore_url": "https://explore.org/livecams/oceans/",
+    "title": "LIVE Jellyfish Cam at the Aquarium of the Pacific | explore.org"
+   },
+   "sal_psu": 33.5,
+   "status": "offline"
+  },
+  {
+   "id": "aop-shark-lagoon",
+   "name": "Aquarium of the Pacific shark lagoon",
+   "kind": "aquarium",
+   "embed": false,
+   "verify": true,
+   "analysis_permission": "not requested",
+   "species": [
+    "bamboo sharks",
+    "rays",
+    "tropical fish"
+   ],
+   "depth_m": null,
+   "schedule": "Usually live",
+   "coops": null,
+   "iwls_code": null,
+   "note": "YouTube live id unavailable (was YT7lH6U68S4).",
+   "operator": "explore.org / Aquarium of the Pacific",
+   "region": "ne-pacific",
+   "lat": 33.7615,
+   "lon": -118.1962,
+   "ecosystem": "Shark Lagoon exhibit",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "YT7lH6U68S4",
+    "url": "https://www.youtube.com/watch?v=YT7lH6U68S4",
+    "explore_url": "https://explore.org/livecams/oceans/",
+    "title": "LIVE Shark Cam at the Aquarium of the Pacific | explore.org"
+   },
+   "sal_psu": 33.5,
+   "status": "offline"
+  },
+  {
+   "id": "orcalab-main",
+   "name": "OrcaLab main lookout, Hanson Island",
+   "kind": "surface",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "orcas",
+    "humpback whales",
+    "seabirds"
+   ],
+   "depth_m": 0,
+   "schedule": "Usually live; whales seasonal",
+   "coops": null,
+   "iwls_code": "08545",
+   "note": "Explore Oceans \u00b7 OrcaLab surface lookout (British Columbia).",
+   "operator": "explore.org / OrcaLab",
+   "region": "ne-pacific",
+   "lat": 50.58,
+   "lon": -126.7,
+   "ecosystem": "Johnstone Strait, orca habitat",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "hTOmWcmr2Tc",
+    "url": "https://www.youtube.com/watch?v=hTOmWcmr2Tc",
+    "explore_url": "https://explore.org/livecams/oceans/",
+    "title": "LIVE OrcaLab Main Cams - Orca Whale Lookout | explore.org"
+   },
+   "sal_psu": 31.0
+  },
+  {
+   "id": "orcalab-rubbing-uw",
+   "name": "OrcaLab Strider rubbing beach, underwater",
+   "kind": "open_ocean",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "northern resident orcas"
+   ],
+   "depth_m": 3,
+   "schedule": "Usually live; rubbing events intermittent",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Explore Oceans \u00b7 underwater view of the orca rubbing beach.",
+   "operator": "explore.org / OrcaLab",
+   "region": "ne-pacific",
+   "lat": 50.575,
+   "lon": -126.705,
+   "ecosystem": "Johnstone Strait rubbing beach",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "HVzyLMktOVo",
+    "url": "https://www.youtube.com/watch?v=HVzyLMktOVo",
+    "explore_url": "https://explore.org/livecams/oceans/",
+    "title": "LIVE Orca Cam: Strider Rubbing Beach Underwater - OrcaLab | explore.org"
+   },
+   "sal_psu": 31.0
+  },
+  {
+   "id": "orcalab-rubbing-aw",
+   "name": "OrcaLab Strider rubbing beach, surface",
+   "kind": "surface",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "northern resident orcas",
+    "sea lions"
+   ],
+   "depth_m": 0,
+   "schedule": "Usually live",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Explore Oceans \u00b7 surface view of the orca rubbing beach.",
+   "operator": "explore.org / OrcaLab",
+   "region": "ne-pacific",
+   "lat": 50.576,
+   "lon": -126.704,
+   "ecosystem": "Johnstone Strait rubbing beach, surface",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "iWyTu_0znB4",
+    "url": "https://www.youtube.com/watch?v=iWyTu_0znB4",
+    "explore_url": "https://explore.org/livecams/oceans/",
+    "title": "LIVE Orca Cam: Strider Rubbing Beach Above Water View: OrcaLab | explore.org"
+   },
+   "sal_psu": 31.0
+  },
+  {
+   "id": "orcalab-sea-lion",
+   "name": "OrcaLab sea lion beach, British Columbia",
+   "kind": "surface",
+   "embed": true,
+   "verify": false,
+   "analysis_permission": "not requested",
+   "species": [
+    "Steller sea lions",
+    "harbour seals"
+   ],
+   "depth_m": 0,
+   "schedule": "Usually live",
+   "coops": null,
+   "iwls_code": null,
+   "note": "Explore Oceans \u00b7 Steller sea lion haul-out near OrcaLab.",
+   "operator": "explore.org / OrcaLab",
+   "region": "ne-pacific",
+   "lat": 50.57,
+   "lon": -126.71,
+   "ecosystem": "Sea lion haul-out, Johnstone Strait",
+   "provider": {
+    "type": "youtube_video",
+    "video_id": "-uooI2satIQ",
+    "url": "https://www.youtube.com/watch?v=-uooI2satIQ",
+    "explore_url": "https://explore.org/livecams/oceans/",
+    "title": "LIVE Sea Lion Beach - British Columbia | explore.org"
+   },
+   "sal_psu": 31.0
+  }
+ ],
+ "sites": [
+  {
+   "id": "lingang",
+   "name": "Lingang underwater data centre",
+   "operator": "HiCloud (Highlander)",
+   "lat": 30.75,
+   "lon": 122.05,
+   "status": "operating",
+   "summary": "Commercial operation since May 2026. First phase 2.3 MW of a 24 MW design; about 2,000 servers; reported depth 10 m (some outlets say 35 m).",
+   "preset": {
+    "it_mw": 2.3,
+    "pue": 1.15,
+    "mode": "pod",
+    "port_depth": 10,
+    "n_ports": 1
+   },
+   "verify": true,
+   "coords_note": "Position approximate: between phases 1 and 2 of the Lingang offshore wind farm."
+  },
+  {
+   "id": "hainan",
+   "name": "Hainan underwater data centre cluster",
+   "operator": "HiCloud (Highlander)",
+   "lat": 18.45,
+   "lon": 110.05,
+   "status": "operating",
+   "summary": "Modules added since 2023; a 400-server module added February 2025; plan targets 100 cabins.",
+   "preset": {
+    "it_mw": 5,
+    "mode": "pod",
+    "port_depth": 35,
+    "n_ports": 1
+   },
+   "verify": true,
+   "coords_note": "Position approximate (Lingshui)."
+  },
+  {
+   "id": "natick",
+   "name": "Project Natick phase 2 (retired)",
+   "operator": "Microsoft",
+   "lat": 58.97,
+   "lon": -3.39,
+   "status": "retired",
+   "summary": "864 servers off Orkney 2018 to 2020; failure rate one-eighth of land. Programme ended; no successor built.",
+   "preset": {
+    "it_mw": 0.24,
+    "mode": "pod",
+    "port_depth": 36,
+    "n_ports": 1
+   }
+  },
+  {
+   "id": "networkocean",
+   "name": "NetworkOcean test, San Francisco Bay",
+   "operator": "NetworkOcean",
+   "lat": 37.8,
+   "lon": -122.37,
+   "status": "unpermitted test, warned",
+   "summary": "2024 plan to test a capsule without permits drew warnings from BCDC and the Regional Water Board; company has since promoted floating platforms.",
+   "preset": {
+    "it_mw": 1,
+    "mode": "pod",
+    "port_depth": 10,
+    "n_ports": 1
+   },
+   "verify": true,
+   "coords_note": "Position approximate."
+  },
+  {
+   "id": "eastport",
+   "name": "DeepGreen Western Passage hub (FERC P-15424)",
+   "operator": "DeepGreen Western Passage SPV LLC",
+   "lat": 44.93,
+   "lon": -67.0,
+   "status": "preliminary permit application",
+   "summary": "Up to 16 tidal turbines of 300 kW powering subsea compute behind the meter. A preliminary permit would not authorise construction.",
+   "deadline": {
+    "date": "2026-10-19T21:00:00Z",
+    "text": "Comments and interventions on FERC Project No. 15424 are due by 5:00 p.m. Eastern on 19 October 2026.",
+    "url": "https://www.federalregister.gov/documents/2026/08/25/2026-17254/deepgreen-western-passage-spv-llc-notice-of-preliminary-permit-application-accepted-for-filing-and"
+   },
+   "preset": {
+    "it_mw": 4.8,
+    "pue": 1.1,
+    "mode": "outfall",
+    "port_depth": 30,
+    "n_ports": 4
+   }
+  },
+  {
+   "id": "cook-inlet",
+   "name": "DeepGreen Cook Inlet project",
+   "operator": "DeepGreen Cook Inlet SPV",
+   "lat": 60.7,
+   "lon": -151.4,
+   "status": "preliminary permit application",
+   "summary": "Federal Register notice of 4 September 2026 describes a 100 MW project.",
+   "preset": {
+    "it_mw": 100,
+    "mode": "outfall",
+    "port_depth": 30,
+    "n_ports": 12
+   },
+   "verify": true,
+   "coords_note": "Position approximate."
+  },
+  {
+   "id": "keppel",
+   "name": "Keppel floating data centre, Loyang",
+   "operator": "Keppel Data Centre Fund II",
+   "lat": 1.38,
+   "lon": 103.97,
+   "status": "under construction",
+   "summary": "Four-storey 19.2 MW waterborne module cooled with seawater; due 2028.",
+   "preset": {
+    "it_mw": 19.2,
+    "pue": 1.2,
+    "mode": "outfall",
+    "port_depth": 8,
+    "n_ports": 4
+   }
+  }
+ ],
+ "sources": {
+  "explore_oceans": "https://explore.org/livecams/oceans/",
+  "explore_youtube_channels": "https://explore.org/youtube-channels",
+  "onc_live_cameras": "https://www.oceannetworks.ca/multimedia/live-cameras/"
+ }
+}

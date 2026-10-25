@@ -173,6 +173,14 @@ MIRROR = [
     ("data", "instruments.json"),
     ("data", "notebook_results.json"),
 ]
+NB_SRC = ROOT / "learning_materials" / "aquatic-guardian-learn-cv" / "notebooks"
+NB_DST = SITE / "notebooks"
+LEARN_IMG_SRC = ROOT / "learning_materials" / "learn-route" / "images"
+LEARN_IMG_DST = SITE / "img" / "learn"
+LEARN_ASSETS = (
+    (ROOT / "learning_materials" / "learn-route" / "learn.css", SITE / "css" / "learn.css"),
+    (ROOT / "learning_materials" / "learn-route" / "learn.js", SITE / "js" / "learn.js"),
+)
 
 
 def mirror(check: bool) -> bool:
@@ -188,6 +196,63 @@ def mirror(check: bool) -> bool:
     return ok
 
 
+def sync_learn_assets(check: bool) -> bool:
+    """Keep site Learn CSS/JS identical to learning_materials/learn-route/."""
+    ok = True
+    for src, dst in LEARN_ASSETS:
+        if not src.is_file():
+            return False
+        if check:
+            ok &= dst.is_file() and dst.read_bytes() == src.read_bytes()
+        else:
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            dst.write_bytes(src.read_bytes())
+    return ok
+
+
+def sync_learn_images(check: bool) -> bool:
+    """Keep site/img/learn identical to learning_materials/learn-route/images."""
+    if not LEARN_IMG_SRC.is_dir():
+        return False
+    src_files = sorted(p for p in LEARN_IMG_SRC.iterdir() if p.suffix.lower() in {".jpg", ".jpeg", ".png", ".md"})
+    if not src_files:
+        return False
+    ok = True
+    if check:
+        for src in src_files:
+            dst = LEARN_IMG_DST / src.name
+            ok &= dst.is_file() and dst.read_bytes() == src.read_bytes()
+        return ok
+    LEARN_IMG_DST.mkdir(parents=True, exist_ok=True)
+    for src in src_files:
+        (LEARN_IMG_DST / src.name).write_bytes(src.read_bytes())
+    return True
+
+
+def sync_learn_notebooks(check: bool) -> bool:
+    """Copy the nine Learn Colab notebooks into site/notebooks/ so downloads work."""
+    src_files = sorted(NB_SRC.glob("CV*.ipynb"))
+    if not src_files:
+        return False
+    ok = True
+    if check:
+        for src in src_files:
+            dst = NB_DST / src.name
+            ok &= dst.is_file() and dst.read_bytes() == src.read_bytes()
+        return ok
+    NB_DST.mkdir(parents=True, exist_ok=True)
+    for src in src_files:
+        (NB_DST / src.name).write_bytes(src.read_bytes())
+    return True
+
+
+def apply_v1(html: str) -> str:
+    """Layer Live ocean + PLUMES Lab + Learn onto the audience page (tools/integrate_v1.py)."""
+    sys.path.insert(0, str(ROOT / "tools"))
+    import integrate_v1  # noqa: WPS433 — post-build hook next to this script
+    return integrate_v1.patch(html)
+
+
 if __name__ == "__main__":
     check = "--check" in sys.argv
     if not check:
@@ -200,12 +265,20 @@ if __name__ == "__main__":
             runpy.run_path(str(ROOT / "app" / "notebook_results.py"), run_name="__main__")
     if not mirror(check):
         sys.exit("package resources differ from schemas/ or data/: run python app/build.py")
+    if not sync_learn_assets(check):
+        sys.exit("site Learn CSS/JS is stale: run python app/build.py")
+    if not sync_learn_images(check):
+        sys.exit("site/img/learn is stale: run python app/build.py")
+    if not sync_learn_notebooks(check):
+        sys.exit("site/notebooks is stale: run python app/build.py")
     for page in PAGES:
         html, target = build(page), SITE / page
+        if page == "index.html":
+            html = apply_v1(html)
         if check:
-            if not target.exists() or target.read_text() != html:
+            if not target.exists() or target.read_text(encoding="utf-8") != html:
                 sys.exit(f"site/{page} is stale: run python app/build.py")
             print(f"site/{page} is up to date")
         else:
-            target.write_text(html)
+            target.write_text(html, encoding="utf-8")
             print(f"wrote {target} ({len(html) / 1024:.0f} KB)")

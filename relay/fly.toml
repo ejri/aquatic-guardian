@@ -1,0 +1,21 @@
+# fly launch --copy-config --dockerfile relay/Dockerfile   (run from the repository root)
+app = "ag-relay"
+primary_region = "sea"
+
+[build]
+  dockerfile = "relay/Dockerfile"
+
+[env]
+  AG_ALLOWED_ORIGINS = "https://aquatic-guardian.netlify.app"
+  AG_RUN_WORKERS = "0"   # set to 1 once permitted_streams.json has a granted entry
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  memory = "1gb"
+  cpus = 1

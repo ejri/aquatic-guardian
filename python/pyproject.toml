@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plumes2py"
+version = "1.0.0"
+description = "Python rebuild of EPA PLUMES2.0 (UM3 near field, Brooks far field) with thermal, biological and regulatory screening metrics"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "Apache-2.0"}
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+plumes2py = "plumes2py.cli:main"
+
+[tool.setuptools]
+packages = ["plumes2py"]
+
+[tool.setuptools.package-data]
+plumes2py = ["data/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

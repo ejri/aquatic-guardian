@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn computer vision · Aquatic Guardian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Everything is scoped to #ag-learn so this block can be pasted into an existing page as a tab
+   without touching the host site's styles. Map the tokens below to your site's palette if you wish. */
+#ag-learn {
+  --paper: #eef3f2; --panel: #e1e9e8; --ink: #0f2a38; --muted: #4a6270; --rule: #c3d1d4;
+  --link: #0a6683; --signal: #e3b505; --signal-ink: #0f2a38; --warn: #8a3b12;
+  --r: #b8402f; --g: #2d7a4a; --b: #2f5fae;
+  --font: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  color-scheme: light;
+  box-sizing: border-box; background: var(--paper); color: var(--ink);
+  font-family: var(--font); font-size: 1.0625rem; line-height: 1.6;
+  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  #ag-learn:not([data-theme="light"]) {
+    --paper: #0b1b24; --panel: #12293a; --ink: #e3eef0; --muted: #9db4bd; --rule: #27424f;
+    --link: #6dc7e0; --signal: #f0c53c; --signal-ink: #0b1b24; --warn: #f0a070;
+    --r: #e0705f; --g: #5fbf86; --b: #7ea6ec; color-scheme: dark;
+  }
+}
+html[data-theme="dark"] #ag-learn, #ag-learn[data-theme="dark"] {
+  --paper: #0b1b24; --panel: #12293a; --ink: #e3eef0; --muted: #9db4bd; --rule: #27424f;
+  --link: #6dc7e0; --signal: #f0c53c; --signal-ink: #0b1b24; --warn: #f0a070;
+  --r: #e0705f; --g: #5fbf86; --b: #7ea6ec; color-scheme: dark;
+}
+#ag-learn *, #ag-learn *::before, #ag-learn *::after { box-sizing: inherit; }
+#ag-learn .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 2.5rem); }
+#ag-learn .prose { max-width: 68ch; }
+#ag-learn h1, #ag-learn h2, #ag-learn h3, #ag-learn h4 { line-height: 1.15; margin: 0 0 .5em; letter-spacing: -0.01em; }
+#ag-learn h1 { font-size: clamp(2.2rem, 5.2vw, 3.6rem); font-weight: 700; max-width: 14ch; }
+#ag-learn h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); margin-top: 0; }
+#ag-learn h3 { font-size: 1.2rem; }
+#ag-learn h4 { font-size: 1rem; margin-top: 1.4em; }
+#ag-learn p { margin: 0 0 1em; }
+#ag-learn a { color: var(--link); text-underline-offset: 0.18em; }
+#ag-learn a:hover { text-decoration-thickness: 2px; }
+#ag-learn :focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; border-radius: 3px; }
+#ag-learn code { font-family: var(--mono); font-size: 0.88em; background: var(--panel); padding: 0.08em 0.3em; border-radius: 3px; overflow-wrap: anywhere; }
+#ag-learn .muted { color: var(--muted); }
+#ag-learn .sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+#ag-learn section { padding: clamp(2.5rem, 6vw, 4.5rem) 0; border-top: 1px solid var(--rule); }
+#ag-learn .lede { font-size: 1.2rem; color: var(--muted); max-width: 46ch; }
+
+/* ---------- hero: the camera explorer ---------- */
+#ag-learn .hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; padding: clamp(2rem, 6vw, 4rem) 0 3rem; align-items: start; }
+@media (min-width: 900px) { #ag-learn .hero { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); } }
+#ag-learn .context { font-size: 0.95rem; color: var(--muted); margin-bottom: 1.2rem; }
+#ag-learn .explorer { background: var(--panel); border-radius: 10px; padding: 1rem; }
+#ag-learn .explorer canvas { width: 100%; height: auto; display: block; border-radius: 6px; background: #0d3b3a; }
+#ag-learn .controls { display: grid; gap: 0.9rem; margin-top: 1rem; }
+@media (min-width: 560px) { #ag-learn .controls { grid-template-columns: 1fr 1fr; } }
+#ag-learn label, #ag-learn legend { font-weight: 700; font-size: 0.95rem; }
+#ag-learn .ctl output { font-weight: 400; color: var(--muted); margin-left: 0.4em; font-variant-numeric: tabular-nums; }
+#ag-learn input[type="range"] { width: 100%; accent-color: var(--link); }
+#ag-learn fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+#ag-learn .seg { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.3rem; }
+#ag-learn .seg label { font-weight: 400; position: relative; }
+#ag-learn .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+#ag-learn .seg span { display: inline-block; padding: 0.3rem 0.7rem; border: 1px solid var(--rule); border-radius: 999px; cursor: pointer; background: var(--paper); }
+#ag-learn .seg input:checked + span { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+#ag-learn .seg input:focus-visible + span { outline: 3px solid var(--signal); outline-offset: 2px; }
+#ag-learn .readout { margin-top: 0.9rem; font-size: 1rem; }
+#ag-learn .readout strong { font-size: 1.15rem; }
+#ag-learn .bars { display: grid; grid-template-columns: auto 1fr auto; gap: 0.25rem 0.6rem; align-items: center; font-size: 0.9rem; margin-top: 0.6rem; }
+#ag-learn .bar { height: 0.55rem; background: var(--rule); border-radius: 99px; overflow: hidden; }
+#ag-learn .bar i { display: block; height: 100%; border-radius: 99px; }
+#ag-learn .check { display: flex; gap: 0.5rem; align-items: center; font-weight: 400; }
+
+/* ---------- path finder ---------- */
+#ag-learn .paths .seg span { padding: 0.45rem 0.9rem; font-size: 1rem; }
+#ag-learn .path-summary { margin-top: 1.2rem; padding: 1rem 1.2rem; border-left: 4px solid var(--signal); background: var(--panel); border-radius: 0 8px 8px 0; max-width: 68ch; }
+
+/* ---------- the dive profile: modules as stations at increasing depth ---------- */
+#ag-learn .profile { list-style: none; margin: 2rem 0 0; padding: 0; position: relative; }
+#ag-learn .profile::before { content: ""; position: absolute; left: 1.05rem; top: 0.6rem; bottom: 0.6rem; width: 4px; border-radius: 4px; background: linear-gradient(var(--rail-top, #e3a04a), var(--rail-bottom, #0d4b44)); }
+#ag-learn .station { position: relative; padding-left: 3.4rem; margin-bottom: 0.4rem; transition: opacity .2s; }
+#ag-learn .station .marker { position: absolute; left: 0.35rem; top: 0.95rem; width: 1.5rem; height: 1.5rem; border-radius: 50%; border: 3px solid var(--paper); box-shadow: 0 0 0 1px var(--rule); }
+#ag-learn .station .depth { position: absolute; left: -0.2rem; top: 2.65rem; width: 2.6rem; text-align: center; font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; background: var(--paper); line-height: 1.3; }
+#ag-learn .station.off { opacity: 0.55; }
+#ag-learn .station.off summary .tag.opt, #ag-learn .station.readonly summary .tag.read { display: inline-block; }
+#ag-learn details.module > summary { list-style: none; cursor: pointer; padding: 0.8rem 0 0.9rem; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: 1fr auto; gap: 0.2rem 1rem; }
+#ag-learn details.module > summary::-webkit-details-marker { display: none; }
+#ag-learn summary .num { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 0.5rem; font-weight: 400; }
+#ag-learn summary .title { font-size: 1.3rem; font-weight: 700; }
+#ag-learn summary .one { grid-column: 1 / -1; color: var(--muted); }
+#ag-learn summary .time { color: var(--muted); font-size: 0.95rem; white-space: nowrap; align-self: center; }
+#ag-learn summary .tag { display: none; font-size: 0.8rem; margin-left: 0.6rem; padding: 0.05rem 0.5rem; border: 1px solid var(--rule); border-radius: 99px; color: var(--muted); font-weight: 400; vertical-align: middle; }
+#ag-learn summary .chev { display: inline-block; transition: transform .2s; margin-left: 0.35rem; }
+#ag-learn details[open] > summary .chev { transform: rotate(90deg); }
+#ag-learn .module-body { padding: 1.2rem 0 2rem; }
+#ag-learn .module-body ul, #ag-learn .module-body ol { padding-left: 1.3rem; margin: 0 0 1em; }
+#ag-learn .module-body li { margin-bottom: 0.25em; }
+#ag-learn .why { font-size: 1.1rem; max-width: 62ch; }
+#ag-learn .nb { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin: 1.2rem 0 0.4rem; }
+#ag-learn .btn { display: inline-block; padding: 0.55rem 1rem; border-radius: 6px; font-weight: 700; text-decoration: none; border: 2px solid var(--ink); color: var(--ink); background: transparent; cursor: pointer; font: inherit; font-weight: 700; }
+#ag-learn .btn.primary { background: var(--ink); color: var(--paper); }
+#ag-learn .btn:hover { text-decoration: none; filter: brightness(1.08); }
+#ag-learn .nb-note { font-size: 0.9rem; color: var(--muted); }
+#ag-learn .eq { font-family: var(--mono); font-size: 0.95rem; background: var(--panel); padding: 0.6rem 0.9rem; border-radius: 6px; overflow-x: auto; white-space: nowrap; margin: 0 0 1em; }
+#ag-learn .qa details { border-top: 1px solid var(--rule); padding: 0.55rem 0; }
+#ag-learn .qa summary { cursor: pointer; font-weight: 700; }
+#ag-learn .qa p { margin: 0.4rem 0 0; }
+#ag-learn .lab { background: var(--panel); border-radius: 10px; padding: 1rem; margin: 1.2rem 0; }
+#ag-learn .lab canvas { width: 100%; height: auto; display: block; border-radius: 6px; background: var(--paper); }
+#ag-learn .lab h4 { margin-top: 0; }
+#ag-learn .project { border-left: 4px solid var(--link); padding: 0.2rem 0 0.2rem 1rem; margin: 1.2rem 0; max-width: 64ch; }
+
+/* ---------- tables ---------- */
+#ag-learn .table-scroll { overflow-x: auto; margin: 1.2rem 0; }
+#ag-learn table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.97rem; }
+#ag-learn th, #ag-learn td { text-align: left; vertical-align: top; padding: 0.6rem 0.8rem 0.6rem 0; border-bottom: 1px solid var(--rule); }
+#ag-learn th { font-size: 0.9rem; color: var(--muted); font-weight: 700; }
+#ag-learn td code { white-space: nowrap; }
+#ag-learn dl.glossary { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 2rem; }
+@media (min-width: 760px) { #ag-learn dl.glossary { grid-template-columns: 1fr 1fr; } }
+#ag-learn dl.glossary div { padding: 0.6rem 0; border-bottom: 1px solid var(--rule); }
+#ag-learn dt { font-weight: 700; }
+#ag-learn dd { margin: 0; color: var(--muted); }
+#ag-learn .two { display: grid; gap: 2rem; }
+@media (min-width: 860px) { #ag-learn .two { grid-template-columns: 1fr 1fr; } }
+#ag-learn .two > *, #ag-learn .hero > * { min-width: 0; }
+#ag-learn .footer { padding: 2rem 0 3rem; color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--rule); }
+@media (prefers-reduced-motion: reduce) { #ag-learn * { transition: none !important; } }
+</style>
+</head>
+<body style="margin:0">
+<div id="ag-learn" data-colab-base="" data-notebook-path="notebooks/">
+<div class="wrap">
+
+<header class="hero">
+  <div>
+    <p class="context">Aquatic Guardian &nbsp;/&nbsp; Learn computer vision</p>
+    <h1>Teach a computer to see underwater</h1>
+    <p class="lede">Nine modules, each with a Colab notebook, that take you from pixels to claims you can defend about aquatic wildlife. Start wherever you are; you don’t need all of it.</p>
+    <p class="prose">Try the camera explorer. Move the fish school away from the lens or make the water murkier, and watch the detector lose fish that are still there. Telling “the animals left” apart from “the camera stopped seeing them” is what this course builds toward.</p>
+    <p><a href="#ag-paths">Find your starting point</a> &nbsp;or&nbsp; <a href="#ag-course">see all modules</a></p>
+  </div>
+
+  <div class="explorer" aria-labelledby="ex-title">
+    <h2 id="ex-title" style="font-size:1.05rem;margin:0 0 .6rem">What the camera sees</h2>
+    <canvas id="ex-canvas" width="360" height="216" role="img" aria-describedby="ex-readout"></canvas>
+    <div class="controls">
+      <div class="ctl">
+        <label for="ex-dist">Distance to the school <output id="ex-dist-out">3.0 m</output></label>
+        <input type="range" id="ex-dist" min="0.5" max="15" step="0.1" value="3">
+      </div>
+      <div class="ctl">
+        <label for="ex-light">Light <output id="ex-light-out">full daylight</output></label>
+        <input type="range" id="ex-light" min="0.06" max="1" step="0.01" value="1">
+      </div>
+      <fieldset>
+        <legend>Water</legend>
+        <div class="seg">
+          <label><input type="radio" name="ex-water" value="clear_ocean"><span>Clear ocean</span></label>
+          <label><input type="radio" name="ex-water" value="coastal" checked><span>Coastal</span></label>
+          <label><input type="radio" name="ex-water" value="turbid_harbour"><span>Turbid harbour</span></label>
+        </div>
+      </fieldset>
+      <label class="check"><input type="checkbox" id="ex-boxes" checked> Show the detector’s boxes</label>
+    </div>
+    <div class="readout" id="ex-readout" aria-live="polite"></div>
+    <div class="bars" aria-hidden="true">
+      <span>Red</span><div class="bar"><i id="bar-r" style="background:var(--r)"></i></div><span id="bar-r-v"></span>
+      <span>Green</span><div class="bar"><i id="bar-g" style="background:var(--g)"></i></div><span id="bar-g-v"></span>
+      <span>Blue</span><div class="bar"><i id="bar-b" style="background:var(--b)"></i></div><span id="bar-b-v"></span>
+    </div>
+    <p class="muted" style="font-size:.85rem;margin:.6rem 0 0">Bars: share of each colour of light from the middle fish that reaches the camera. Synthetic scene; attenuation values are illustrative.</p>
+  </div>
+</header>
+
+<section id="ag-paths" class="paths" aria-labelledby="paths-h">
+  <h2 id="paths-h">Where are you starting from?</h2>
+  <p class="prose">Pick the description that fits best. Modules on your path stay highlighted below; the rest are there if you want them. Every path ends with Module 09, because every result in this project eventually gets read by someone making a decision.</p>
+  <fieldset>
+    <legend class="sr">Starting point</legend>
+    <div class="seg" id="path-chips">
+      <label><input type="radio" name="path" value="all" checked><span>Show everything</span></label>
+      <label><input type="radio" name="path" value="new"><span>New to coding with images</span></label>
+      <label><input type="radio" name="path" value="ml"><span>I know Python and ML, not images</span></label>
+      <label><input type="radio" name="path" value="m1"><span>Joining the monitoring workstream</span></label>
+      <label><input type="radio" name="path" value="m2"><span>Joining the aquaculture workstream</span></label>
+      <label><input type="radio" name="path" value="track"><span>Tracking and behaviour</span></label>
+      <label><input type="radio" name="path" value="policy"><span>Policy, no coding</span></label>
+    </div>
+  </fieldset>
+  <div class="path-summary" id="path-summary" aria-live="polite"></div>
+</section>
+
+<section id="ag-course" aria-labelledby="course-h">
+  <h2 id="course-h">The course</h2>
+  <p class="prose">The modules go deeper as you go down, like a dive. Each marker is the same orange fish, drawn as a camera would see it from that many metres away in coastal water. Open a module to read the lesson, try its demo, and open its notebook. Every notebook runs top to bottom on Colab’s free CPU before you change anything.</p>
+
+  <ol class="profile" id="profile">
+
+  <li class="station" data-mod="01" data-depth="0" data-paths="new m1 m2 track">
+    <span class="marker" aria-hidden="true"></span><span class="depth" aria-hidden="true">0 m</span>
+    <details class="module" id="m01">
+      <summary><span><span class="num">01</span><span class="title">Images are arrays of numbers</span><span class="tag opt">optional for your path</span><span class="chev" aria-hidden="true">›</span></span><span class="time">1.5 h</span><span class="one">Pixels, channels, cropping, and the two bugs everyone writes.</span></summary>
+      <div class="module-body prose">
+        <p class="why">Every later step is arithmetic on these numbers. Most beginner mistakes in computer vision happen here, not in the models.</p>
+        <h4>You’ll be able to</h4>
+        <ul><li>Say what shape <code>(480, 640, 3)</code> means and index a pixel as <code>img[y, x]</code>.</li><li>Crop a box <code>(x1, y1, x2, y2)</code> as <code>img[y1:y2, x1:x2]</code>, and split colour channels.</li><li>Avoid swapped coordinates and <code>uint8</code> overflow.</li></ul>
+        <h4>Core ideas</h4>
+        <p>A colour image is a grid of pixels, stored as rows × columns × 3 channels (red, green, blue). Row 0 is the top. In these notebooks values run from 0 to 1; image files usually store whole numbers from 0 to 255, and adding to those wraps around past 255 instead of stopping. Convert to decimals before doing maths.</p>
+        <p>The notebook opens with the whole game: about ten lines that find fish by how different they look from the background, draw boxes, and count. Then you change the water to “turbid harbour” and most of the fish disappear from the count.</p>
+        <h4>In the notebook</h4>
+        <p>The whole pipeline first, then arrays, channels and histograms, cropping and drawing, data types, grayscale and hue, and two checked exercises.</p>
+        <div class="qa"><details><summary>An image has shape (480, 640, 3). How wide is it?</summary><p>640 pixels. Shape is height, width, channels.</p></details><details><summary>Why is red the darkest channel in an underwater frame?</summary><p>Water absorbs long red wavelengths fastest. Module 02 puts a number on it.</p></details></div>
+        <div class="nb" data-nb="CV01_images_are_arrays.ipynb"></div>
+      </div>
+    </details>
+  </li>
+
+  <li class="station" data-mod="02" data-depth="3" data-paths="new ml m1 m2 policy" data-read="policy">
+    <span class="marker" aria-hidden="true"></span><span class="depth" aria-hidden="true">3 m</span>
+    <details class="module" id="m02">
+      <summary><span><span class="num">02</span><span class="title">How water changes an image</span><span class="tag opt">optional for your path</span><span class="tag read">read the page</span><span class="chev" aria-hidden="true">›</span></span><span class="time">2 h</span><span class="one">The physics behind the missing fish: attenuation, veiling light and detection range.</span></summary>
+      <div class="module-body prose">
+        <p class="why">Turbidity near an outfall changes what a camera can see, whatever is actually there. If you don’t model that, you will mistake the camera’s blindness for an ecological change.</p>
+        <h4>You’ll be able to</h4>
+        <ul><li>Write the image-formation model and explain each term.</li><li>Compute a detection range for a fish in a given water type.</li><li>Say what the project’s <code>degrade()</code> robustness utility assumes, and where it differs from the physics.</li><li>Explain why “restoring” a distant image mostly amplifies noise.</li></ul>
+        <h4>Core ideas</h4>
+        <p>Light from a fish fades as it travels to the camera, separately for each colour, while particles in the water scatter ambient light into the lens:</p>
+        <p class="eq">I = J · t + B · (1 − t),&nbsp;&nbsp; t = e<sup>−βd</sup> for each channel</p>
+        <p><em>J</em> is the fish as it would look in air, <em>B</em> the water’s own colour, <em>β</em> how quickly that colour is lost per metre, and <em>d</em> the distance. As distance grows, <em>t</em> shrinks and every pixel drifts toward <em>B</em>: contrast vanishes no matter how bright the fish is. The explorer at the top of this page runs exactly this model.</p>
+        <p>Inverting the model divides by <em>t</em>. When <em>t</em> is tiny, small errors such as sensor noise or 8-bit storage are multiplied enormously. Enhancement filters like CLAHE make frames easier to look at, but they can’t bring back detail that fell below the noise.</p>
+        <p class="project">From the project: a round-trip test of the image-formation model once failed at long range in turbid water because transmittance near 5 × 10<sup>−8</sup> amplified rounding about 20 million times. The fix was a conditioning table, not a looser tolerance.</p>
+        <h4>In the notebook</h4>
+        <p>Transmittance curves for three water types, the same fish at 1 to 10 m, contrast and detection range, a best-fit comparison of <code>degrade()</code> with the physics, restoration error versus distance, enhancement and noise, low light, and an exercise on dark fish.</p>
+        <div class="qa"><details><summary>A colleague says “we used CLAHE, so turbidity no longer affects our counts.” What do you ask?</summary><p>Whether they measured detection rate by turbidity after enhancement. Enhancement changes how a frame looks, not how much information it holds.</p></details><details><summary>Why does turbid coastal water often look green?</summary><p>Water absorbs red, and dissolved organic matter and particles absorb blue, so green survives best.</p></details></div>
+        <div class="nb" data-nb="CV02_how_water_changes_images.ipynb"></div>
+      </div>
+    </details>
+  </li>
+
+  <li class="station" data-mod="03" data-depth="6" data-paths="new ml m2 track">
+    <span class="marker" aria-hidden="true"></span><span class="depth" aria-hidden="true">6 m</span>
+    <details class="module" id="m03">
+      <summary><span><span class="num">03</span><span class="title">Classical image processing</span><span class="tag opt">optional for your path</span><span class="chev" aria-hidden="true">›</span></span><span class="time">2.5 h</span><span class="one">Filters, thresholds, shapes, and why touching fish break simple counts.</span></summary>
+      <div class="module-body prose">
+        <p class="why">These are the tools behind the aquaculture segmentation baseline and most fish counters. They’re transparent, fast and need no GPU, and their failures are easy to see.</p>
+        <h4>You’ll be able to</h4>
+        <ul><li>Write a filter from scratch and choose kernels for blur, sharpening and edges.</li><li>Pick a threshold automatically with Otsu’s method.</li><li>Clean a mask, split it into objects, and measure each object’s length with principal component analysis.</li></ul>
+        <h4>Core ideas</h4>
+        <p>A filter slides a small grid of weights across the image and replaces each pixel with a weighted sum of its neighbours. Blurring averages, edge kernels subtract one side from the other. To find fish, measure how far each pixel’s colour is from the background colour, choose a threshold, remove specks with morphological opening, and group touching pixels into objects. The spread of each object’s pixels gives its orientation and length.</p>
+        <p>Measured lengths come out a few percent short in the notebook, and more for small, distant fish, because edge pixels blend with the water. Touching fish merge into one object; a distance transform plus watershed can separate them, with care.</p>
+        <h4>In the notebook</h4>
+        <p>Convolution from scratch, Sobel edges, Otsu from scratch, morphology, connected components, PCA measurement against true lengths, watershed on touching fish, and a median background from video.</p>
+        <div class="qa"><details><summary>Why blur before finding edges?</summary><p>Edge kernels amplify pixel noise. Blurring suppresses it first, at the cost of fine detail such as fins.</p></details><details><summary>Why is a per-pixel median better than a mean for a video background?</summary><p>Each fish covers a pixel only briefly, so the median ignores it; the mean gets pulled toward fish colours.</p></details></div>
+        <div class="nb" data-nb="CV03_classical_image_processing.ipynb"></div>
+      </div>
+    </details>
+  </li>
+
+  <li class="station" data-mod="04" data-depth="10" data-paths="new m1 policy" data-read="policy">
+    <span class="marker" aria-hidden="true"></span><span class="depth" aria-hidden="true">10 m</span>
+    <details class="module" id="m04">
+      <summary><span><span class="num">04</span><span class="title">Learning to classify, without fooling yourself</span><span class="tag opt">optional for your path</span><span class="tag read">read the page</span><span class="chev" aria-hidden="true">›</span></span><span class="time">2.5 h</span><span class="one">Features, a classifier from scratch, honest splits, the right metrics, and saying “I don’t know”.</span></summary>
+      <div class="module-body prose">
+        <p class="why">The monitoring workstream’s first model sorts frames into fish, non-fish and empty. How you split and score it decides whether the reported number means anything.</p>
+        <h4>You’ll be able to</h4>
+        <ul><li>Train a softmax classifier on hand-made features.</li><li>Split video by clip, and show what goes wrong if you split by frame.</li><li>Read a confusion matrix; compute precision, recall and F1 per class.</li><li>Add an abstention rule and read the coverage trade-off.</li></ul>
+        <h4>Core ideas</h4>
+        <p>Consecutive frames from one clip are near-duplicates. In the notebook, a nearest-neighbour classifier scores 0.90 when frames from the same clip land in both training and test sets, and 0.54 when whole clips are kept apart. The second number is the honest one. Split by clip, session, cage or site, never by frame.</p>
+        <p><strong>Precision</strong> asks: of the frames we called “fish”, how many were? <strong>Recall</strong> asks: of the real fish frames, how many did we find? On data that are mostly empty frames, a model that always answers “empty” can score 85% accuracy and find no fish at all.</p>
+        <p>Below a confidence threshold the model answers <em>unknown</em> and sends the frame to a person. Fewer frames are decided, but the decided ones are more often right.</p>
+        <div class="lab" id="lab-abstain">
+          <h4>Try it: the abstention trade-off</h4>
+          <canvas id="ab-canvas" width="520" height="220" role="img" aria-label="Line chart of coverage and accuracy against the confidence threshold"></canvas>
+          <div class="ctl" style="margin-top:.8rem"><label for="ab-thr">Confidence threshold <output id="ab-thr-out"></output></label><input type="range" id="ab-thr" min="0.34" max="0.99" step="0.01" value="0.7"></div>
+          <p class="readout" id="ab-readout" aria-live="polite"></p>
+        </div>
+        <h4>In the notebook</h4>
+        <p>The leakage demonstration, features, softmax from scratch compared with scikit-learn, confusion matrix and per-class metrics, the imbalance trap, abstention, a reliability diagram, and an exercise on recall.</p>
+        <div class="qa"><details><summary>A detector has precision 0.95 and recall 0.40. Describe it in plain words.</summary><p>When it says “fish” it’s usually right, but it misses most fish.</p></details><details><summary>Why standardise features using training statistics only?</summary><p>Using test statistics leaks information about the test set into training.</p></details></div>
+        <div class="nb" data-nb="CV04_learning_to_classify.ipynb"></div>
+      </div>
+    </details>
+  </li>
+
+  <li class="station" data-mod="05" data-depth="14" data-paths="new ml m1 m2 policy" data-read="policy">
+    <span class="marker" aria-hidden="true"></span><span class="depth" aria-hidden="true">14 m</span>
+    <details class="module" id="m05">
+      <summary><span><span class="num">05</span><span class="title">Robustness, shift and honest reporting</span><span class="tag opt">optional for your path</span><span class="tag read">read the page</span><span class="chev" aria-hidden="true">›</span></span><span class="time">2 h</span><span class="one">One number hides everything: report by condition and by site, and document limits.</span></summary>
+      <div class="module-body prose">
+        <p class="why">The project’s cameras won’t sit in the clear water a public dataset came from. A model’s behaviour in turbid, dark or unfamiliar water is the result that matters.</p>
+        <h4>You’ll be able to</h4>
+        <ul><li>Report accuracy for each condition and each habitat, not one overall figure.</li><li>Use augmentation and state what it did and didn’t fix.</li><li>Route unusable frames to human review with an image-quality gate.</li><li>Write a data card, a model card and a conservative event record.</li></ul>
+        <h4>Core ideas</h4>
+        <p>In the notebook, the same model scores 0.93 on clean frames and 0.45 to 0.80 under turbidity, low light and blur, and 0.55 on fish that are physically farther away. Trained only on reef clips, it drops to 0.71 in a harbour. Training on degraded copies recovers much of the loss from <code>degrade()</code>, costs a little clean accuracy, and barely helps the farther fish: robustness to one degradation model doesn’t transfer to another.</p>
+        <p>An image-quality gate scores brightness, texture and sharpness on the frame’s border, where there’s usually only background, so it judges the image, not the animal. Frames it flags become <code>unknown</code> and <code>human_review_required</code>, never a “safe” default, as in the Weeks 1–4 event schema.</p>
+        <h4>In the notebook</h4>
+        <p>Accuracy by condition, a habitat-shift table, augmentation, the quality gate, an error taxonomy, data and model cards, and event records. The exercise is the model card’s “must not be used for” field.</p>
+        <div class="qa"><details><summary>Accuracy is 0.95 overall and 0.55 in turbid water. What’s the headline?</summary><p>Both, with the condition named. The overall figure alone misleads anyone deploying where turbidity is common.</p></details><details><summary>What should an event record say when the frame is degraded and confidence is 0.62?</summary><p>Event type <code>unknown</code>, action <code>human_review_required</code>.</p></details></div>
+        <div class="nb" data-nb="CV05_robustness_and_reporting.ipynb"></div>
+      </div>
+    </details>
+  </li>
+
+  <li class="station" data-mod="06" data-depth="18" data-paths="new m1">
+    <span class="marker" aria-hidden="true"></span><span class="depth" aria-hidden="true">18 m</span>
+    <details class="module" id="m06">
+      <summary><span><span class="num">06</span><span class="title">Neural networks and CNNs</span><span class="tag opt">optional for your path</span><span class="chev" aria-hidden="true">›</span></span><span class="time">2.5 h</span><span class="one">A model that learns its own features, what it looks at, and a robustness test that can mislead.</span></summary>
+      <div class="module-body prose">
+        <p class="why">The monitoring workstream’s upgrade path is a convolutional network fine-tuned on real footage. You need to know what it adds, what it costs, and how to test it fairly.</p>
+        <h4>You’ll be able to</h4>
+        <ul><li>Train a linear model, a multilayer perceptron and a small CNN in PyTorch on CPU, and compare them by condition.</li><li>Inspect learned filters, feature maps and a saliency map.</li><li>Fine-tune a pretrained MobileNet on your own frames in Colab.</li></ul>
+        <h4>Core ideas</h4>
+        <p>A CNN slides small learned filters across the image, so the same weights detect a fish anywhere in the frame. In the notebook it beats a multilayer perceptron with nearly 40 times more parameters. One preprocessing line, standardising each frame by its own mean and spread, lifts its clean accuracy from about 0.78 to 0.93.</p>
+        <p>That line also lifts accuracy under <code>degrade()</code> turbidity and low light to around 0.93 to 0.99, because those distortions are nearly “multiply the frame by a number and add a constant”, which standardisation cancels. On fish that are physically farther away it stays near 0.7. <strong>A near-perfect score under one degradation model can hide a large gap under another.</strong> Test with more than one, and with real turbid footage.</p>
+        <h4>In the notebook</h4>
+        <p>PyTorch tensors, three models compared by condition, per-image normalisation, filters and feature maps, saliency, augmentation, size and latency, a tested transfer-learning function, and an exercise on layer shapes. About 2 minutes on a free CPU.</p>
+        <div class="qa"><details><summary>A saliency map lights up the background, not the fish. What might be wrong?</summary><p>A shortcut: something in the background correlates with the label in your training data. Check the balance of classes across habitats and clips.</p></details><details><summary>Why freeze a pretrained network’s early layers at first?</summary><p>They hold general features such as edges and textures. Training only the new final layer first is faster and less likely to overfit a small dataset.</p></details></div>
+        <div class="nb" data-nb="CV06_neural_networks_and_cnns.ipynb"></div>
+      </div>
+    </details>
+  </li>
+
+  <li class="station" data-mod="07" data-depth="23" data-paths="ml m2 track">
+    <span class="marker" aria-hidden="true"></span><span class="depth" aria-hidden="true">23 m</span>
+    <details class="module" id="m07">
+      <summary><span><span class="num">07</span><span class="title">Detection, measurement and calibration</span><span class="tag opt">optional for your path</span><span class="chev" aria-hidden="true">›</span></span><span class="time">2.5 h</span><span class="one">Where is the fish, how long is it, how heavy is it, and how wrong could each answer be?</span></summary>
+      <div class="module-body prose">
+        <p class="why">Aquaculture growth and welfare evidence rests on length and mass estimated from images. Small measurement biases become large mass errors, and a badly built metric can look fine while carrying no information.</p>
+        <h4>You’ll be able to</h4>
+        <ul><li>Compute IoU, remove duplicate boxes, and score a detector with average precision.</li><li>Convert pixels to centimetres and explain why the scale depends on distance.</li><li>Quantify the size bias from a flat underwater camera port.</li><li>Propagate length error into mass error, and spot a circular welfare metric.</li></ul>
+        <h4>Core ideas</h4>
+        <p>In the notebook the same detector scores an average precision of 0.99 in clear water, 0.71 in coastal water and 0.25 in a turbid harbour. In turbid water its recall never rises above about a quarter: no threshold finds fish that never produced a detection.</p>
+        <p>Behind a flat port, light bends as it leaves the water, so fish look about 1.33 times larger than an in-air calibration expects, and more toward the edges of the frame. Mass is usually estimated as <em>W = aL<sup>b</sup></em> with <em>b</em> near 3, so a 5% length error becomes roughly a 15% mass error.</p>
+        <div class="lab" id="lab-port">
+          <h4>Try it: the flat-port bias</h4>
+          <div class="ctl"><label for="fp-ang">Fish position off the camera axis <output id="fp-ang-out"></output></label><input type="range" id="fp-ang" min="0" max="40" step="1" value="0"></div>
+          <p class="readout" id="fp-readout" aria-live="polite"></p>
+          <p class="muted" style="font-size:.85rem;margin:0">A 30 cm fish 1 m away, thin port, camera square to the port. No ray beyond about 48.8° in water reaches the camera at all.</p>
+        </div>
+        <p class="project">For Capstone B: the aquaculture notebook estimates mass from length, then computes Fulton’s condition factor <em>K</em> = 100 <em>W</em> / <em>L</em><sup>3</sup> from that mass. With <em>b</em> = 3 this gives every fish <em>K</em> = 1.20, the exact lower edge of its placeholder band, so the welfare flag can’t respond to a thin or a fat fish. Module 07 shows why and what to do instead.</p>
+        <h4>In the notebook</h4>
+        <p>IoU, box formats, non-maximum suppression, precision–recall and average precision in three waters, COCO’s missing fish class, pixel scale and distance, flat-port refraction, length-to-mass error, the condition-factor problem with an image-based alternative, and a bootstrap biomass interval.</p>
+        <div class="qa"><details><summary>Two equal boxes overlap by half their width. What’s their IoU?</summary><p>One third: the overlap is half a box, the union one and a half boxes.</p></details><details><summary>A camera calibrated in air is used behind a flat port. Are lengths too big or too small?</summary><p>Too big: by about a third at the centre, more toward the edges.</p></details></div>
+        <div class="nb" data-nb="CV07_detection_measurement_calibration.ipynb"></div>
+      </div>
+    </details>
+  </li>
+
+  <li class="station" data-mod="08" data-depth="28" data-paths="ml m2 track">
+    <span class="marker" aria-hidden="true"></span><span class="depth" aria-hidden="true">28 m</span>
+    <details class="module" id="m08">
+      <summary><span><span class="num">08</span><span class="title">Tracking over time</span><span class="tag opt">optional for your path</span><span class="chev" aria-hidden="true">›</span></span><span class="time">2.5 h</span><span class="one">Following individual fish across frames, and what the camera rig must guarantee.</span></summary>
+      <div class="module-body prose">
+        <p class="why">Counts, swimming behaviour and school cohesion all come from tracks. A tracker that splits one fish into five tracks inflates counts and corrupts every behaviour metric built on it.</p>
+        <h4>You’ll be able to</h4>
+        <ul><li>Implement a constant-velocity Kalman filter that coasts through missed detections.</li><li>Match detections to tracks with the Hungarian algorithm and a distance gate.</li><li>Report tracks per fish, ID switches and track purity.</li><li>Turn a tracking failure into a camera requirement.</li></ul>
+        <h4>Core ideas</h4>
+        <p>The Kalman filter keeps a position and a velocity. Each frame it predicts where the fish should be, then blends that prediction with the new detection, trusting whichever is less uncertain. With no detection, it coasts on the prediction while its uncertainty grows.</p>
+        <p>In the notebook’s simulation, 12 fish give 12 tracks when each moves less than a tenth of the distance to its nearest neighbour per frame, 32 tracks at about a quarter, and 60 at about half. That makes frame rate and field of view a rig requirement, not a tuning problem.</p>
+        <p class="project">From the project: a tracker once produced 205 tracks for 12 fish because simulated fish moved about 34 pixels per frame in a 37 cm field of view. It was documented as a rig requirement rather than tuned away.</p>
+        <div class="lab" id="lab-kalman">
+          <h4>Try it: a Kalman filter through a turbid patch</h4>
+          <canvas id="kf-canvas" width="560" height="230" role="img" aria-label="A fish’s true path, noisy detections, and the Kalman estimate"></canvas>
+          <div class="controls">
+            <div class="ctl"><label for="kf-r">Detection noise <output id="kf-r-out"></output></label><input type="range" id="kf-r" min="1" max="15" step="0.5" value="6"></div>
+            <div class="ctl"><label for="kf-q">How sharply the fish may turn <output id="kf-q-out"></output></label><input type="range" id="kf-q" min="-2" max="1" step="0.05" value="-0.5"></div>
+            <label class="check"><input type="checkbox" id="kf-patch" checked> Turbid patch (most detections lost)</label>
+          </div>
+          <p class="readout" id="kf-readout" aria-live="polite"></p>
+        </div>
+        <h4>In the notebook</h4>
+        <p>A simulated school, a single-fish Kalman demo, a multi-fish tracker, tuning the gate and track lifetime, a camera-siting sweep, school polarisation from raw and Kalman velocities, line-crossing counts, and an exercise writing the polarisation metric.</p>
+        <div class="qa"><details><summary>A tracker reports 40 tracks for 10 fish. Name two likely causes.</summary><p>Fish move too far between frames for the gate, or tracks are deleted too quickly during occlusions and turbid patches.</p></details><details><summary>Why can smoother velocities give a worse polarisation estimate?</summary><p>Smoothing lags behind turns, so lagged velocities point the wrong way when headings change fast. Noise and lag trade off; report which you saw.</p></details></div>
+        <div class="nb" data-nb="CV08_tracking_over_time.ipynb"></div>
+      </div>
+    </details>
+  </li>
+
+  <li class="station" data-mod="09" data-depth="34" data-paths="new ml m1 m2 track policy" data-read="policy">
+    <span class="marker" aria-hidden="true"></span><span class="depth" aria-hidden="true">34 m</span>
+    <details class="module" id="m09">
+      <summary><span><span class="num">09</span><span class="title">From pixels to defensible claims</span><span class="tag opt">optional for your path</span><span class="tag read">read the page</span><span class="chev" aria-hidden="true">›</span></span><span class="time">2 h</span><span class="one">Why fewer detections near an outfall doesn’t mean fewer fish, and how to write what the evidence supports.</span></summary>
+      <div class="module-body prose">
+        <p class="why">This is where camera results meet permits and policy. It’s the module every path ends with.</p>
+        <h4>You’ll be able to</h4>
+        <ul><li>Separate occupancy (is the animal there?) from detection probability (would the camera see it?) using repeat visits.</li><li>Explain false alarms and statistical power for a survey.</li><li>Write a conditional finding: what the evidence supports, under which assumptions, and what it doesn’t show.</li><li>Name the welfare, surveillance and licensing questions that come with the camera.</li></ul>
+        <h4>Core ideas</h4>
+        <p>In the notebook’s simulated survey the outfall has no effect on fish at all, yet visits near it record a detection 41% less often, because the water is murkier. Visiting each site several times reveals how often a fish that is present gets missed, and an occupancy model uses that to estimate presence and detection separately.</p>
+        <p>Repeated over 20 simulated surveys with no real impact, the naive comparison reported an impact 95% of the time and the occupancy model never did. When occupancy at the outfall really fell from 0.6 to 0.25, the model caught it in about a third of surveys: honest, and a reminder that “no detectable effect” means little without the survey’s power.</p>
+        <p>The model only works because turbidity changes from visit to visit with weather and tide. If murkiness depended on distance alone, no analysis could separate it from a real effect. Survey design decides what can be known.</p>
+        <div class="lab" id="lab-occ">
+          <h4>Try it: seen versus there</h4>
+          <canvas id="oc-canvas" width="560" height="240" role="img" aria-label="Bar chart comparing near and far sites"></canvas>
+          <div class="controls">
+            <div class="ctl"><label for="oc-plume">Extra murkiness near the outfall <output id="oc-plume-out"></output></label><input type="range" id="oc-plume" min="0" max="5" step="0.1" value="3"></div>
+            <div class="ctl"><label for="oc-visits">Visits per site <output id="oc-visits-out"></output></label><input type="range" id="oc-visits" min="1" max="10" step="1" value="6"></div>
+            <fieldset><legend>The real world is</legend><div class="seg">
+              <label><input type="radio" name="oc-world" value="0.6" checked><span>No impact</span></label>
+              <label><input type="radio" name="oc-world" value="0.25"><span>Fewer fish near the outfall</span></label>
+            </div></fieldset>
+          </div>
+          <p class="readout" id="oc-readout" aria-live="polite"></p>
+          <p class="muted" style="font-size:.85rem;margin:0">Long-run averages from the notebook’s model; any single survey adds noise. Units are illustrative.</p>
+        </div>
+        <h4>Responsibilities that come with the camera</h4>
+        <ul>
+          <li><strong>Sentience.</strong> The UK’s Animal Welfare (Sentience) Act 2022, an enacted law, recognises vertebrates (fish included), decapod crustaceans and cephalopod molluscs as sentient for the purposes of that Act, following a 2021 evidence review led by Jonathan Birch at LSE. A model’s welfare flag is a reason for a person to look, never a diagnosis.</li>
+          <li><strong>The rig can change the result.</strong> Lights, noise and equipment can change behaviour. Record the setup.</li>
+          <li><strong>Surveillance.</strong> Tracking that counts fish can follow people on a deck or a shore. Ask who is recorded, whether they know, and how long footage is kept.</li>
+          <li><strong>Licences.</strong> Record each dataset’s and each tool’s licence before use. Ultralytics YOLO is AGPL-3.0, which also covers models trained with it.</li>
+          <li><strong>Policy accuracy.</strong> When findings are cited, keep enacted law, proposed bills and guidance clearly apart.</li>
+        </ul>
+        <h4>In the notebook</h4>
+        <p>The no-impact world, the naive analysis, an occupancy model fitted by maximum likelihood, false alarms and power over 20 surveys, how earlier modules feed detection probability, a finding written automatically from the fitted numbers, and an exercise on survey effort.</p>
+        <div class="qa"><details><summary>Detections fall by half near an outfall. Give two explanations other than fewer fish.</summary><p>Lower detection probability in murkier or darker water, fish avoiding the camera’s view but not the site, different survey effort, or a model that performs worse in those conditions.</p></details><details><summary>The interval for the outfall effect runs from −1.4 to +2.1. What can you say?</summary><p>The data are consistent with no effect, a negative one or a positive one. The survey can’t tell them apart; it needs more sites, more visits or better detection.</p></details></div>
+        <div class="nb" data-nb="CV09_from_pixels_to_claims.ipynb"></div>
+      </div>
+    </details>
+  </li>
+  </ol>
+</section>
+<section id="ag-capstones" aria-labelledby="cap-h">
+  <h2 id="cap-h">Capstones: the project notebooks</h2>
+  <p class="prose">Each capstone applies the course to an Aquatic Guardian notebook. The table shows which module prepares you for each task, so you can go back to exactly what you need.</p>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th scope="col">Capstone</th><th scope="col">Project notebook</th><th scope="col">Tasks and the modules behind them</th><th scope="col">What you hand in</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Orientation</strong><br><span class="muted">everyone who codes</span></td>
+        <td><code>Aquatic_Guardian_Weeks1-4_Scaffold.ipynb</code></td>
+        <td>Event schema and validator: 05. Evaluation harness: 04. Degradation utility: 02, 05.</td>
+        <td>A run of the scaffold with each section tagged by the module that explains it.</td>
+      </tr>
+      <tr>
+        <td><strong>A. Monitoring baseline</strong><br><span class="muted">Mentee 1, workstream A</span></td>
+        <td><code>Aquatic_Guardian_Mentee1_Computer_Vision.ipynb</code></td>
+        <td>Dataset and licence: 05. Label mapping and clip-level splits: 04. Baseline: 04. CNN reference: 06. Abstention: 04. Turbidity and low light: 02, 05. Evaluation: 04, 05, 06. Error taxonomy and handoff: 05, 09.</td>
+        <td>The notebook on DeepFish or Brackish, split by clip; results by condition using <em>two</em> degradation models; data and model cards; one conditional finding.</td>
+      </tr>
+      <tr>
+        <td><strong>B. Aquaculture measurement</strong><br><span class="muted">Mentee 2, production side</span></td>
+        <td><code>Aquatic_Guardian_Mentee2_Aquaculture_CV.ipynb</code></td>
+        <td>Calibration and biology: 07. Segmentation: 03. Length, mass and condition: 03, 07. Population outputs: 07. Welfare flags: 07, 09. Evaluation and growth: 05, 07. Instance segmentation: 06. Behaviour from tracks: 08.</td>
+        <td>A fix for the condition-factor problem in Tasks 6 and 8; a flat-port correction with its assumptions; biomass with an interval; welfare flags framed as review triggers.</td>
+      </tr>
+      <tr>
+        <td><strong>C. Linking vision to the plume</strong><br><span class="muted">monitoring, thermal, and policy paths</span></td>
+        <td><code>Aquatic_Guardian_Mentee2_Thermal_Tidal.ipynb</code> with the monitoring notebook</td>
+        <td>Plume temperature, dissolved oxygen and turbidity as visit covariates: 09. Detection probability from per-condition recall: 02, 05, 07.</td>
+        <td>Coders: an occupancy analysis using thermal outputs as covariates, with its power stated. Policy path: a one-page memo on what camera evidence a permit should require, built on a conditional finding.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="prose muted">Every capstone report includes the safety reflection the project notebooks ask for: where the model fails, how <code>unknown</code> is handled, and a plain statement that a detection result is never, on its own, evidence that an ecosystem is healthy or harmed.</p>
+</section>
+
+<section id="ag-instructors" aria-labelledby="ins-h">
+  <h2 id="ins-h">For instructors</h2>
+  <div class="two">
+    <div class="prose">
+      <h3>Setting up</h3>
+      <p>Put the <code>notebooks</code> folder next to this page and the download buttons work straight away. To get one-click “Open in Colab” buttons, push the folder to a public GitHub repository and set <code>data-colab-base</code> on the page’s outer element to the folder’s Colab address, for example <code>https://colab.research.google.com/github/OWNER/REPO/blob/main/notebooks/</code>. The README has the details.</p>
+      <h3>How the notebooks behave</h3>
+      <p>Every notebook generates its own synthetic underwater data, so nobody needs a dataset or a GPU to start. All nine ran top to bottom without errors in testing: eight in under 10 seconds and Module 06 in under a minute on CPU. Real-data paths are present but switched off with <code>RUN_REAL_DATA = False</code>, as in the project notebooks.</p>
+      <p>Cells are marked ▶ run and read, ✏️ predict then change, and 🧩 write code. Each 🧩 exercise has a checker that prints feedback instead of crashing, followed by a collapsed solution.</p>
+    </div>
+    <div class="prose">
+      <h3>Pacing</h3>
+      <p>The full sequence is about 20 hours of student time. Two modules a week fits a five-week block, with capstones in the last week. Students on a single workstream path need about 12 to 15 hours.</p>
+      <h3>What to look for in reports</h3>
+      <ul><li>Results by condition and by site, never one number.</li><li>Splits by clip or session, stated.</li><li>Robustness tested with more than one degradation model.</li><li>Placeholder values, such as species parameters and welfare bands, flagged as placeholders.</li><li>At least one conditional finding, with power or uncertainty stated.</li></ul>
+      <h3>Known simplifications</h3>
+      <p>Scenes and surveys are synthetic. Attenuation coefficients and turbidity units are illustrative teaching values, not site measurements. Task numbers refer to the six-week versions of the project notebooks; tracking and occupancy-correction sections in later versions map to Modules 08 and 09.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ag-glossary" aria-labelledby="gl-h">
+  <h2 id="gl-h">Glossary</h2>
+  <dl class="glossary">
+    <div><dt>Abstention</dt><dd>Returning “unknown” below a confidence threshold, so a person reviews the frame.</dd></div>
+    <div><dt>Average precision (AP)</dt><dd>Area under a detector’s precision–recall curve. mAP averages it over classes or overlap thresholds.</dd></div>
+    <div><dt>Backscatter (veiling light)</dt><dd>Light scattered toward the camera by particles in the water, which washes out contrast.</dd></div>
+    <div><dt>Data leakage</dt><dd>Test data that shares information with training data, such as frames from the same clip, inflating scores.</dd></div>
+    <div><dt>Detection probability</dt><dd>The chance the camera detects an animal on a visit, given that the animal is there.</dd></div>
+    <div><dt>ID switch</dt><dd>A tracking error where one animal’s track jumps to another identity.</dd></div>
+    <div><dt>IoU</dt><dd>Intersection over union: overlap of two boxes divided by their combined area.</dd></div>
+    <div><dt>Kalman filter</dt><dd>A method that predicts an object’s next position and blends it with each new measurement by their uncertainties.</dd></div>
+    <div><dt>Occupancy</dt><dd>Whether a species uses a site, as distinct from whether it was detected there.</dd></div>
+    <div><dt>Power</dt><dd>The chance a survey detects an effect that really exists.</dd></div>
+    <div><dt>Precision and recall</dt><dd>Of the things called fish, the share that were; of the real fish, the share that were found.</dd></div>
+    <div><dt>Transmittance</dt><dd>The fraction of light of each colour that survives a given distance of water.</dd></div>
+  </dl>
+</section>
+
+<footer class="footer">
+  <p>Part of Aquatic Guardian, Sentient Futures. Notebooks run on free Google Colab with open-source tools. All scenes and surveys are synthetic unless you switch on real data.</p>
+</footer>
+
+</div>
+</div>
+<script>
+(function () {
+  "use strict";
+  var root = document.getElementById("ag-learn");
+  if (!root) return;
+  function $(s) { return root.querySelector(s); }
+  function $$(s) { return Array.prototype.slice.call(root.querySelectorAll(s)); }
+  function cssv(n) { return getComputedStyle(root).getPropertyValue(n).trim(); }
+  function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function gauss(r) { var u = 0, v = 0; while (!u) u = r(); while (!v) v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  function expit(x) { return 1 / (1 + Math.exp(-x)); }
+  function pct(x) { return Math.round(100 * x) + "%"; }
+  var WATER = {
+    clear_ocean: { beta: [0.40, 0.07, 0.04], veil: [0.02, 0.20, 0.42] },
+    coastal: { beta: [0.55, 0.20, 0.30], veil: [0.05, 0.32, 0.27] },
+    turbid_harbour: { beta: [0.95, 0.60, 0.75], veil: [0.14, 0.30, 0.22] }
+  };
+  function seen(J, d, w) {   // colour of radiance J seen through distance d of water w
+    var W = WATER[w], out = [];
+    for (var c = 0; c < 3; c++) { var t = Math.exp(-W.beta[c] * d); out.push(J[c] * t + W.veil[c] * (1 - t)); }
+    return out;
+  }
+  function rgb(c) { return "rgb(" + c.map(function (v) { return Math.round(255 * Math.max(0, Math.min(1, v))); }).join(",") + ")"; }
+  function hidpi(canvas, responsive) {
+    // Crisp drawing on high-density screens. Responsive charts take the width they're shown at, so text stays
+    // readable on phones; fixed-geometry charts keep their size and scale their text instead.
+    if (!canvas.dataset.w) { canvas.dataset.w = canvas.getAttribute("width"); canvas.dataset.h = canvas.getAttribute("height"); }
+    var w = +canvas.dataset.w, h = +canvas.dataset.h, shown = canvas.clientWidth || w;
+    if (responsive) w = Math.max(300, Math.round(shown));
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    var ctx = canvas.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var fs = responsive ? 12 : Math.min(22, 12 * w / Math.max(shown, 1));
+    ctx.font = fs.toFixed(1) + "px " + cssv("--font");
+    return { ctx: ctx, w: w, h: h, font: ctx.font };
+  }
+
+  /* ---------- depth markers: the same orange fish seen from each station's depth ---------- */
+  var ORANGE = [0.97, 0.55, 0.12];
+  $$(".station").forEach(function (st) {
+    st.querySelector(".marker").style.background = rgb(seen(ORANGE, +st.dataset.depth, "coastal"));
+  });
+  var prof = $("#profile");
+  if (prof) { prof.style.setProperty("--rail-top", rgb(seen(ORANGE, 0, "coastal"))); prof.style.setProperty("--rail-bottom", rgb(seen(ORANGE, 34, "coastal"))); }
+
+  /* ---------- notebook buttons ---------- */
+  var base = root.dataset.colabBase || "", nbPath = root.dataset.notebookPath || "notebooks/";
+  $$(".nb[data-nb]").forEach(function (el) {
+    var f = el.dataset.nb, html = "";
+    if (base) {
+      html += '<a class="btn primary" href="' + base + f + '" target="_blank" rel="noopener">Open in Colab</a>';
+      html += '<a class="btn" href="' + nbPath + f + '" download>Download notebook</a>';
+    } else {
+      html += '<a class="btn primary" href="' + nbPath + f + '" download>Download notebook</a>';
+      html += '<span class="nb-note">Then go to colab.research.google.com and choose File, Upload notebook.</span>';
+    }
+    el.innerHTML = html;
+  });
+
+  /* ---------- path finder ---------- */
+  var PATHS = {
+    all: "All nine modules, about 20 hours, then the capstones.",
+    "new": "All nine modules in order, about 20 hours. Then the orientation capstone and the capstone for the workstream you join.",
+    ml: "Modules 02, 03, 05, 07, 08 and 09, about 13.5 hours. Skim 01 and 04 for the project’s conventions; 06 is optional.",
+    m1: "Modules 01, 02, 04, 05, 06 and 09, about 12.5 hours. Then the orientation capstone and Capstone A.",
+    m2: "Modules 01, 02, 03, 05, 07, 08 and 09, about 15 hours. Then the orientation capstone and Capstone B.",
+    track: "Modules 01, 03, 07, 08 and 09, about 11 hours. Then the behaviour tasks in Capstone B, or your own footage.",
+    policy: "Read the pages for Modules 02, 04, 05 and 09 and try their demos, about 4 hours. The notebooks are optional. Then the policy memo in Capstone C."
+  };
+  function applyPath(p) {
+    $$(".station").forEach(function (st) {
+      var on = p === "all" || st.dataset.paths.split(" ").indexOf(p) >= 0;
+      st.classList.toggle("off", !on);
+      st.classList.toggle("readonly", p === "policy" && !!st.dataset.read);
+    });
+    $("#path-summary").textContent = PATHS[p];
+    try { localStorage.setItem("agl-path", p); } catch (e) {}
+  }
+  var saved = "all";
+  try { saved = localStorage.getItem("agl-path") || "all"; } catch (e) {}
+  if (!PATHS[saved]) saved = "all";
+  $$('input[name="path"]').forEach(function (r) {
+    if (r.value === saved) r.checked = true;
+    r.addEventListener("change", function () { applyPath(r.value); });
+  });
+  applyPath(saved);
+  // open a module when the address ends in #m01 ... #m09
+  function openFromHash() { var m = /^#m0[1-9]$/.test(location.hash) && $(location.hash); if (m) { m.open = true; m.scrollIntoView(); } }
+  window.addEventListener("hashchange", openFromHash); openFromHash();
+
+  /* ---------- hero: underwater camera explorer ---------- */
+  (function () {
+    var cv = $("#ex-canvas"); if (!cv) return;
+    var W = 360, H = 216, N = W * H, ctx = cv.getContext("2d"), img = ctx.createImageData(W, H);
+    var r = mulberry32(7), J = new Float32Array(N * 3), idx = new Int8Array(N).fill(-1), noise = new Float32Array(N * 3);
+    var FISH = [
+      { cx: 70, cy: 62, L: 74, ang: 0.15, col: [0.97, 0.55, 0.12], f: 0.6 },
+      { cx: 192, cy: 44, L: 62, ang: Math.PI - 0.2, col: [0.96, 0.84, 0.22], f: 0.8 },
+      { cx: 292, cy: 92, L: 68, ang: 0.3, col: [0.80, 0.82, 0.84], f: 1.0 },
+      { cx: 122, cy: 152, L: 76, ang: Math.PI + 0.1, col: [0.93, 0.35, 0.25], f: 1.25 },
+      { cx: 256, cy: 174, L: 62, ang: -0.25, col: [0.97, 0.55, 0.12], f: 1.5 }
+    ];
+    var M = Math.max(W, H);
+    for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+      var i = y * W + x, n1 = gauss(r);
+      J[3 * i] = 0.48 + 0.10 * y / M + 0.04 * n1 + 0.015 * gauss(r);
+      J[3 * i + 1] = 0.43 + 0.08 * y / M + 0.04 * n1 + 0.015 * gauss(r);
+      J[3 * i + 2] = 0.34 + 0.04 * x / M + 0.04 * n1 + 0.015 * gauss(r);
+      for (var c = 0; c < 3; c++) noise[3 * i + c] = gauss(r);
+    }
+    FISH.forEach(function (F, k) {
+      var a = F.L / 2.25, b = a / 4, ca = Math.cos(F.ang), sa = Math.sin(F.ang);
+      for (var y = Math.max(0, F.cy - F.L); y < Math.min(H, F.cy + F.L); y++) for (var x = Math.max(0, F.cx - F.L); x < Math.min(W, F.cx + F.L); x++) {
+        var X = (x - F.cx) * ca + (y - F.cy) * sa, Y = -(x - F.cx) * sa + (y - F.cy) * ca;
+        var body = (X / a) * (X / a) + (Y / b) * (Y / b) <= 1, tx = -X - 0.8 * a;
+        var tail = tx >= 0 && tx <= 0.45 * a && Math.abs(Y) <= 1.3 * b * tx / (0.45 * a);
+        if (!body && !tail) continue;
+        var i = y * W + x, col = F.col;
+        if (Math.abs(X - 0.15 * a) < 0.09 * a && body) col = [0.95, 0.95, 0.92];
+        if (Math.pow(X - 0.62 * a, 2) + Math.pow(Y - 0.15 * b, 2) < Math.pow(0.12 * b + 0.6, 2)) col = [0.05, 0.05, 0.08];
+        J[3 * i] = col[0]; J[3 * i + 1] = col[1]; J[3 * i + 2] = col[2]; idx[i] = k;
+      }
+    });
+    var I = new Float32Array(N * 3), mask = new Uint8Array(N), clean = new Uint8Array(N), lab = new Int32Array(N), stack = new Int32Array(N);
+    var boxes = [], pending = false;
+
+    function render() {
+      pending = false;
+      var d = +$("#ex-dist").value, light = +$("#ex-light").value, w = (root.querySelector('input[name="ex-water"]:checked') || {}).value || "coastal";
+      var Wt = WATER[w], sd = 0.012 / Math.sqrt(light);
+      var T = [];   // transmittance for each fish (index 0..4) and the background (index 5)
+      for (var k = 0; k <= 5; k++) { var dist = k < 5 ? d * FISH[k].f : d + 8; T.push(Wt.beta.map(function (be) { return Math.exp(-be * dist); })); }
+      for (var i = 0; i < N; i++) {
+        var t = T[idx[i] < 0 ? 5 : idx[i]];
+        for (var c = 0; c < 3; c++) {
+          var v = J[3 * i + c] * t[c] + Wt.veil[c] * (1 - t[c]) + sd * noise[3 * i + c];
+          v = v < 0 ? 0 : v > 1 ? 1 : v; I[3 * i + c] = v; img.data[4 * i + c] = 255 * v;
+        }
+        img.data[4 * i + 3] = 255;
+      }
+      // detector: median border colour, colour difference, 3x3 majority filter, connected components
+      var bg = [0, 1, 2].map(function (c) {
+        var a = [];
+        for (var x = 0; x < W; x++) for (var y of [0, 1, 2, 3, H - 4, H - 3, H - 2, H - 1]) a.push(I[3 * (y * W + x) + c]);
+        for (var y = 4; y < H - 4; y++) for (var x of [0, 1, 2, 3, W - 4, W - 3, W - 2, W - 1]) a.push(I[3 * (y * W + x) + c]);
+        a.sort(function (p, q) { return p - q; }); return a[a.length >> 1];
+      });
+      for (var i = 0; i < N; i++) {
+        var dr = I[3 * i] - bg[0], dg = I[3 * i + 1] - bg[1], db = I[3 * i + 2] - bg[2];
+        mask[i] = Math.sqrt(dr * dr + dg * dg + db * db) > 0.08 ? 1 : 0;
+      }
+      for (var y = 1; y < H - 1; y++) for (var x = 1; x < W - 1; x++) {
+        var s = 0; for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) s += mask[(y + dy) * W + x + dx];
+        clean[y * W + x] = s >= 5 ? 1 : 0;
+      }
+      lab.fill(0); boxes = []; var cur = 0;
+      for (var s0 = 0; s0 < N; s0++) {
+        if (!clean[s0] || lab[s0]) continue;
+        cur++; var sp = 0, area = 0, x1 = W, y1 = H, x2 = 0, y2 = 0; stack[sp++] = s0; lab[s0] = cur;
+        while (sp) {
+          var p = stack[--sp], px = p % W, py = (p - px) / W; area++;
+          if (px < x1) x1 = px; if (px > x2) x2 = px; if (py < y1) y1 = py; if (py > y2) y2 = py;
+          var nb = [p - 1, p + 1, p - W, p + W];
+          for (var j = 0; j < 4; j++) { var q = nb[j]; if (q < 0 || q >= N) continue; if ((j < 2) && ((q % W) !== px + (j ? 1 : -1))) continue; if (clean[q] && !lab[q]) { lab[q] = cur; stack[sp++] = q; } }
+        }
+        if (area >= 40) boxes.push([x1, y1, x2 + 1, y2 + 1]);
+      }
+      ctx.putImageData(img, 0, 0);
+      var found = 0, falseBoxes = 0;
+      FISH.forEach(function (F) { if (boxes.some(function (b) { return F.cx >= b[0] && F.cx <= b[2] && F.cy >= b[1] && F.cy <= b[3]; })) found++; });
+      boxes.forEach(function (b) { if (!FISH.some(function (F) { return F.cx >= b[0] && F.cx <= b[2] && F.cy >= b[1] && F.cy <= b[3]; })) falseBoxes++; });
+      if ($("#ex-boxes").checked) {
+        ctx.lineWidth = 2; ctx.strokeStyle = "#f2c230";
+        boxes.forEach(function (b) { ctx.strokeRect(b[0] + 0.5, b[1] + 0.5, b[2] - b[0] - 1, b[3] - b[1] - 1); });
+      }
+      $("#ex-dist-out").textContent = d.toFixed(1) + " m";
+      $("#ex-light-out").textContent = light >= 0.8 ? "full daylight" : light >= 0.35 ? "overcast" : light >= 0.15 ? "dusk" : "near dark";
+      var msg = "<strong>The detector finds " + found + " of 5 fish</strong>";
+      if (falseBoxes) msg += ", plus " + falseBoxes + " false " + (falseBoxes === 1 ? "box" : "boxes");
+      msg += ". " + (found < 5 ? "All five are still in the scene." : "Try moving the school farther away.");
+      $("#ex-readout").innerHTML = msg;
+      var tm = T[2];
+      ["r", "g", "b"].forEach(function (ch, c) { $("#bar-" + ch).style.width = (100 * tm[c]).toFixed(1) + "%"; $("#bar-" + ch + "-v").textContent = pct(tm[c]); });
+      cv.setAttribute("aria-label", "Synthetic underwater frame with five fish at about " + d.toFixed(1) + " metres in " + w.replace("_", " ") + " water. " + $("#ex-readout").textContent);
+    }
+    function schedule() { if (!pending) { pending = true; requestAnimationFrame(render); } }
+    ["#ex-dist", "#ex-light", "#ex-boxes"].forEach(function (s) { $(s).addEventListener("input", schedule); });
+    $$('input[name="ex-water"]').forEach(function (e) { e.addEventListener("change", schedule); });
+    render();
+  })();
+
+  /* ---------- module 04: abstention trade-off ---------- */
+  var drawAbstain = (function () {
+    var cv = $("#ab-canvas"); if (!cv) return function () {};
+    var r = mulberry32(11), n = 600, conf = [], ok = [];
+    for (var i = 0; i < n; i++) {
+      var c = Math.max(0.34, 1 - 0.66 * Math.pow(r(), 1.8)), pc = 0.25 + 0.74 * Math.pow((c - 0.34) / 0.66, 0.7);
+      conf.push(c); ok.push(r() < pc);
+    }
+    function stats(th) {
+      var k = 0, good = 0; for (var i = 0; i < n; i++) if (conf[i] >= th) { k++; if (ok[i]) good++; }
+      return { cov: k / n, acc: k ? good / k : NaN, review: n - k };
+    }
+    var grid = []; for (var th = 0.34; th <= 0.991; th += 0.01) grid.push([th, stats(th)]);
+    function draw() {
+      var g = hidpi(cv, true), ctx = g.ctx, w = g.w, h = g.h, L = 44, R = w - 14, T = 14, B = h - 30;
+      var th = +$("#ab-thr").value, s = stats(th);
+      ctx.clearRect(0, 0, w, h); ctx.fillStyle = cssv("--muted"); ctx.strokeStyle = cssv("--rule"); ctx.lineWidth = 1;
+      [0, 0.25, 0.5, 0.75, 1].forEach(function (v) { var y = B - v * (B - T); ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(R, y); ctx.stroke(); ctx.fillText(Math.round(v * 100) + "%", 6, y + 4); });
+      var X = function (t) { return L + (t - 0.34) / 0.65 * (R - L); };
+      [0.4, 0.5, 0.6, 0.7, 0.8, 0.9].forEach(function (t) { ctx.fillText(t.toFixed(1), X(t) - 8, h - 12); });
+      function line(key, col) { ctx.strokeStyle = col; ctx.lineWidth = 2.5; ctx.beginPath(); grid.forEach(function (gp, i) { var y = B - gp[1][key] * (B - T); i ? ctx.lineTo(X(gp[0]), y) : ctx.moveTo(X(gp[0]), y); }); ctx.stroke(); }
+      line("cov", cssv("--link")); line("acc", cssv("--ink"));
+      ctx.strokeStyle = cssv("--signal"); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(X(th), T); ctx.lineTo(X(th), B); ctx.stroke();
+      ctx.fillStyle = cssv("--link"); ctx.fillText("frames decided (coverage)", L + 8, B - 0.08 * (B - T));
+      ctx.fillStyle = cssv("--ink"); ctx.fillText("accuracy on decided frames", L + 8, B - 0.62 * (B - T));
+      $("#ab-thr-out").textContent = th.toFixed(2);
+      $("#ab-readout").textContent = "At a threshold of " + th.toFixed(2) + ", the model decides " + pct(s.cov) + " of frames and is right on " + pct(s.acc) + " of them. " + s.review + " of 600 frames go to a person.";
+    }
+    $("#ab-thr").addEventListener("input", draw);
+    return draw;
+  })();
+
+  /* ---------- module 07: flat-port bias ---------- */
+  (function () {
+    var el = $("#fp-ang"); if (!el) return;
+    var n = 1.33, Z = 1, L = 0.30;
+    function xs(X) { return Math.tan(Math.asin(Math.min(1, n * Math.sin(Math.atan2(X, Z))))); }
+    function upd() {
+      var th = +el.value * Math.PI / 180, X0 = Z * Math.tan(th);
+      var est = (xs(X0 + L / 2) - xs(X0 - L / 2)) * Z, eAir = est / L - 1, eFix = est / n / L - 1;
+      var mass = function (e) { return Math.pow(1 + e, 3) - 1; };
+      var sgn = function (v) { return (v >= 0 ? "+" : "−") + Math.abs(Math.round(100 * v)) + "%"; };
+      $("#fp-ang-out").textContent = el.value + "°";
+      $("#fp-readout").innerHTML = "Calibrated in air: length <strong>" + sgn(eAir) + "</strong>, so mass about " + sgn(mass(eAir)) + ".<br>Divided by 1.33: length <strong>" + sgn(eFix) + "</strong>, mass about " + sgn(mass(eFix)) + ".";
+    }
+    el.addEventListener("input", upd); upd();
+  })();
+
+  /* ---------- module 08: Kalman filter through a turbid patch ---------- */
+  var drawKalman = (function () {
+    var cv = $("#kf-canvas"); if (!cv) return function () {};
+    var Tn = 150, r = mulberry32(5), gx = [], gy = [], u = [], tx = [], ty = [];
+    for (var t = 0; t < Tn; t++) { gx.push(gauss(r)); gy.push(gauss(r)); u.push(r()); tx.push(30 + 3.3 * t); ty.push(118 + 58 * Math.sin(t / 16) + 15 * Math.sin(t / 5.5)); }
+    function inPatch(x) { return x >= 230 && x <= 330; }
+    function draw() {
+      var sd = +$("#kf-r").value, q = Math.pow(10, +$("#kf-q").value), patch = $("#kf-patch").checked;
+      var mx = [], my = [], has = [];
+      for (var t = 0; t < Tn; t++) { mx.push(tx[t] + sd * gx[t]); my.push(ty[t] + sd * gy[t]); has.push(!(patch && inPatch(tx[t]) ? u[t] < 0.85 : u[t] < 0.08)); }
+      // constant-velocity Kalman filter; state [x, y, vx, vy]
+      var t0 = has.indexOf(true), s = [mx[t0], my[t0], 0, 0], R = sd * sd;
+      var P = [[R, 0, 0, 0], [0, R, 0, 0], [0, 0, 25, 0], [0, 0, 0, 25]], ex = [], ey = [];
+      function mm(A, B) { return A.map(function (row) { return B[0].map(function (_, j) { return row.reduce(function (acc, v, k) { return acc + v * B[k][j]; }, 0); }); }); }
+      function tr(A) { return A[0].map(function (_, j) { return A.map(function (row) { return row[j]; }); }); }
+      var F = [[1, 0, 1, 0], [0, 1, 0, 1], [0, 0, 1, 0], [0, 0, 0, 1]], G = [[0.5, 0], [0, 0.5], [1, 0], [0, 1]];
+      var Q = mm(G, tr(G)).map(function (row) { return row.map(function (v) { return q * v; }); });
+      for (var t = 0; t < Tn; t++) {
+        if (t > t0) {
+          s = [s[0] + s[2], s[1] + s[3], s[2], s[3]];
+          P = mm(mm(F, P), tr(F)).map(function (row, i) { return row.map(function (v, j) { return v + Q[i][j]; }); });
+          if (has[t]) {
+            var S = [[P[0][0] + R, P[0][1]], [P[1][0], P[1][1] + R]], det = S[0][0] * S[1][1] - S[0][1] * S[1][0];
+            var Si = [[S[1][1] / det, -S[0][1] / det], [-S[1][0] / det, S[0][0] / det]];
+            var K = P.map(function (row) { return [row[0] * Si[0][0] + row[1] * Si[1][0], row[0] * Si[0][1] + row[1] * Si[1][1]]; });
+            var y0 = mx[t] - s[0], y1 = my[t] - s[1];
+            s = s.map(function (v, i) { return v + K[i][0] * y0 + K[i][1] * y1; });
+            var KH = K.map(function (k) { return [k[0], k[1], 0, 0]; });
+            P = mm(KH.map(function (row, i) { return row.map(function (v, j) { return (i === j ? 1 : 0) - v; }); }), P);
+          }
+        }
+        ex.push(s[0]); ey.push(s[1]);
+      }
+      var eRaw = 0, eK = 0, nS = 0, eGap = 0, nG = 0;
+      for (var t = t0; t < Tn; t++) {
+        var dk = Math.hypot(ex[t] - tx[t], ey[t] - ty[t]);
+        if (has[t]) { eRaw += Math.hypot(mx[t] - tx[t], my[t] - ty[t]); eK += dk; nS++; }
+        else if (patch && inPatch(tx[t])) { eGap += dk; nG++; }
+      }
+      var g = hidpi(cv), ctx = g.ctx, w = g.w, h = g.h;
+      ctx.clearRect(0, 0, w, h);
+      if (patch) { ctx.fillStyle = cssv("--rule"); ctx.globalAlpha = 0.6; ctx.fillRect(230, 0, 100, h); ctx.globalAlpha = 1; ctx.fillStyle = cssv("--muted"); ctx.fillText("turbid patch", 248, h - 10); }
+      ctx.setLineDash([5, 4]); ctx.strokeStyle = cssv("--muted"); ctx.lineWidth = 1.5; ctx.beginPath();
+      for (var t = 0; t < Tn; t++) t ? ctx.lineTo(tx[t], ty[t]) : ctx.moveTo(tx[t], ty[t]); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = cssv("--ink"); for (var t = 0; t < Tn; t++) if (has[t]) { ctx.beginPath(); ctx.arc(mx[t], my[t], 2.2, 0, 7); ctx.fill(); }
+      ctx.strokeStyle = cssv("--link"); ctx.lineWidth = 2.5; ctx.beginPath();
+      for (var t = t0; t < Tn; t++) t > t0 ? ctx.lineTo(ex[t], ey[t]) : ctx.moveTo(ex[t], ey[t]); ctx.stroke();
+      var lh = parseFloat(g.font) * 1.35;
+      ctx.fillStyle = cssv("--muted"); ctx.fillText("dashed: true path", 10, lh); ctx.fillText("dots: detections", 10, 2 * lh);
+      ctx.fillStyle = cssv("--link"); ctx.fillText("line: Kalman estimate", 10, 3 * lh);
+      $("#kf-r-out").textContent = sd.toFixed(1) + " px";
+      $("#kf-q-out").textContent = q < 0.1 ? "rarely" : q < 1 ? "sometimes" : "often";
+      var msg = "Where there are detections, they’re off by " + (eRaw / nS).toFixed(1) + " px on average; the Kalman estimate by " + (eK / nS).toFixed(1) + " px.";
+      if (nG) msg += " Inside the patch, coasting on its prediction: " + (eGap / nG).toFixed(1) + " px.";
+      $("#kf-readout").textContent = msg;
+    }
+    ["#kf-r", "#kf-q", "#kf-patch"].forEach(function (s) { $(s).addEventListener("input", draw); });
+    return draw;
+  })();
+
+  /* ---------- module 09: seen versus there ---------- */
+  var drawOcc = (function () {
+    var cv = $("#oc-canvas"); if (!cv) return function () {};
+    var r = mulberry32(3), weather = [];
+    for (var i = 0; i < 500; i++) weather.push(0.9 * (-Math.log(r()) - Math.log(r())));   // gamma(2, 0.6) x 1.5, as in the notebook
+    var NEAR = 0.532, FAR = 0.0305;   // mean "closeness" of sites 0-1 km and 2-3 km from the outfall
+    function group(near, plume, K, psiOut) {
+      var ep = 0; weather.forEach(function (wv) { ep += expit(2 - 0.7 * (1 + plume * near + wv)); }); ep /= weather.length;
+      var psi = 0.6 + (psiOut - 0.6) * near;
+      return { psi: psi, visit: psi * ep, ever: psi * (1 - Math.pow(1 - ep, K)) };
+    }
+    function draw() {
+      var plume = +$("#oc-plume").value, K = +$("#oc-visits").value;
+      var psiOut = +((root.querySelector('input[name="oc-world"]:checked') || {}).value || 0.6);
+      var nr = group(NEAR, plume, K, psiOut), fr = group(FAR, plume, K, psiOut);
+      var cats = [[["Visits with", "a detection"], "visit"], [["Sites ever", "detected"], "ever"], [["Occupancy-", "model estimate"], "psi"], [["True", "occupancy"], "psi"]];
+      var g = hidpi(cv, true), ctx = g.ctx, w = g.w, h = g.h, twoRows = w < 470, L = 40, B = h - 42, T = twoRows ? 46 : 28, gw = (w - L - 10) / cats.length, bw = gw * 0.32;
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = cssv("--rule"); ctx.fillStyle = cssv("--muted");
+      [0, 0.25, 0.5, 0.75].forEach(function (v) { var y = B - v / 0.8 * (B - T); ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(w - 10, y); ctx.stroke(); ctx.fillText(v.toFixed(2), 4, y + 4); });
+      cats.forEach(function (c, k) {
+        var x0 = L + k * gw + gw * 0.14;
+        [[nr, cssv("--warn")], [fr, cssv("--link")]].forEach(function (pair, j) {
+          var v = pair[0][c[1]], y = B - v / 0.8 * (B - T);
+          ctx.fillStyle = pair[1]; if (k === 3) { ctx.globalAlpha = 0.45; } ctx.fillRect(x0 + j * (bw + 4), y, bw, B - y); ctx.globalAlpha = 1;
+          ctx.fillStyle = cssv("--ink"); ctx.textAlign = "center"; ctx.fillText(v.toFixed(twoRows ? 1 : 2), x0 + j * (bw + 4) + bw / 2, y - 4); ctx.textAlign = "left";
+        });
+        var mid = x0 + bw + 2; ctx.fillStyle = cssv("--ink"); ctx.textAlign = "center";
+        if (twoRows) ctx.font = "11px " + cssv("--font");
+        ctx.fillText(c[0][0], mid, B + 15); ctx.fillText(c[0][1], mid, B + 29); ctx.textAlign = "left"; ctx.font = g.font;
+      });
+      ctx.fillStyle = cssv("--warn"); ctx.fillRect(L, 6, 10, 10); ctx.fillStyle = cssv("--ink"); ctx.fillText("sites 0–1 km from the outfall", L + 14, 15);
+      var lx = twoRows ? L : L + 210, ly = twoRows ? 24 : 6;
+      ctx.fillStyle = cssv("--link"); ctx.fillRect(lx, ly, 10, 10); ctx.fillStyle = cssv("--ink"); ctx.fillText("sites 2–3 km away", lx + 14, ly + 9);
+      $("#oc-plume-out").textContent = plume.toFixed(1);
+      $("#oc-visits-out").textContent = K;
+      var drop = 1 - nr.visit / fr.visit, truth = 1 - nr.psi / fr.psi;
+      $("#oc-readout").textContent = "Near the outfall, visits record a detection " + pct(drop) + " less often than far away. True occupancy is " + (truth < 0.005 ? "exactly the same." : pct(truth) + " lower.") + " An occupancy model estimates the true value on average; the raw detection rates don’t.";
+    }
+    ["#oc-plume", "#oc-visits"].forEach(function (s) { $(s).addEventListener("input", draw); });
+    $$('input[name="oc-world"]').forEach(function (e) { e.addEventListener("change", draw); });
+    return draw;
+  })();
+
+  function redrawCharts() { drawAbstain(); drawKalman(); drawOcc(); }
+  redrawCharts();
+  var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(redrawCharts, 150); });
+  if (window.matchMedia) { var mq = window.matchMedia("(prefers-color-scheme: dark)"); (mq.addEventListener ? mq.addEventListener("change", redrawCharts) : mq.addListener(redrawCharts)); }
+  $$("details.module").forEach(function (d) { d.addEventListener("toggle", function () { if (d.open) redrawCharts(); }); });
+})();
+</script>
+</body>
+</html>

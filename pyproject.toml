@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aquatic-guardian"
-version = "0.2.1"
+version = "1.0.0"
 description = "Verified screening physics, ecology and disclosure tools for the aquatic and animal-welfare impacts of data centres"
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -22,7 +22,9 @@ site = ["pytest>=7", "playwright>=1.40"]
 where = ["src"]
 
 [tool.pytest.ini_options]
+# Library unit tests moved to python/; browser check is a script, not pytest.
 testpaths = ["tests"]
+norecursedirs = ["browser", "fixtures"]
 markers = [
   "slow: executes the notebooks end to end (minutes)",
   "site: drives site/index.html in a real browser (needs playwright + chromium + npm install)",

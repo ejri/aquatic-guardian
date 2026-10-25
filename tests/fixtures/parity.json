@@ -1,0 +1,2836 @@
+[
+ {
+  "name": "epa_example",
+  "scenario": {
+   "diffuser": {
+    "port_diameter": 0.076,
+    "port_elevation": 0.31,
+    "vertical_angle": 45.0,
+    "horizontal_angle": 30.0,
+    "n_ports": 18,
+    "spacing": 6.1,
+    "port_depth": 11.0,
+    "x": 0.0,
+    "y": 0.0,
+    "contraction": 1.0,
+    "axis_deg": null
+   },
+   "effluent": {
+    "flow": 0.3505010912,
+    "salinity": 0.0,
+    "temperature": 2.63,
+    "concentration": 100.0
+   },
+   "ambient": {
+    "rows": [
+     {
+      "depth": 0.0,
+      "speed": 0.09,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 14.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 2.0,
+      "speed": 0.085,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 12.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 4.0,
+      "speed": 0.07,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 6.0,
+      "speed": 0.065,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 8.0,
+      "speed": 0.06,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 10.0,
+      "speed": 0.055,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 12.0,
+      "speed": 0.05,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     }
+    ]
+   },
+   "mixing_zone": {
+    "acute": 10.2,
+    "chronic": 102.0
+   },
+   "settings": {
+    "aspiration": 0.1,
+    "step_mass_fraction": 0.02,
+    "stop_at_bottom": true,
+    "stop_at_surface": true,
+    "stop_at_shoreline": false,
+    "shoreline_distance": 0.0,
+    "shoreline_angle": 0.0,
+    "max_rise_fall": 2,
+    "nearfield_output_interval": 5,
+    "farfield": true,
+    "farfield_case": "four_thirds",
+    "farfield_output_interval": 5.0,
+    "farfield_max_dilution": 5000.0,
+    "farfield_stop_distance": 102.0,
+    "max_steps": 50000,
+    "entrainment": "sum",
+    "shear_velocity": "relative",
+    "dt_mode": "unmerged",
+    "forced_scale": 0.81,
+    "forced_terms": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "wastefield_rule": "diffuser_length_plus_diameter"
+   },
+   "name": "PLUMES2.0 Example_project"
+  },
+  "options": {},
+  "expect": {
+   "end": {
+    "step": 261,
+    "time": 57.16900576860687,
+    "x": 6.973679221725842,
+    "y": 2.0800647963305194,
+    "depth": 2.4987280894065664,
+    "diameter": 6.405567938591709,
+    "dilution": 169.4580167163623,
+    "centerline_dilution": 76.58079024761757,
+    "temperature": 8.566728112706468,
+    "salinity": 31.815709560125438,
+    "density": 1024.6915221220513,
+    "amb_temperature": 11.002543821186867,
+    "amb_density": 1024.4402860132227,
+    "delta_t": -2.4358157084803995,
+    "delta_t_centerline": -0.10933272503304861,
+    "speed": 0.10618872081530685,
+    "w": 0.06643291032151154,
+    "concentration": 0.5901511950479194,
+    "merged": true,
+    "distance": 7.277285508582399,
+    "path_length": 11.247238774400296
+   },
+   "termination": "surface",
+   "n_steps": 262,
+   "events": [
+    [
+     "trap",
+     247
+    ],
+    [
+     "merging",
+     257
+    ],
+    [
+     "surface",
+     261
+    ]
+   ],
+   "step10": {
+    "step": 10,
+    "time": 0.010126674082859737,
+    "x": 0.024049611157967714,
+    "y": 0.013854812057772512,
+    "depth": 10.972279482919841,
+    "diameter": 0.09233592607358751,
+    "dilution": 1.2133928232286317,
+    "centerline_dilution": 1.0,
+    "temperature": 3.594729629670416,
+    "salinity": 5.748854403995031,
+    "density": 1004.5764234107927,
+    "amb_temperature": 8.0,
+    "amb_density": 1024.9188206297022,
+    "delta_t": -4.405270370329584,
+    "delta_t_centerline": -5.37,
+    "speed": 3.528474566161464,
+    "w": 2.491928590440601,
+    "concentration": 82.41354167063312,
+    "merged": false,
+    "distance": 0.027754992596029343,
+    "path_length": 0.03922712201321645
+   },
+   "farfield_rows": [
+    {
+     "distance": 7.277285508582399,
+     "travel": 0.0,
+     "width": 110.10556793859169,
+     "dilution": 169.4580167163623,
+     "farfield_factor": 1.0,
+     "time_h": 0.0,
+     "concentration": 0.5901511950479194,
+     "delta_t": -2.4358157084803995,
+     "note": "start"
+    },
+    {
+     "distance": 55.0,
+     "travel": 47.7227144914176,
+     "width": 126.97828676611411,
+     "dilution": 169.89421934713124,
+     "farfield_factor": 1.0025741044255172,
+     "time_h": 0.26512619161898665,
+     "concentration": 0.5886359845550575,
+     "delta_t": -2.429561762794722,
+     "note": ""
+    },
+    {
+     "distance": 102.0,
+     "travel": 94.7227144914176,
+     "width": 144.36133242093325,
+     "dilution": 176.71944357292594,
+     "farfield_factor": 1.042850890133559,
+     "time_h": 0.5262373027300978,
+     "concentration": 0.56590179922303,
+     "delta_t": -2.335727697531564,
+     "note": "chronic mixing zone"
+    }
+   ],
+   "w0": 110.10556793859169,
+   "thermal": {
+    "ambient_at_port_c": 8.0,
+    "dt_discharge_c": -5.37,
+    "dt_end_nearfield_c": -2.4358157084803995,
+    "dt_end_local_c": -2.4358157084803995,
+    "dt_end_attributable_c": -0.03168926501121674,
+    "dt_end_centerline_attributable_c": -0.07012202384744992,
+    "governing_reference": "local ambient",
+    "surfaced": true,
+    "bottom_contact": false,
+    "dt_acute_c": -2.4358157084803995,
+    "dt_chronic_c": -2.335727697531564,
+    "dt_surface_1000ft_c": -1.6131095875181816
+   },
+   "reach": [
+    {
+     "threshold_c": 2.22,
+     "distance_m": 135.1328324687155,
+     "area_m2": 17821.19699481432,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 1.0,
+     "distance_m": 602.7357178149223,
+     "area_m2": 138754.60320072074,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.83,
+     "distance_m": 745.3544544336794,
+     "area_m2": 196919.67117644206,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.5,
+     "distance_m": 1235.004298955469,
+     "area_m2": 485632.62237138615,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.3,
+     "distance_m": 1927.3977600532648,
+     "area_m2": 1165132.2339342325,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.1,
+     "distance_m": 4518.239049919328,
+     "area_m2": 7377102.753800008,
+     "within": "far field"
+    }
+   ],
+   "exposure": {
+    "peak_excess_c": 5.37,
+    "degree_minutes": 0.5144308475198598,
+    "nearfield_transit_s": 57.16900576860687,
+    "minutes_above": {
+     "2C": 0.027621976789094192,
+     "1C": 0.09199410487511625,
+     "0.5C": 0.2435221151674224
+    },
+    "note": "Centreline (worst-case) path; a drifting organism's actual path samples lower excess."
+   },
+   "oxygen": {
+    "saturation_ambient_mg_l": 9.617411246984085,
+    "saturation_end_of_pipe_mg_l": 10.927452359428058,
+    "loss_end_of_pipe_mg_l": -1.3100411124439724,
+    "loss_end_of_pipe_pct": -13.621556558214007,
+    "saturation_chronic_edge_mg_l": 10.150988711529108,
+    "loss_chronic_edge_mg_l": -0.5335774645450222,
+    "loss_chronic_edge_pct": -5.5480362734030555
+   },
+   "heat": {
+    "heat_to_water_mw": -7.907212871569893,
+    "flow_m3s": 0.3505010912,
+    "flow_mgd": 8.0,
+    "us_316b_2mgd_trigger": true,
+    "note": "Heat relative to ambient at port depth. The 316(b) flag is the 2 MGD design-intake threshold only; the 25 % cooling-use test and applicability to data centres need legal confirmation."
+   },
+   "flow_class": {
+    "L_Q_m": 0.0673532463344096,
+    "L_M_m": 2.251641287403915,
+    "l_m_m": 5.506796565780066,
+    "l_b_m": 32.93811121715438,
+    "water_depth_m": 11.31,
+    "regime": "buoyancy-dominated plume",
+    "port_froude": 31.471188260223865
+   },
+   "merging": {
+    "isolated_port_dilution": 170.89962770553163,
+    "merged_dilution": 169.4580167163623,
+    "penalty_pct": 0.8435424983214701,
+    "invariant_ok": true,
+    "note": "Merged plumes cannot out-dilute isolated ones (Aquatic Guardian correction 7)."
+   },
+   "caveats": [
+    "Effluent salinity is near zero in seawater. That is right for wastewater but wrong for seawater-cooled data centres, whose discharge salinity equals intake salinity."
+   ],
+   "verdict": null
+  }
+ },
+ {
+  "name": "epa_stop_at_trap",
+  "scenario": {
+   "diffuser": {
+    "port_diameter": 0.076,
+    "port_elevation": 0.31,
+    "vertical_angle": 45.0,
+    "horizontal_angle": 30.0,
+    "n_ports": 18,
+    "spacing": 6.1,
+    "port_depth": 11.0,
+    "x": 0.0,
+    "y": 0.0,
+    "contraction": 1.0,
+    "axis_deg": null
+   },
+   "effluent": {
+    "flow": 0.3505010912,
+    "salinity": 0.0,
+    "temperature": 2.63,
+    "concentration": 100.0
+   },
+   "ambient": {
+    "rows": [
+     {
+      "depth": 0.0,
+      "speed": 0.09,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 14.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 2.0,
+      "speed": 0.085,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 12.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 4.0,
+      "speed": 0.07,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 6.0,
+      "speed": 0.065,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 8.0,
+      "speed": 0.06,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 10.0,
+      "speed": 0.055,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 12.0,
+      "speed": 0.05,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     }
+    ]
+   },
+   "mixing_zone": {
+    "acute": 10.2,
+    "chronic": 102.0
+   },
+   "settings": {
+    "aspiration": 0.1,
+    "step_mass_fraction": 0.02,
+    "stop_at_bottom": true,
+    "stop_at_surface": true,
+    "stop_at_shoreline": false,
+    "shoreline_distance": 0.0,
+    "shoreline_angle": 0.0,
+    "max_rise_fall": 0,
+    "nearfield_output_interval": 5,
+    "farfield": true,
+    "farfield_case": "four_thirds",
+    "farfield_output_interval": 5.0,
+    "farfield_max_dilution": 5000.0,
+    "farfield_stop_distance": 102.0,
+    "max_steps": 50000,
+    "entrainment": "sum",
+    "shear_velocity": "relative",
+    "dt_mode": "unmerged",
+    "forced_scale": 0.81,
+    "forced_terms": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "wastefield_rule": "diffuser_length_plus_diameter"
+   },
+   "name": "PLUMES2.0 Example_project"
+  },
+  "options": {},
+  "expect": {
+   "end": {
+    "step": 247,
+    "time": 47.58921446500297,
+    "x": 6.180218239464452,
+    "y": 1.983932864948457,
+    "depth": 3.3136724554444634,
+    "diameter": 4.945391681305928,
+    "dilution": 129.90298565549116,
+    "centerline_dilution": 33.58616699093939,
+    "temperature": 8.058769433857655,
+    "salinity": 31.759614895452266,
+    "density": 1024.7218058836202,
+    "amb_temperature": 9.372655089111074,
+    "amb_density": 1024.711934361866,
+    "delta_t": -1.3138856552534186,
+    "delta_t_centerline": -0.20075690956131,
+    "speed": 0.13168755455229691,
+    "w": 0.10111545511785854,
+    "concentration": 0.7698052473189856,
+    "merged": false,
+    "distance": 6.490846408599705,
+    "path_length": 10.103897748829745
+   },
+   "termination": "trap level",
+   "n_steps": 248,
+   "events": [
+    [
+     "trap",
+     247
+    ]
+   ],
+   "step10": {
+    "step": 10,
+    "time": 0.010126674082859737,
+    "x": 0.024049611157967714,
+    "y": 0.013854812057772512,
+    "depth": 10.972279482919841,
+    "diameter": 0.09233592607358751,
+    "dilution": 1.2133928232286317,
+    "centerline_dilution": 1.0,
+    "temperature": 3.594729629670416,
+    "salinity": 5.748854403995031,
+    "density": 1004.5764234107927,
+    "amb_temperature": 8.0,
+    "amb_density": 1024.9188206297022,
+    "delta_t": -4.405270370329584,
+    "delta_t_centerline": -5.37,
+    "speed": 3.528474566161464,
+    "w": 2.491928590440601,
+    "concentration": 82.41354167063312,
+    "merged": false,
+    "distance": 0.027754992596029343,
+    "path_length": 0.03922712201321645
+   },
+   "farfield_rows": [
+    {
+     "distance": 6.490846408599705,
+     "travel": 0.0,
+     "width": 108.64539168130591,
+     "dilution": 129.90298565549116,
+     "farfield_factor": 1.0,
+     "time_h": 0.0,
+     "concentration": 0.7698052473189856,
+     "delta_t": -1.3138856552534186,
+     "note": "start"
+    },
+    {
+     "distance": 55.0,
+     "travel": 48.50915359140029,
+     "width": 125.73029198928897,
+     "dilution": 130.28622512901134,
+     "farfield_factor": 1.002950197576956,
+     "time_h": 0.26949529773000164,
+     "concentration": 0.7675408501626212,
+     "delta_t": -1.3100208349603568,
+     "note": ""
+    },
+    {
+     "distance": 102.0,
+     "travel": 95.50915359140029,
+     "width": 143.0586300433091,
+     "dilution": 135.76597965100981,
+     "farfield_factor": 1.0451336354274996,
+     "time_h": 0.5306064088411127,
+     "concentration": 0.7365615469873437,
+     "delta_t": -1.2571460822959633,
+     "note": "chronic mixing zone"
+    }
+   ],
+   "w0": 108.64539168130591,
+   "thermal": {
+    "ambient_at_port_c": 8.0,
+    "dt_discharge_c": -5.37,
+    "dt_end_nearfield_c": -1.3138856552534186,
+    "dt_end_local_c": -1.3138856552534186,
+    "dt_end_attributable_c": -0.04133854178102952,
+    "dt_end_centerline_attributable_c": -0.15988725362583578,
+    "governing_reference": "local ambient",
+    "surfaced": false,
+    "bottom_contact": false,
+    "dt_acute_c": -1.3138856552534186,
+    "dt_chronic_c": -1.2571460822959633,
+    "dt_surface_1000ft_c": 0.0
+   },
+   "reach": [
+    {
+     "threshold_c": 2.22,
+     "distance_m": 0.18636571414562528,
+     "area_m2": 0.024647193346683718,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 1.0,
+     "distance_m": 228.43132085056402,
+     "area_m2": 33905.286478645925,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.83,
+     "distance_m": 327.06325833836036,
+     "area_m2": 55034.45245556703,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.5,
+     "distance_m": 652.1502352525386,
+     "area_m2": 156685.28921725322,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.3,
+     "distance_m": 1107.41996656246,
+     "area_m2": 394392.7007183771,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.1,
+     "distance_m": 2809.102072548667,
+     "area_m2": 2565932.3198021324,
+     "within": "far field"
+    }
+   ],
+   "exposure": {
+    "peak_excess_c": 5.37,
+    "degree_minutes": 5.471704738594676,
+    "nearfield_transit_s": 47.58921446500297,
+    "minutes_above": {
+     "2C": 0.027621976789094192,
+     "1C": 0.09199410487511625,
+     "0.5C": 0.2435221151674224
+    },
+    "note": "Centreline (worst-case) path; a drifting organism's actual path samples lower excess."
+   },
+   "oxygen": {
+    "saturation_ambient_mg_l": 9.617411246984085,
+    "saturation_end_of_pipe_mg_l": 10.927452359428058,
+    "loss_end_of_pipe_mg_l": -1.3100411124439724,
+    "loss_end_of_pipe_pct": -13.621556558214007,
+    "saturation_chronic_edge_mg_l": 9.89817507015156,
+    "loss_chronic_edge_mg_l": -0.28076382316747406,
+    "loss_chronic_edge_pct": -2.9193284549989325
+   },
+   "heat": {
+    "heat_to_water_mw": -7.907212871569893,
+    "flow_m3s": 0.3505010912,
+    "flow_mgd": 8.0,
+    "us_316b_2mgd_trigger": true,
+    "note": "Heat relative to ambient at port depth. The 316(b) flag is the 2 MGD design-intake threshold only; the 25 % cooling-use test and applicability to data centres need legal confirmation."
+   },
+   "flow_class": {
+    "L_Q_m": 0.0673532463344096,
+    "L_M_m": 2.251641287403915,
+    "l_m_m": 5.506796565780066,
+    "l_b_m": 32.93811121715438,
+    "water_depth_m": 11.31,
+    "regime": "buoyancy-dominated plume",
+    "port_froude": 31.471188260223865
+   },
+   "merging": {
+    "isolated_port_dilution": 129.90298565549116,
+    "merged_dilution": 129.90298565549116,
+    "penalty_pct": 0.0,
+    "invariant_ok": true,
+    "note": "Merged plumes cannot out-dilute isolated ones (Aquatic Guardian correction 7)."
+   },
+   "caveats": [
+    "Effluent salinity is near zero in seawater. That is right for wastewater but wrong for seawater-cooled data centres, whose discharge salinity equals intake salinity."
+   ],
+   "verdict": null
+  }
+ },
+ {
+  "name": "epa_farfield_constant",
+  "scenario": {
+   "diffuser": {
+    "port_diameter": 0.076,
+    "port_elevation": 0.31,
+    "vertical_angle": 45.0,
+    "horizontal_angle": 30.0,
+    "n_ports": 18,
+    "spacing": 6.1,
+    "port_depth": 11.0,
+    "x": 0.0,
+    "y": 0.0,
+    "contraction": 1.0,
+    "axis_deg": null
+   },
+   "effluent": {
+    "flow": 0.3505010912,
+    "salinity": 0.0,
+    "temperature": 2.63,
+    "concentration": 100.0
+   },
+   "ambient": {
+    "rows": [
+     {
+      "depth": 0.0,
+      "speed": 0.09,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 14.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 2.0,
+      "speed": 0.085,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 12.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 4.0,
+      "speed": 0.07,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 6.0,
+      "speed": 0.065,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 8.0,
+      "speed": 0.06,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 10.0,
+      "speed": 0.055,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 12.0,
+      "speed": 0.05,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     }
+    ]
+   },
+   "mixing_zone": {
+    "acute": 10.2,
+    "chronic": 102.0
+   },
+   "settings": {
+    "aspiration": 0.1,
+    "step_mass_fraction": 0.02,
+    "stop_at_bottom": true,
+    "stop_at_surface": true,
+    "stop_at_shoreline": false,
+    "shoreline_distance": 0.0,
+    "shoreline_angle": 0.0,
+    "max_rise_fall": 2,
+    "nearfield_output_interval": 5,
+    "farfield": true,
+    "farfield_case": "constant",
+    "farfield_output_interval": 5.0,
+    "farfield_max_dilution": 5000.0,
+    "farfield_stop_distance": 102.0,
+    "max_steps": 50000,
+    "entrainment": "sum",
+    "shear_velocity": "relative",
+    "dt_mode": "unmerged",
+    "forced_scale": 0.81,
+    "forced_terms": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "wastefield_rule": "diffuser_length_plus_diameter"
+   },
+   "name": "PLUMES2.0 Example_project"
+  },
+  "options": {},
+  "expect": {
+   "end": {
+    "step": 261,
+    "time": 57.16900576860687,
+    "x": 6.973679221725842,
+    "y": 2.0800647963305194,
+    "depth": 2.4987280894065664,
+    "diameter": 6.405567938591709,
+    "dilution": 169.4580167163623,
+    "centerline_dilution": 76.58079024761757,
+    "temperature": 8.566728112706468,
+    "salinity": 31.815709560125438,
+    "density": 1024.6915221220513,
+    "amb_temperature": 11.002543821186867,
+    "amb_density": 1024.4402860132227,
+    "delta_t": -2.4358157084803995,
+    "delta_t_centerline": -0.10933272503304861,
+    "speed": 0.10618872081530685,
+    "w": 0.06643291032151154,
+    "concentration": 0.5901511950479194,
+    "merged": true,
+    "distance": 7.277285508582399,
+    "path_length": 11.247238774400296
+   },
+   "termination": "surface",
+   "n_steps": 262,
+   "events": [
+    [
+     "trap",
+     247
+    ],
+    [
+     "merging",
+     257
+    ],
+    [
+     "surface",
+     261
+    ]
+   ],
+   "step10": {
+    "step": 10,
+    "time": 0.010126674082859737,
+    "x": 0.024049611157967714,
+    "y": 0.013854812057772512,
+    "depth": 10.972279482919841,
+    "diameter": 0.09233592607358751,
+    "dilution": 1.2133928232286317,
+    "centerline_dilution": 1.0,
+    "temperature": 3.594729629670416,
+    "salinity": 5.748854403995031,
+    "density": 1004.5764234107927,
+    "amb_temperature": 8.0,
+    "amb_density": 1024.9188206297022,
+    "delta_t": -4.405270370329584,
+    "delta_t_centerline": -5.37,
+    "speed": 3.528474566161464,
+    "w": 2.491928590440601,
+    "concentration": 82.41354167063312,
+    "merged": false,
+    "distance": 0.027754992596029343,
+    "path_length": 0.03922712201321645
+   },
+   "farfield_rows": [
+    {
+     "distance": 7.277285508582399,
+     "travel": 0.0,
+     "width": 110.10556793859169,
+     "dilution": 169.4580167163623,
+     "farfield_factor": 1.0,
+     "time_h": 0.0,
+     "concentration": 0.5901511950479194,
+     "delta_t": -2.4358157084803995,
+     "note": "start"
+    },
+    {
+     "distance": 55.0,
+     "travel": 47.7227144914176,
+     "width": 125.49836254978275,
+     "dilution": 169.71960401782422,
+     "farfield_factor": 1.0015436702643568,
+     "time_h": 0.26512619161898665,
+     "concentration": 0.5892416003109973,
+     "delta_t": -2.432061407604391,
+     "note": ""
+    },
+    {
+     "distance": 102.0,
+     "travel": 94.7227144914176,
+     "width": 139.00187232678485,
+     "dilution": 173.7299834837005,
+     "farfield_factor": 1.0252095878974472,
+     "time_h": 0.5262373027300978,
+     "concentration": 0.5756395589883547,
+     "delta_t": -2.375919750688146,
+     "note": "chronic mixing zone"
+    }
+   ],
+   "w0": 110.10556793859169,
+   "thermal": {
+    "ambient_at_port_c": 8.0,
+    "dt_discharge_c": -5.37,
+    "dt_end_nearfield_c": -2.4358157084803995,
+    "dt_end_local_c": -2.4358157084803995,
+    "dt_end_attributable_c": -0.03168926501121674,
+    "dt_end_centerline_attributable_c": -0.07012202384744992,
+    "governing_reference": "local ambient",
+    "surfaced": true,
+    "bottom_contact": false,
+    "dt_acute_c": -2.4358157084803995,
+    "dt_chronic_c": -2.375919750688146,
+    "dt_surface_1000ft_c": -1.937227615634296
+   },
+   "reach": [
+    {
+     "threshold_c": 2.22,
+     "distance_m": 172.3310365455423,
+     "area_m2": 23076.137154038777,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 1.0,
+     "distance_m": 1650.8567878117487,
+     "area_m2": 434058.5176465886,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.83,
+     "distance_m": 2468.739318322545,
+     "area_m2": 768908.7168354391,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.5,
+     "distance_m": 7077.594142097325,
+     "area_m2": 3561705.57398769,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.3,
+     "distance_m": 19933.26938993416,
+     "area_m2": 16532084.160762459,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.1,
+     "distance_m": 180620.85504481307,
+     "area_m2": 446649624.63214904,
+     "within": "far field"
+    }
+   ],
+   "exposure": {
+    "peak_excess_c": 5.37,
+    "degree_minutes": 0.5144308475198598,
+    "nearfield_transit_s": 57.16900576860687,
+    "minutes_above": {
+     "2C": 0.027621976789094192,
+     "1C": 0.09199410487511625,
+     "0.5C": 0.2435221151674224
+    },
+    "note": "Centreline (worst-case) path; a drifting organism's actual path samples lower excess."
+   },
+   "oxygen": {
+    "saturation_ambient_mg_l": 9.617411246984085,
+    "saturation_end_of_pipe_mg_l": 10.927452359428058,
+    "loss_end_of_pipe_mg_l": -1.3100411124439724,
+    "loss_end_of_pipe_pct": -13.621556558214007,
+    "saturation_chronic_edge_mg_l": 10.160631783282438,
+    "loss_chronic_edge_mg_l": -0.5432205362983531,
+    "loss_chronic_edge_pct": -5.648303086432964
+   },
+   "heat": {
+    "heat_to_water_mw": -7.907212871569893,
+    "flow_m3s": 0.3505010912,
+    "flow_mgd": 8.0,
+    "us_316b_2mgd_trigger": true,
+    "note": "Heat relative to ambient at port depth. The 316(b) flag is the 2 MGD design-intake threshold only; the 25 % cooling-use test and applicability to data centres need legal confirmation."
+   },
+   "flow_class": {
+    "L_Q_m": 0.0673532463344096,
+    "L_M_m": 2.251641287403915,
+    "l_m_m": 5.506796565780066,
+    "l_b_m": 32.93811121715438,
+    "water_depth_m": 11.31,
+    "regime": "buoyancy-dominated plume",
+    "port_froude": 31.471188260223865
+   },
+   "merging": {
+    "isolated_port_dilution": 170.89962770553163,
+    "merged_dilution": 169.4580167163623,
+    "penalty_pct": 0.8435424983214701,
+    "invariant_ok": true,
+    "note": "Merged plumes cannot out-dilute isolated ones (Aquatic Guardian correction 7)."
+   },
+   "caveats": [
+    "Effluent salinity is near zero in seawater. That is right for wastewater but wrong for seawater-cooled data centres, whose discharge salinity equals intake salinity."
+   ],
+   "verdict": null
+  }
+ },
+ {
+  "name": "epa_farfield_linear",
+  "scenario": {
+   "diffuser": {
+    "port_diameter": 0.076,
+    "port_elevation": 0.31,
+    "vertical_angle": 45.0,
+    "horizontal_angle": 30.0,
+    "n_ports": 18,
+    "spacing": 6.1,
+    "port_depth": 11.0,
+    "x": 0.0,
+    "y": 0.0,
+    "contraction": 1.0,
+    "axis_deg": null
+   },
+   "effluent": {
+    "flow": 0.3505010912,
+    "salinity": 0.0,
+    "temperature": 2.63,
+    "concentration": 100.0
+   },
+   "ambient": {
+    "rows": [
+     {
+      "depth": 0.0,
+      "speed": 0.09,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 14.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 2.0,
+      "speed": 0.085,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 12.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 4.0,
+      "speed": 0.07,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 6.0,
+      "speed": 0.065,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 8.0,
+      "speed": 0.06,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 10.0,
+      "speed": 0.055,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 12.0,
+      "speed": 0.05,
+      "direction": 0.0,
+      "salinity": 32.0,
+      "temperature": 8.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.05,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     }
+    ]
+   },
+   "mixing_zone": {
+    "acute": 10.2,
+    "chronic": 102.0
+   },
+   "settings": {
+    "aspiration": 0.1,
+    "step_mass_fraction": 0.02,
+    "stop_at_bottom": true,
+    "stop_at_surface": true,
+    "stop_at_shoreline": false,
+    "shoreline_distance": 0.0,
+    "shoreline_angle": 0.0,
+    "max_rise_fall": 2,
+    "nearfield_output_interval": 5,
+    "farfield": true,
+    "farfield_case": "linear",
+    "farfield_output_interval": 5.0,
+    "farfield_max_dilution": 5000.0,
+    "farfield_stop_distance": 102.0,
+    "max_steps": 50000,
+    "entrainment": "sum",
+    "shear_velocity": "relative",
+    "dt_mode": "unmerged",
+    "forced_scale": 0.81,
+    "forced_terms": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "wastefield_rule": "diffuser_length_plus_diameter"
+   },
+   "name": "PLUMES2.0 Example_project"
+  },
+  "options": {},
+  "expect": {
+   "end": {
+    "step": 261,
+    "time": 57.16900576860687,
+    "x": 6.973679221725842,
+    "y": 2.0800647963305194,
+    "depth": 2.4987280894065664,
+    "diameter": 6.405567938591709,
+    "dilution": 169.4580167163623,
+    "centerline_dilution": 76.58079024761757,
+    "temperature": 8.566728112706468,
+    "salinity": 31.815709560125438,
+    "density": 1024.6915221220513,
+    "amb_temperature": 11.002543821186867,
+    "amb_density": 1024.4402860132227,
+    "delta_t": -2.4358157084803995,
+    "delta_t_centerline": -0.10933272503304861,
+    "speed": 0.10618872081530685,
+    "w": 0.06643291032151154,
+    "concentration": 0.5901511950479194,
+    "merged": true,
+    "distance": 7.277285508582399,
+    "path_length": 11.247238774400296
+   },
+   "termination": "surface",
+   "n_steps": 262,
+   "events": [
+    [
+     "trap",
+     247
+    ],
+    [
+     "merging",
+     257
+    ],
+    [
+     "surface",
+     261
+    ]
+   ],
+   "step10": {
+    "step": 10,
+    "time": 0.010126674082859737,
+    "x": 0.024049611157967714,
+    "y": 0.013854812057772512,
+    "depth": 10.972279482919841,
+    "diameter": 0.09233592607358751,
+    "dilution": 1.2133928232286317,
+    "centerline_dilution": 1.0,
+    "temperature": 3.594729629670416,
+    "salinity": 5.748854403995031,
+    "density": 1004.5764234107927,
+    "amb_temperature": 8.0,
+    "amb_density": 1024.9188206297022,
+    "delta_t": -4.405270370329584,
+    "delta_t_centerline": -5.37,
+    "speed": 3.528474566161464,
+    "w": 2.491928590440601,
+    "concentration": 82.41354167063312,
+    "merged": false,
+    "distance": 0.027754992596029343,
+    "path_length": 0.03922712201321645
+   },
+   "farfield_rows": [
+    {
+     "distance": 7.277285508582399,
+     "travel": 0.0,
+     "width": 110.10556793859169,
+     "dilution": 169.4580167163623,
+     "farfield_factor": 1.0,
+     "time_h": 0.0,
+     "concentration": 0.5901511950479194,
+     "delta_t": -2.4358157084803995,
+     "note": "start"
+    },
+    {
+     "distance": 55.0,
+     "travel": 47.7227144914176,
+     "width": 126.57432142442595,
+     "dilution": 169.84073071575196,
+     "farfield_factor": 1.0022584590968644,
+     "time_h": 0.26512619161898665,
+     "concentration": 0.588821366077274,
+     "delta_t": -2.430326914551875,
+     "note": ""
+    },
+    {
+     "distance": 102.0,
+     "travel": 94.7227144914176,
+     "width": 142.79367151972303,
+     "dilution": 175.77713981633687,
+     "farfield_factor": 1.0372901986133325,
+     "time_h": 0.5262373027300978,
+     "concentration": 0.5689354780724273,
+     "delta_t": -2.3482490355511314,
+     "note": "chronic mixing zone"
+    }
+   ],
+   "w0": 110.10556793859169,
+   "thermal": {
+    "ambient_at_port_c": 8.0,
+    "dt_discharge_c": -5.37,
+    "dt_end_nearfield_c": -2.4358157084803995,
+    "dt_end_local_c": -2.4358157084803995,
+    "dt_end_attributable_c": -0.03168926501121674,
+    "dt_end_centerline_attributable_c": -0.07012202384744992,
+    "governing_reference": "local ambient",
+    "surfaced": true,
+    "bottom_contact": false,
+    "dt_acute_c": -2.4358157084803995,
+    "dt_chronic_c": -2.3482490355511314,
+    "dt_surface_1000ft_c": -1.7174736199349248
+   },
+   "reach": [
+    {
+     "threshold_c": 2.22,
+     "distance_m": 143.32544837533413,
+     "area_m2": 18974.606652293132,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 1.0,
+     "distance_m": 760.8784506582942,
+     "area_m2": 181768.52420729166,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.83,
+     "distance_m": 981.4730000092222,
+     "area_m2": 271821.94473623554,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.5,
+     "distance_m": 1836.1279264440132,
+     "area_m2": 779282.5226544759,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.3,
+     "distance_m": 3268.301912961676,
+     "area_m2": 2194763.947051641,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.1,
+     "distance_m": 10428.574271776724,
+     "area_m2": 19887361.826263182,
+     "within": "far field"
+    }
+   ],
+   "exposure": {
+    "peak_excess_c": 5.37,
+    "degree_minutes": 0.5144308475198598,
+    "nearfield_transit_s": 57.16900576860687,
+    "minutes_above": {
+     "2C": 0.027621976789094192,
+     "1C": 0.09199410487511625,
+     "0.5C": 0.2435221151674224
+    },
+    "note": "Centreline (worst-case) path; a drifting organism's actual path samples lower excess."
+   },
+   "oxygen": {
+    "saturation_ambient_mg_l": 9.617411246984085,
+    "saturation_end_of_pipe_mg_l": 10.927452359428058,
+    "loss_end_of_pipe_mg_l": -1.3100411124439724,
+    "loss_end_of_pipe_pct": -13.621556558214007,
+    "saturation_chronic_edge_mg_l": 10.153991144511181,
+    "loss_chronic_edge_mg_l": -0.5365798975270959,
+    "loss_chronic_edge_pct": -5.579254996456156
+   },
+   "heat": {
+    "heat_to_water_mw": -7.907212871569893,
+    "flow_m3s": 0.3505010912,
+    "flow_mgd": 8.0,
+    "us_316b_2mgd_trigger": true,
+    "note": "Heat relative to ambient at port depth. The 316(b) flag is the 2 MGD design-intake threshold only; the 25 % cooling-use test and applicability to data centres need legal confirmation."
+   },
+   "flow_class": {
+    "L_Q_m": 0.0673532463344096,
+    "L_M_m": 2.251641287403915,
+    "l_m_m": 5.506796565780066,
+    "l_b_m": 32.93811121715438,
+    "water_depth_m": 11.31,
+    "regime": "buoyancy-dominated plume",
+    "port_froude": 31.471188260223865
+   },
+   "merging": {
+    "isolated_port_dilution": 170.89962770553163,
+    "merged_dilution": 169.4580167163623,
+    "penalty_pct": 0.8435424983214701,
+    "invariant_ok": true,
+    "note": "Merged plumes cannot out-dilute isolated ones (Aquatic Guardian correction 7)."
+   },
+   "caveats": [
+    "Effluent salinity is near zero in seawater. That is right for wastewater but wrong for seawater-cooled data centres, whose discharge salinity equals intake salinity."
+   ],
+   "verdict": null
+  }
+ },
+ {
+  "name": "dc_24mw_outfall",
+  "scenario": {
+   "diffuser": {
+    "port_diameter": 0.29885296669542993,
+    "port_elevation": 1.0,
+    "vertical_angle": 20.0,
+    "horizontal_angle": 0.0,
+    "n_ports": 4,
+    "spacing": 8.0,
+    "port_depth": 15.0,
+    "x": 0.0,
+    "y": 0.0,
+    "contraction": 1.0,
+    "axis_deg": null
+   },
+   "effluent": {
+    "flow": 0.8417560959865139,
+    "salinity": 31,
+    "temperature": 20.0,
+    "concentration": 0.0
+   },
+   "ambient": {
+    "rows": [
+     {
+      "depth": 0.0,
+      "speed": 0.15,
+      "direction": 0.0,
+      "salinity": 31,
+      "temperature": 12,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.15,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 16.0,
+      "speed": 0.15,
+      "direction": 0.0,
+      "salinity": 31,
+      "temperature": 12,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.15,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     }
+    ]
+   },
+   "mixing_zone": {
+    "acute": 30.0,
+    "chronic": 300.0
+   },
+   "settings": {
+    "aspiration": 0.1,
+    "step_mass_fraction": 0.02,
+    "stop_at_bottom": true,
+    "stop_at_surface": true,
+    "stop_at_shoreline": false,
+    "shoreline_distance": 0.0,
+    "shoreline_angle": 0.0,
+    "max_rise_fall": 2,
+    "nearfield_output_interval": 5,
+    "farfield": true,
+    "farfield_case": "four_thirds",
+    "farfield_output_interval": 10.0,
+    "farfield_max_dilution": 5000.0,
+    "farfield_stop_distance": 600.0,
+    "max_steps": 50000,
+    "entrainment": "sum",
+    "shear_velocity": "relative",
+    "dt_mode": "unmerged",
+    "forced_scale": 0.81,
+    "forced_terms": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "wastefield_rule": "diffuser_length_plus_diameter"
+   },
+   "name": "24 MW data centre (outfall)"
+  },
+  "options": {
+   "rule": "wa_marine"
+  },
+  "expect": {
+   "end": {
+    "step": 237,
+    "time": 145.31749188792975,
+    "x": 35.47248050660241,
+    "y": 0.0,
+    "depth": 6.915035969727053,
+    "diameter": 14.07006018938972,
+    "dilution": 91.86937176498434,
+    "centerline_dilution": 41.63163442581046,
+    "temperature": 12.08693094345409,
+    "salinity": 30.999999999999982,
+    "density": 1023.4689409612021,
+    "amb_temperature": 12.0,
+    "amb_density": 1023.4849002014038,
+    "delta_t": 0.08693094345409143,
+    "delta_t_centerline": 0.1921616015000462,
+    "speed": 0.1821093600057948,
+    "w": 0.03349148841241043,
+    "concentration": 0.0,
+    "merged": true,
+    "distance": 35.47248050660241,
+    "path_length": 36.40922743113811
+   },
+   "termination": "surface",
+   "n_steps": 238,
+   "events": [
+    [
+     "merging",
+     198
+    ],
+    [
+     "surface",
+     237
+    ]
+   ],
+   "step10": {
+    "step": 10,
+    "time": 0.05732831351449198,
+    "x": 0.14662033152734297,
+    "y": 0.0,
+    "depth": 14.946917137325993,
+    "diameter": 0.36235555179705997,
+    "dilution": 1.2185639008376254,
+    "centerline_dilution": 1.0,
+    "temperature": 18.562786399001244,
+    "salinity": 30.999999999999996,
+    "density": 1022.0758924107184,
+    "amb_temperature": 12.0,
+    "amb_density": 1023.4849002014038,
+    "delta_t": 6.562786399001244,
+    "delta_t_centerline": 8.0,
+    "speed": 2.486651170805557,
+    "w": 0.8425140627760368,
+    "concentration": 0.0,
+    "merged": false,
+    "distance": 0.14662033152734297,
+    "path_length": 0.155933753150133
+   },
+   "farfield_rows": [
+    {
+     "distance": 35.47248050660241,
+     "travel": 0.0,
+     "width": 38.07006018938972,
+     "dilution": 91.86937176498434,
+     "farfield_factor": 1.0,
+     "time_h": 0.0,
+     "concentration": 0.0,
+     "delta_t": 0.08708016443679623,
+     "note": "start"
+    },
+    {
+     "distance": 320.0,
+     "travel": 284.52751949339756,
+     "width": 63.216850021501955,
+     "dilution": 113.61048316803546,
+     "farfield_factor": 1.2366524445020497,
+     "time_h": 0.5269028138766622,
+     "concentration": 0.0,
+     "delta_t": 0.07041603712016267,
+     "note": ""
+    },
+    {
+     "distance": 600.0,
+     "travel": 564.5275194933976,
+     "width": 91.79546909062705,
+     "dilution": 161.13683973339673,
+     "farfield_factor": 1.7539778126012333,
+     "time_h": 1.0454213323951806,
+     "concentration": 0.0,
+     "delta_t": 0.049647244002278546,
+     "note": ""
+    }
+   ],
+   "w0": 38.07006018938972,
+   "thermal": {
+    "ambient_at_port_c": 12.0,
+    "dt_discharge_c": 8.0,
+    "dt_end_nearfield_c": 0.08708016443679623,
+    "dt_end_local_c": 0.08693094345409143,
+    "dt_end_attributable_c": 0.08708016443679623,
+    "dt_end_centerline_attributable_c": 0.19216156440498097,
+    "governing_reference": "effluent heat",
+    "surfaced": true,
+    "bottom_contact": false,
+    "dt_acute_c": 0.10955640683802528,
+    "dt_chronic_c": 0.07226864803451075,
+    "dt_surface_1000ft_c": 0.07182103077470757
+   },
+   "reach": [
+    {
+     "threshold_c": 2.22,
+     "distance_m": 1.662891233562584,
+     "area_m2": 1.1071152764855048,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 1.0,
+     "distance_m": 4.217716518287573,
+     "area_m2": 5.134601894335659,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.83,
+     "distance_m": 5.049862356053184,
+     "area_m2": 7.037296566887263,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.5,
+     "distance_m": 8.258766143156347,
+     "area_m2": 16.950876614763132,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.3,
+     "distance_m": 12.90115918868129,
+     "area_m2": 37.989478827342026,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.1,
+     "distance_m": 32.26375687227139,
+     "area_m2": 202.18215195901163,
+     "within": "near field"
+    }
+   ],
+   "exposure": {
+    "peak_excess_c": 8.0,
+    "degree_minutes": 11.953724933469628,
+    "nearfield_transit_s": 145.31749188792975,
+    "minutes_above": {
+     "2C": 0.23327253508180187,
+     "1C": 0.6483795809547626,
+     "0.5C": 1.228315509560759
+    },
+    "note": "Centreline (worst-case) path; a drifting organism's actual path samples lower excess."
+   },
+   "oxygen": {
+    "saturation_ambient_mg_l": 8.868774427632001,
+    "saturation_end_of_pipe_mg_l": 7.572675298680076,
+    "loss_end_of_pipe_mg_l": 1.2960991289519255,
+    "loss_end_of_pipe_pct": 14.614185302917768,
+    "saturation_chronic_edge_mg_l": 8.855255578054832,
+    "loss_chronic_edge_mg_l": 0.013518849577168979,
+    "loss_chronic_edge_pct": 0.1524319925766628
+   },
+   "heat": {
+    "heat_to_water_mw": 27.599999999999998,
+    "flow_m3s": 0.8417560959865139,
+    "flow_mgd": 19.21263281902191,
+    "us_316b_2mgd_trigger": true,
+    "note": "Heat relative to ambient at port depth. The 316(b) flag is the 2 MGD design-intake threshold only; the 25 % cooling-use test and applicability to data centres need legal confirmation."
+   },
+   "flow_class": {
+    "L_Q_m": 0.2648515458369264,
+    "L_M_m": 11.845212241750364,
+    "l_m_m": 5.297030916738526,
+    "l_b_m": 1.059282578422939,
+    "water_depth_m": 16.0,
+    "regime": "jet bent over by the current",
+    "port_froude": 42.10297701978256
+   },
+   "merging": {
+    "isolated_port_dilution": 101.74382751608282,
+    "merged_dilution": 91.86937176498434,
+    "penalty_pct": 9.705213566432425,
+    "invariant_ok": true,
+    "note": "Merged plumes cannot out-dilute isolated ones (Aquatic Guardian correction 7)."
+   },
+   "caveats": [],
+   "verdict": "within screening limits"
+  }
+ },
+ {
+  "name": "dc_pod",
+  "scenario": {
+   "diffuser": {
+    "port_diameter": 4.051406668322907,
+    "port_elevation": 1.0,
+    "vertical_angle": 90.0,
+    "horizontal_angle": 0.0,
+    "n_ports": 1,
+    "spacing": 8.0,
+    "port_depth": 10,
+    "x": 0.0,
+    "y": 0.0,
+    "contraction": 1.0,
+    "axis_deg": null
+   },
+   "effluent": {
+    "flow": 0.6445721883208337,
+    "salinity": 30,
+    "temperature": 19.0,
+    "concentration": 0.0
+   },
+   "ambient": {
+    "rows": [
+     {
+      "depth": 0.0,
+      "speed": 0.2,
+      "direction": 0.0,
+      "salinity": 30,
+      "temperature": 18,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.2,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 11.0,
+      "speed": 0.2,
+      "direction": 0.0,
+      "salinity": 30,
+      "temperature": 18,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.2,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     }
+    ]
+   },
+   "mixing_zone": {
+    "acute": 30.0,
+    "chronic": 300.0
+   },
+   "settings": {
+    "aspiration": 0.1,
+    "step_mass_fraction": 0.02,
+    "stop_at_bottom": true,
+    "stop_at_surface": true,
+    "stop_at_shoreline": false,
+    "shoreline_distance": 0.0,
+    "shoreline_angle": 0.0,
+    "max_rise_fall": 2,
+    "nearfield_output_interval": 5,
+    "farfield": true,
+    "farfield_case": "four_thirds",
+    "farfield_output_interval": 10.0,
+    "farfield_max_dilution": 5000.0,
+    "farfield_stop_distance": 600.0,
+    "max_steps": 50000,
+    "entrainment": "sum",
+    "shear_velocity": "relative",
+    "dt_mode": "unmerged",
+    "forced_scale": 0.81,
+    "forced_terms": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "wastefield_rule": "diffuser_length_plus_diameter"
+   },
+   "name": "2.3 MW data centre (pod)"
+  },
+  "options": {
+   "rule": "ca_new_coastal"
+  },
+  "expect": {
+   "end": {
+    "step": 7,
+    "time": 0.41435124305103777,
+    "x": 0.0010679367670415549,
+    "y": 0.0,
+    "depth": 9.979353976670307,
+    "diameter": 4.281233871609947,
+    "dilution": 1.138494530701406,
+    "centerline_dilution": 1.0,
+    "temperature": 18.878412403082663,
+    "salinity": 30.0,
+    "density": 1021.2353461409936,
+    "amb_temperature": 18.0,
+    "amb_density": 1021.4480508434426,
+    "delta_t": 0.8784124030826634,
+    "delta_t_centerline": 1.0,
+    "speed": 0.05097644505711099,
+    "w": 0.04476880994743149,
+    "concentration": 0.0,
+    "merged": false,
+    "distance": 0.0010679367670415549,
+    "path_length": 0.020685570315842644
+   },
+   "termination": "bottom",
+   "n_steps": 8,
+   "events": [
+    [
+     "bottom",
+     7
+    ]
+   ],
+   "step10": {
+    "step": 7,
+    "time": 0.4143533514648671,
+    "x": 0.0010679876785812117,
+    "y": 0.0,
+    "depth": 9.979353882187429,
+    "diameter": 4.283853722334625,
+    "dilution": 1.148649772435624,
+    "centerline_dilution": 1.0,
+    "temperature": 18.870560178613914,
+    "salinity": 30.0,
+    "density": 1021.237278180129,
+    "amb_temperature": 18.0,
+    "amb_density": 1021.4480508434426,
+    "delta_t": 0.8705601786139141,
+    "delta_t_centerline": 1.0,
+    "speed": 0.05136887405721384,
+    "w": 0.04436862097797745,
+    "concentration": 0.0,
+    "merged": false,
+    "distance": 0.0010679876785812117,
+    "path_length": 0.02068567764244284
+   },
+   "farfield_rows": [
+    {
+     "distance": 0.0010679367670415549,
+     "travel": 0.0,
+     "width": 4.281233871609947,
+     "dilution": 1.138494530701406,
+     "farfield_factor": 1.0,
+     "time_h": 0.0,
+     "concentration": 0.0,
+     "delta_t": 0.8784124030826634,
+     "note": "start"
+    },
+    {
+     "distance": 300.0,
+     "travel": 299.998932063233,
+     "width": 15.574768071301714,
+     "dilution": 2.9997367840453637,
+     "farfield_factor": 2.6348275754976878,
+     "time_h": 0.4166651834211569,
+     "concentration": 0.0,
+     "delta_t": 0.33338515630068954,
+     "note": "chronic mixing zone"
+    },
+    {
+     "distance": 600.0,
+     "travel": 599.9989320632329,
+     "width": 30.850866058742284,
+     "dilution": 5.936811719068671,
+     "farfield_factor": 5.214615932683583,
+     "time_h": 0.8333318500878234,
+     "concentration": 0.0,
+     "delta_t": 0.16845198465663577,
+     "note": ""
+    }
+   ],
+   "w0": 4.281233871609947,
+   "thermal": {
+    "ambient_at_port_c": 18.0,
+    "dt_discharge_c": 1.0,
+    "dt_end_nearfield_c": 0.8784124030826634,
+    "dt_end_local_c": 0.8784124030826634,
+    "dt_end_attributable_c": 0.8783529240003621,
+    "dt_end_centerline_attributable_c": 1.0,
+    "governing_reference": "local ambient",
+    "surfaced": false,
+    "bottom_contact": true,
+    "dt_acute_c": 0.8684401245192485,
+    "dt_chronic_c": 0.33338515630068954,
+    "dt_surface_1000ft_c": 0.0
+   },
+   "reach": [
+    {
+     "threshold_c": 2.22,
+     "distance_m": 0.0,
+     "area_m2": 0.0,
+     "within": "never exceeded"
+    },
+    {
+     "threshold_c": 1.0,
+     "distance_m": 0.0,
+     "area_m2": 0.0,
+     "within": "never exceeded"
+    },
+    {
+     "threshold_c": 0.83,
+     "distance_m": 48.322638201247486,
+     "area_m2": 242.22201196156178,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.5,
+     "distance_m": 175.80531004641136,
+     "area_m2": 1259.644550475534,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.3,
+     "distance_m": 337.99689545726505,
+     "area_m2": 3486.16376873329,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.1,
+     "distance_m": 940.8289499527721,
+     "area_m2": 23749.91474273669,
+     "within": "far field"
+    }
+   ],
+   "exposure": {
+    "peak_excess_c": 1.0,
+    "degree_minutes": 23.364169042092385,
+    "nearfield_transit_s": 0.41435124305103777,
+    "minutes_above": {
+     "2C": 0.0,
+     "1C": 0.0,
+     "0.5C": 17.50681689446049
+    },
+    "note": "Centreline (worst-case) path; a drifting organism's actual path samples lower excess."
+   },
+   "oxygen": {
+    "saturation_ambient_mg_l": 7.909867755595035,
+    "saturation_end_of_pipe_mg_l": 7.761186897466972,
+    "loss_end_of_pipe_mg_l": 0.14868085812806253,
+    "loss_end_of_pipe_pct": 1.8796882921701608,
+    "saturation_chronic_edge_mg_l": 7.859718953136073,
+    "loss_chronic_edge_mg_l": 0.05014880245896158,
+    "loss_chronic_edge_pct": 0.6340030454174015
+   },
+   "heat": {
+    "heat_to_water_mw": 2.6449999999999996,
+    "flow_m3s": 0.6445721883208337,
+    "flow_mgd": 14.712015557247629,
+    "us_316b_2mgd_trigger": true,
+    "note": "Heat relative to ambient at port depth. The 316(b) flag is the 2 MGD design-intake threshold only; the 25 % cooling-use test and applicability to data centres need legal confirmation."
+   },
+   "flow_class": {
+    "L_Q_m": 3.5904656754266115,
+    "L_M_m": 1.9625462938235774,
+    "l_m_m": 0.8976164188566529,
+    "l_b_m": 0.18777274012523373,
+    "water_depth_m": 11.0,
+    "regime": "jet bent over by the current",
+    "port_froude": 0.5145666093228518
+   },
+   "merging": null,
+   "caveats": [
+    "Port densimetric Froude number is 0.51 (< 1): ambient water may intrude into the ports; PLUMES2.0 assumes Fr > 1.",
+    "Plume contacted the seabed: boundary interaction is outside UM3's assumptions; use CORMIX or a field dye study."
+   ],
+   "verdict": "within screening limits"
+  }
+ },
+ {
+  "name": "single_port_stratified",
+  "scenario": {
+   "diffuser": {
+    "port_diameter": 0.4,
+    "port_elevation": 1.0,
+    "vertical_angle": 30,
+    "horizontal_angle": 15,
+    "n_ports": 1,
+    "spacing": 0.0,
+    "port_depth": 25,
+    "x": 0.0,
+    "y": 0.0,
+    "contraction": 1.0,
+    "axis_deg": null
+   },
+   "effluent": {
+    "flow": 0.5,
+    "salinity": 31,
+    "temperature": 24,
+    "concentration": 50
+   },
+   "ambient": {
+    "rows": [
+     {
+      "depth": 0,
+      "speed": 0.12,
+      "direction": 45,
+      "salinity": 30.0,
+      "temperature": 16.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.12,
+      "far_direction": 45,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 5,
+      "speed": 0.10999999999999999,
+      "direction": 50,
+      "salinity": 30.5,
+      "temperature": 14.333333333333334,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.12,
+      "far_direction": 45,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 10,
+      "speed": 0.1,
+      "direction": 55,
+      "salinity": 31.0,
+      "temperature": 12.666666666666666,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.12,
+      "far_direction": 45,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 20,
+      "speed": 0.08,
+      "direction": 65,
+      "salinity": 32.0,
+      "temperature": 9.333333333333332,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.12,
+      "far_direction": 45,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 30,
+      "speed": 0.06,
+      "direction": 75,
+      "salinity": 33.0,
+      "temperature": 6.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.12,
+      "far_direction": 45,
+      "alpha": 0.0003
+     }
+    ]
+   },
+   "mixing_zone": {
+    "acute": 20,
+    "chronic": 200
+   },
+   "settings": {
+    "aspiration": 0.1,
+    "step_mass_fraction": 0.02,
+    "stop_at_bottom": true,
+    "stop_at_surface": true,
+    "stop_at_shoreline": false,
+    "shoreline_distance": 0.0,
+    "shoreline_angle": 0.0,
+    "max_rise_fall": 2,
+    "nearfield_output_interval": 5,
+    "farfield": true,
+    "farfield_case": "four_thirds",
+    "farfield_output_interval": 10.0,
+    "farfield_max_dilution": 5000.0,
+    "farfield_stop_distance": null,
+    "max_steps": 50000,
+    "entrainment": "sum",
+    "shear_velocity": "relative",
+    "dt_mode": "unmerged",
+    "forced_scale": 0.81,
+    "forced_terms": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "wastefield_rule": "diffuser_length_plus_diameter"
+   },
+   "name": "scenario"
+  },
+  "options": {
+   "rule": "or_marine"
+  },
+  "expect": {
+   "end": {
+    "step": 193,
+    "time": 102.60513592077865,
+    "x": 20.963986791261632,
+    "y": 11.69137669924012,
+    "depth": 18.950186118700852,
+    "diameter": 13.892779725361203,
+    "dilution": 45.51513167096684,
+    "centerline_dilution": 11.894701833413539,
+    "temperature": 9.862136864762276,
+    "salinity": 31.915771418542406,
+    "density": 1024.567544396414,
+    "amb_temperature": 9.683271293766381,
+    "amb_density": 1024.5803454518964,
+    "delta_t": 0.17886557099589417,
+    "delta_t_centerline": 1.2036223275489208,
+    "speed": 0.15012659227007571,
+    "w": -0.05155773352354087,
+    "concentration": 1.0985357652363765,
+    "merged": false,
+    "distance": 24.003687868903125,
+    "path_length": 26.305378169276604
+   },
+   "termination": "second trap level",
+   "n_steps": 194,
+   "events": [
+    [
+     "trap",
+     128
+    ],
+    [
+     "max_rise",
+     176
+    ],
+    [
+     "trap2",
+     193
+    ]
+   ],
+   "step10": {
+    "step": 10,
+    "time": 0.057729466677544486,
+    "x": 0.1733820884618432,
+    "y": 0.04679195792076124,
+    "depth": 24.89638571575339,
+    "diameter": 0.4867993524007079,
+    "dilution": 1.2177761433491625,
+    "centerline_dilution": 1.0,
+    "temperature": 21.068486896667,
+    "salinity": 31.268638150575413,
+    "density": 1021.639094870438,
+    "amb_temperature": 7.701204761415536,
+    "amb_density": 1025.345711156191,
+    "delta_t": 13.367282135251465,
+    "delta_t_centerline": 16.298795238584464,
+    "speed": 3.2715050963553836,
+    "w": 1.6341374058956677,
+    "concentration": 41.0584492667828,
+    "merged": false,
+    "distance": 0.17958517735450413,
+    "path_length": 0.20733256278524242
+   },
+   "farfield_rows": [
+    {
+     "distance": 24.003687868903125,
+     "travel": 0.0,
+     "width": 13.892779725361203,
+     "dilution": 45.51513167096684,
+     "farfield_factor": 1.0,
+     "time_h": 0.0,
+     "concentration": 1.0985357652363765,
+     "delta_t": 0.3588550166438831,
+     "note": "start"
+    },
+    {
+     "distance": 110.0,
+     "travel": 85.99631213109687,
+     "width": 20.535553493164397,
+     "dilution": 51.23102525118675,
+     "farfield_factor": 1.1255822705631315,
+     "time_h": 0.199065537340502,
+     "concentration": 0.975971098662363,
+     "delta_t": 0.31881722556303865,
+     "note": ""
+    },
+    {
+     "distance": 200,
+     "travel": 175.9963121310969,
+     "width": 28.35668679897629,
+     "dilution": 67.96843285979969,
+     "farfield_factor": 1.4933150880711468,
+     "time_h": 0.4073988706738354,
+     "concentration": 0.7356356163623242,
+     "delta_t": 0.2403076346783593,
+     "note": "chronic mixing zone"
+    }
+   ],
+   "w0": 13.892779725361203,
+   "thermal": {
+    "ambient_at_port_c": 7.666666666666666,
+    "dt_discharge_c": 16.333333333333336,
+    "dt_end_nearfield_c": 0.3588550166438831,
+    "dt_end_local_c": 0.17886557099589417,
+    "dt_end_attributable_c": 0.3588550166438831,
+    "dt_end_centerline_attributable_c": 1.3731603836803363,
+    "governing_reference": "effluent heat",
+    "surfaced": false,
+    "bottom_contact": false,
+    "dt_acute_c": 0.4462006903203207,
+    "dt_chronic_c": 0.2403076346783593,
+    "dt_surface_1000ft_c": 0.0
+   },
+   "reach": [
+    {
+     "threshold_c": 2.22,
+     "distance_m": 4.668924341839148,
+     "area_m2": 7.473538178752651,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 1.0,
+     "distance_m": 9.923430995493467,
+     "area_m2": 30.76001814358701,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.83,
+     "distance_m": 11.517353077694885,
+     "area_m2": 41.3593058048183,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.5,
+     "distance_m": 17.836536628898667,
+     "area_m2": 100.9129365519043,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.3,
+     "distance_m": 129.76038233854797,
+     "area_m2": 2229.6242916595133,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.1,
+     "distance_m": 575.2204948827996,
+     "area_m2": 21876.34960689158,
+     "within": "far field"
+    }
+   ],
+   "exposure": {
+    "peak_excess_c": 16.333333333333336,
+    "degree_minutes": 34.29226802628065,
+    "nearfield_transit_s": 102.60513592077865,
+    "minutes_above": {
+     "2C": 0.9249584638794706,
+     "1C": 21.987351172443095,
+     "0.5C": 26.154017839109763
+    },
+    "note": "Centreline (worst-case) path; a drifting organism's actual path samples lower excess."
+   },
+   "oxygen": {
+    "saturation_ambient_mg_l": 9.658807631071843,
+    "saturation_end_of_pipe_mg_l": 6.9880047041021935,
+    "loss_end_of_pipe_mg_l": 2.6708029269696496,
+    "loss_end_of_pipe_pct": 27.651476548490585,
+    "saturation_chronic_edge_mg_l": 9.606290566985656,
+    "loss_chronic_edge_mg_l": 0.05251706408618695,
+    "loss_chronic_edge_pct": 0.5437220213108137
+   },
+   "heat": {
+    "heat_to_water_mw": 33.43485753641758,
+    "flow_m3s": 0.5,
+    "flow_mgd": 11.41223265897781,
+    "us_316b_2mgd_trigger": true,
+    "note": "Heat relative to ambient at port depth. The 316(b) flag is the 2 MGD design-intake threshold only; the 25 % cooling-use test and applicability to data centres need legal confirmation."
+   },
+   "flow_class": {
+    "L_Q_m": 0.3544907701811032,
+    "L_M_m": 11.099781843613608,
+    "l_m_m": 20.149627983848436,
+    "l_b_m": 66.40063162443955,
+    "water_depth_m": 26.0,
+    "regime": "buoyancy-dominated plume",
+    "port_froude": 29.476911771147392
+   },
+   "merging": null,
+   "caveats": [],
+   "verdict": "within screening limits"
+  }
+ },
+ {
+  "name": "brine_sinking",
+  "scenario": {
+   "diffuser": {
+    "port_diameter": 0.15,
+    "port_elevation": 1.5,
+    "vertical_angle": 60,
+    "horizontal_angle": 0,
+    "n_ports": 3,
+    "spacing": 5,
+    "port_depth": 20,
+    "x": 0.0,
+    "y": 0.0,
+    "contraction": 1.0,
+    "axis_deg": null
+   },
+   "effluent": {
+    "flow": 0.05,
+    "salinity": 65,
+    "temperature": 14,
+    "concentration": 100.0
+   },
+   "ambient": {
+    "rows": [
+     {
+      "depth": 0,
+      "speed": 0.08,
+      "direction": 0.0,
+      "salinity": 30.0,
+      "temperature": 16.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.08,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 5,
+      "speed": 0.07333333333333333,
+      "direction": 5.0,
+      "salinity": 30.5,
+      "temperature": 14.333333333333334,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.08,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 10,
+      "speed": 0.06666666666666667,
+      "direction": 10.0,
+      "salinity": 31.0,
+      "temperature": 12.666666666666666,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.08,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 20,
+      "speed": 0.053333333333333344,
+      "direction": 20.0,
+      "salinity": 32.0,
+      "temperature": 9.333333333333332,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.08,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 30,
+      "speed": 0.04,
+      "direction": 30.0,
+      "salinity": 33.0,
+      "temperature": 6.0,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.08,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     }
+    ]
+   },
+   "mixing_zone": {
+    "acute": 10,
+    "chronic": 100
+   },
+   "settings": {
+    "aspiration": 0.1,
+    "step_mass_fraction": 0.02,
+    "stop_at_bottom": true,
+    "stop_at_surface": true,
+    "stop_at_shoreline": false,
+    "shoreline_distance": 0.0,
+    "shoreline_angle": 0.0,
+    "max_rise_fall": 2,
+    "nearfield_output_interval": 5,
+    "farfield": true,
+    "farfield_case": "four_thirds",
+    "farfield_output_interval": 10.0,
+    "farfield_max_dilution": 5000.0,
+    "farfield_stop_distance": null,
+    "max_steps": 50000,
+    "entrainment": "sum",
+    "shear_velocity": "relative",
+    "dt_mode": "unmerged",
+    "forced_scale": 0.81,
+    "forced_terms": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "wastefield_rule": "diffuser_length_plus_diameter"
+   },
+   "name": "scenario"
+  },
+  "options": {},
+  "expect": {
+   "end": {
+    "step": 142,
+    "time": 15.79633081605731,
+    "x": 2.012179230639407,
+    "y": 0.23325536283624387,
+    "depth": 21.227423491737326,
+    "diameter": 1.3548781474357852,
+    "dilution": 16.681626391063954,
+    "centerline_dilution": 4.488223068702336,
+    "temperature": 9.554044117841954,
+    "salinity": 34.04283267900184,
+    "density": 1026.279362945709,
+    "amb_temperature": 8.924192169420891,
+    "amb_density": 1024.8778137959457,
+    "delta_t": 0.6298519484210627,
+    "delta_t_centerline": 1.1309512514454296,
+    "speed": 0.19283890001271609,
+    "w": -0.17654001740057612,
+    "concentration": 5.9948495678617535,
+    "merged": false,
+    "distance": 2.025653880450864,
+    "path_length": 3.334615822646603
+   },
+   "termination": "bottom",
+   "n_steps": 143,
+   "events": [
+    [
+     "max_rise",
+     75
+    ],
+    [
+     "bottom",
+     142
+    ]
+   ],
+   "step10": {
+    "step": 10,
+    "time": 0.08650936553542304,
+    "x": 0.03721279124381918,
+    "y": 0.00015496626743159047,
+    "depth": 19.937042672255153,
+    "diameter": 0.18438929659347997,
+    "dilution": 1.2241824077032433,
+    "centerline_dilution": 1.0,
+    "temperature": 13.163336424262878,
+    "salinity": 59.07098058842649,
+    "density": 1045.130457168196,
+    "amb_temperature": 9.354319109248282,
+    "amb_density": 1024.709911354806,
+    "delta_t": 3.8090173150145965,
+    "delta_t_centerline": 4.645680890751718,
+    "speed": 0.7640707724821155,
+    "w": 0.6535175785505536,
+    "concentration": 81.6871729006591,
+    "merged": false,
+    "distance": 0.03721311390760127,
+    "path_length": 0.07313442719046033
+   },
+   "farfield_rows": [
+    {
+     "distance": 2.025653880450864,
+     "travel": 0.0,
+     "width": 11.354878147435786,
+     "dilution": 16.681626391063954,
+     "farfield_factor": 1.0,
+     "time_h": 0.0,
+     "concentration": 5.9948495678617535,
+     "delta_t": 0.6298519484210627,
+     "note": "start"
+    },
+    {
+     "distance": 50.0,
+     "travel": 47.97434611954914,
+     "width": 16.537915904092866,
+     "dilution": 18.574381901259045,
+     "farfield_factor": 1.1134634876614313,
+     "time_h": 0.16657759069287895,
+     "concentration": 5.38396600723076,
+     "delta_t": 0.5656691534124023,
+     "note": ""
+    },
+    {
+     "distance": 100,
+     "travel": 97.97434611954914,
+     "width": 22.589808674968335,
+     "dilution": 24.313248076413196,
+     "farfield_factor": 1.4574866686522463,
+     "time_h": 0.3401887018039901,
+     "concentration": 4.1131419564923055,
+     "delta_t": 0.4321493719071157,
+     "note": "chronic mixing zone"
+    }
+   ],
+   "w0": 11.354878147435786,
+   "thermal": {
+    "ambient_at_port_c": 9.333333333333332,
+    "dt_discharge_c": 4.666666666666668,
+    "dt_end_nearfield_c": 0.6298519484210627,
+    "dt_end_local_c": 0.6298519484210627,
+    "dt_end_attributable_c": 0.2797489020115279,
+    "dt_end_centerline_attributable_c": 1.0397581838587013,
+    "governing_reference": "local ambient",
+    "surfaced": false,
+    "bottom_contact": true,
+    "dt_acute_c": 0.6298474342935206,
+    "dt_chronic_c": 0.4321493719071157,
+    "dt_surface_1000ft_c": 0.0
+   },
+   "reach": [
+    {
+     "threshold_c": 2.22,
+     "distance_m": 0.19004429766933195,
+     "area_m2": 0.04587083869513788,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 1.0,
+     "distance_m": 0.8043583577216142,
+     "area_m2": 0.4292484973520768,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.83,
+     "distance_m": 1.1371688938853766,
+     "area_m2": 0.6986500181044588,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.5,
+     "distance_m": 73.13745628755657,
+     "area_m2": 1103.3557864238576,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.3,
+     "distance_m": 175.64771478069673,
+     "area_m2": 3754.5740370271656,
+     "within": "far field"
+    },
+    {
+     "threshold_c": 0.1,
+     "distance_m": 546.1846389246866,
+     "area_m2": 27428.356002882847,
+     "within": "far field"
+    }
+   ],
+   "exposure": {
+    "peak_excess_c": 4.666666666666668,
+    "degree_minutes": 19.304087925016834,
+    "nearfield_transit_s": 15.79633081605731,
+    "minutes_above": {
+     "2C": 0.15871109583928875,
+     "1C": 6.094520093598914,
+     "0.5C": 20.677853426932252
+    },
+    "note": "Centreline (worst-case) path; a drifting organism's actual path samples lower excess."
+   },
+   "oxygen": {
+    "saturation_ambient_mg_l": 9.33493966622338,
+    "saturation_end_of_pipe_mg_l": 8.455529806890715,
+    "loss_end_of_pipe_mg_l": 0.8794098593326662,
+    "loss_end_of_pipe_pct": 9.420627136077115,
+    "saturation_chronic_edge_mg_l": 9.246589380941156,
+    "loss_chronic_edge_mg_l": 0.08835028528222466,
+    "loss_chronic_edge_pct": 0.946447309155115
+   },
+   "heat": {
+    "heat_to_water_mw": 0.9387854128946204,
+    "flow_m3s": 0.05,
+    "flow_mgd": 1.141223265897781,
+    "us_316b_2mgd_trigger": false,
+    "note": "Heat relative to ambient at port depth. The 316(b) flag is the 2 MGD design-intake threshold only; the 25 % cooling-use test and applicability to data centres need legal confirmation."
+   },
+   "flow_class": {
+    "L_Q_m": 0.1329340388179137,
+    "L_M_m": 0.713490186489757,
+    "l_m_m": 2.350789931448984,
+    "l_b_m": 25.519106103060587,
+    "water_depth_m": 21.5,
+    "regime": "negatively buoyant (sinking) buoyancy-dominated plume",
+    "port_froude": 5.052708860541263
+   },
+   "merging": {
+    "isolated_port_dilution": 16.700356913825875,
+    "merged_dilution": 16.681626391063954,
+    "penalty_pct": 0.11215642191703123,
+    "invariant_ok": true,
+    "note": "Merged plumes cannot out-dilute isolated ones (Aquatic Guardian correction 7)."
+   },
+   "caveats": [
+    "Plume contacted the seabed: boundary interaction is outside UM3's assumptions; use CORMIX or a field dye study."
+   ],
+   "verdict": null
+  }
+ },
+ {
+  "name": "slack_water",
+  "scenario": {
+   "diffuser": {
+    "port_diameter": 0.30514052783792484,
+    "port_elevation": 1.0,
+    "vertical_angle": 20.0,
+    "horizontal_angle": 0.0,
+    "n_ports": 8,
+    "spacing": 6,
+    "port_depth": 15.0,
+    "x": 0.0,
+    "y": 0.0,
+    "contraction": 1.0,
+    "axis_deg": null
+   },
+   "effluent": {
+    "flow": 1.7550961331206472,
+    "salinity": 32,
+    "temperature": 23.0,
+    "concentration": 0.0
+   },
+   "ambient": {
+    "rows": [
+     {
+      "depth": 0.0,
+      "speed": 0.01,
+      "direction": 0.0,
+      "salinity": 32,
+      "temperature": 15,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.01,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     },
+     {
+      "depth": 16.0,
+      "speed": 0.01,
+      "direction": 0.0,
+      "salinity": 32,
+      "temperature": 15,
+      "background": 0.0,
+      "decay": 0.0,
+      "far_speed": 0.01,
+      "far_direction": 0.0,
+      "alpha": 0.0003
+     }
+    ]
+   },
+   "mixing_zone": {
+    "acute": 30.0,
+    "chronic": 300.0
+   },
+   "settings": {
+    "aspiration": 0.1,
+    "step_mass_fraction": 0.02,
+    "stop_at_bottom": true,
+    "stop_at_surface": true,
+    "stop_at_shoreline": false,
+    "shoreline_distance": 0.0,
+    "shoreline_angle": 0.0,
+    "max_rise_fall": 2,
+    "nearfield_output_interval": 5,
+    "farfield": true,
+    "farfield_case": "four_thirds",
+    "farfield_output_interval": 10.0,
+    "farfield_max_dilution": 5000.0,
+    "farfield_stop_distance": 600.0,
+    "max_steps": 50000,
+    "entrainment": "sum",
+    "shear_velocity": "relative",
+    "dt_mode": "unmerged",
+    "forced_scale": 0.81,
+    "forced_terms": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "wastefield_rule": "diffuser_length_plus_diameter"
+   },
+   "name": "50 MW data centre (outfall)"
+  },
+  "options": {
+   "rule": "custom",
+   "custom_increment": 1.0
+  },
+  "expect": {
+   "end": {
+    "step": 186,
+    "time": 113.55683358959102,
+    "x": 20.713396715441355,
+    "y": 0.0,
+    "depth": 3.3808016182742837,
+    "diameter": 9.24013065550856,
+    "dilution": 31.556348354710533,
+    "centerline_dilution": 14.466503643622106,
+    "temperature": 15.253038953149868,
+    "salinity": 32.0,
+    "density": 1023.6064714254067,
+    "amb_temperature": 15.0,
+    "amb_density": 1023.6609786896738,
+    "delta_t": 0.25303895314986863,
+    "delta_t_centerline": 0.5530139667790814,
+    "speed": 0.13508278490793837,
+    "w": 0.09206361108446569,
+    "concentration": 0.0,
+    "merged": true,
+    "distance": 20.713396715441355,
+    "path_length": 23.942567818732954
+   },
+   "termination": "surface",
+   "n_steps": 187,
+   "events": [
+    [
+     "merging",
+     155
+    ],
+    [
+     "surface",
+     186
+    ]
+   ],
+   "step10": {
+    "step": 10,
+    "time": 0.06087831582917923,
+    "x": 0.15476559095098613,
+    "y": 0.0,
+    "depth": 14.943661043872224,
+    "diameter": 0.37173995588481556,
+    "dilution": 1.2185177818319168,
+    "centerline_dilution": 1.0,
+    "temperature": 21.562786399001237,
+    "salinity": 32.0,
+    "density": 1022.06133492764,
+    "amb_temperature": 15.0,
+    "amb_density": 1023.6609786896738,
+    "delta_t": 6.5627863990012365,
+    "delta_t_centerline": 8.0,
+    "speed": 2.463056794272726,
+    "w": 0.8426733809659955,
+    "concentration": 0.0,
+    "merged": false,
+    "distance": 0.15476559095098613,
+    "path_length": 0.1647011419145318
+   },
+   "farfield_rows": [
+    {
+     "distance": 20.713396715441355,
+     "travel": 0.0,
+     "width": 51.24013065550856,
+     "dilution": 31.556348354710533,
+     "farfield_factor": 1.0,
+     "time_h": 0.0,
+     "concentration": 0.0,
+     "delta_t": 0.2535147574768679,
+     "note": "start"
+    },
+    {
+     "distance": 310.0,
+     "travel": 289.2866032845586,
+     "width": 759.2342307990291,
+     "dilution": 338.3397017620802,
+     "farfield_factor": 10.721763429626197,
+     "time_h": 8.035738980126629,
+     "concentration": 0.0,
+     "delta_t": 0.023644875130928576,
+     "note": ""
+    },
+    {
+     "distance": 600.0,
+     "travel": 579.2866032845586,
+     "width": 1889.2477970845825,
+     "dilution": 841.9082865188044,
+     "farfield_factor": 26.679521884322515,
+     "time_h": 16.091294535682184,
+     "concentration": 0.0,
+     "delta_t": 0.009502222662612215,
+     "note": ""
+    }
+   ],
+   "w0": 51.24013065550856,
+   "thermal": {
+    "ambient_at_port_c": 15.0,
+    "dt_discharge_c": 8.0,
+    "dt_end_nearfield_c": 0.2535147574768679,
+    "dt_end_local_c": 0.25303895314986863,
+    "dt_end_attributable_c": 0.2535147574768679,
+    "dt_end_centerline_attributable_c": 0.5530016234107117,
+    "governing_reference": "effluent heat",
+    "surfaced": true,
+    "bottom_contact": false,
+    "dt_acute_c": 0.2480748324813815,
+    "dt_chronic_c": 0.024705807075583362,
+    "dt_surface_1000ft_c": 0.0241868685863104
+   },
+   "reach": [
+    {
+     "threshold_c": 2.22,
+     "distance_m": 1.8429126363594488,
+     "area_m2": 1.3059716119279359,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 1.0,
+     "distance_m": 4.958481977150544,
+     "area_m2": 6.872572422683072,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.83,
+     "distance_m": 6.023471558682817,
+     "area_m2": 9.744253518651776,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.5,
+     "distance_m": 10.21455747216081,
+     "area_m2": 25.847343175571954,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.3,
+     "distance_m": 16.967083324728623,
+     "area_m2": 67.98305142200503,
+     "within": "near field"
+    },
+    {
+     "threshold_c": 0.1,
+     "distance_m": 95.73246746382836,
+     "area_m2": 9387.562503816715,
+     "within": "far field"
+    }
+   ],
+   "exposure": {
+    "peak_excess_c": 8.0,
+    "degree_minutes": 72.44157641796401,
+    "nearfield_transit_s": 113.55683358959102,
+    "minutes_above": {
+     "2C": 0.4115377322264044,
+     "1C": 0.8147517751604788,
+     "0.5C": 34.057000303013815
+    },
+    "note": "Centreline (worst-case) path; a drifting organism's actual path samples lower excess."
+   },
+   "oxygen": {
+    "saturation_ambient_mg_l": 8.28662401758912,
+    "saturation_end_of_pipe_mg_l": 7.1317906412846055,
+    "loss_end_of_pipe_mg_l": 1.1548333763045138,
+    "loss_end_of_pipe_pct": 13.936114077980056,
+    "saturation_chronic_edge_mg_l": 8.282529929285884,
+    "loss_chronic_edge_mg_l": 0.0040940883032352104,
+    "loss_chronic_edge_pct": 0.049405986014873275
+   },
+   "heat": {
+    "heat_to_water_mw": 57.49999999999999,
+    "flow_m3s": 1.7550961331206472,
+    "flow_mgd": 40.05913082009023,
+    "us_316b_2mgd_trigger": true,
+    "note": "Heat relative to ambient at port depth. The 316(b) flag is the 2 MGD design-intake threshold only; the 25 % cooling-use test and applicability to data centres need legal confirmation."
+   },
+   "flow_class": {
+    "L_Q_m": 0.2704237518168358,
+    "L_M_m": 11.261601624184078,
+    "l_m_m": 81.12712554505076,
+    "l_b_m": 4210.153644427406,
+    "water_depth_m": 16.0,
+    "regime": "buoyancy-dominated plume",
+    "port_froude": 39.203766762060894
+   },
+   "merging": {
+    "isolated_port_dilution": 36.78491592764122,
+    "merged_dilution": 31.556348354710533,
+    "penalty_pct": 14.213890234833448,
+    "invariant_ok": true,
+    "note": "Merged plumes cannot out-dilute isolated ones (Aquatic Guardian correction 7)."
+   },
+   "caveats": [
+    "Current below 0.03 m/s: near slack water, re-entrainment of earlier effluent is likely and the steady-state assumption is weak (PLUMES2.0 manual \u00a75). Treat dilution as an upper bound."
+   ],
+   "verdict": "cannot show compliance"
+  }
+ }
+]

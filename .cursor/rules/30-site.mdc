@@ -5,7 +5,7 @@ alwaysApply: false
 ---
 - Edit web/parts/*.html, never the built files in site/; run `python app/build.py` to regenerate. site/ is the Netlify publish directory and holds built output only (index.html, 404.html).
 - Every published page is a single self-contained file. Only Google Fonts may load from the network. No analytics, trackers, remote images or CDNs. netlify.toml's Content-Security-Policy is the enforced version of that rule; widen it only with a reason.
-- Audience routes (hash): home, public, officials, lab, industry, about. Lab simulations and the home hero use deep-water dark surfaces; reading blocks use the light tokens.
+- Audience routes (hash): home, public, officials, lab, industry, about, observe, learn. Lab simulations and the home hero use deep-water dark surfaces; reading blocks use the light tokens. Learn route source is `learning_materials/learn-route/`.
 - Design tokens live in web/parts/1_head.html. Display type is Barlow Condensed; UI is Public Sans; reading text is Source Serif 4. Heat quantities use one oceanographic temperature colour scale in the sims (not a free accent).
 - Avoid: all-caps eyebrow labels, arrows on buttons, identical shadowed cards, gradient washes, decorative numbering on non-sequences.
 - Accessibility: WCAG 2.2 AA, visible focus, labels on every input, results announced with aria-live, colour never the only signal, prefers-reduced-motion respected.

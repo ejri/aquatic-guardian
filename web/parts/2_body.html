@@ -10,7 +10,8 @@
     <nav class="primary" aria-label="Audiences">
       <a href="#/public" data-nav="public">For the public</a>
       <a href="#/officials" data-nav="officials">For officials</a>
-      <a href="#/lab" data-nav="lab">For researchers</a>
+      <a href="#/observe" data-nav="observe" class="nav-live">Live ocean</a>
+      <a href="#/learn" data-nav="learn">Learn</a>
       <a href="#/industry" data-nav="industry">For industry</a>
       <a href="#/about" data-nav="about">About</a>
     </nav>
@@ -56,12 +57,12 @@
         <ul><li>Your jurisdiction's insertion points</li><li>Timeline of every live instrument</li><li>Screen a proposal, draft conditions</li></ul>
         <span class="go">Open the toolkit</span>
       </a>
-      <a class="door" href="#/lab">
+      <a class="door" href="#/observe">
         <svg class="art" viewBox="0 0 120 64" aria-hidden="true"><path d="M6 58C30 58 38 12 60 12s30 46 54 46" fill="none" stroke="#9ED8E6" stroke-width="2.4"/><path d="M6 58C34 58 44 30 60 30s26 28 54 28" fill="none" stroke="#eb7958" stroke-width="2.4"/><path d="M6 58C38 58 50 44 60 44s22 14 54 14" fill="none" stroke="#F7B24A" stroke-width="2.4"/></svg>
-        <span class="who">For researchers</span>
-        <span class="promise">Results from the three Colab notebooks, with live simulations you can break yourself.</span>
-        <ul><li>Tidal plume, near field, numerics</li><li>Detection, imaging, tracking</li><li>Yield versus temperature</li></ul>
-        <span class="go">Enter the lab</span>
+        <span class="who">Live ocean</span>
+        <span class="promise">Cameras, conditions, in-browser detection, heat screening.</span>
+        <ul><li>Underwater cameras</li><li>On-device detection</li><li>Mixing-zone heat screen</li></ul>
+        <span class="go">Open</span>
       </a>
       <a class="door" href="#/industry">
         <svg class="art" viewBox="0 0 120 64" aria-hidden="true"><rect x="6" y="14" width="34" height="38" rx="3" fill="#0E2C38" stroke="#9ED8E6" stroke-width="2"/><g stroke="#9ED8E6" stroke-width="2"><path d="M12 24h22M12 32h22M12 40h22"/></g><path d="M40 26h14c4 0 4 6 8 6s4-6 8-6 4 6 8 6 4-6 8-6h18" fill="none" stroke="#F7B24A" stroke-width="3" stroke-linecap="round"/><path d="M40 42h74" stroke="#9ED8E6" stroke-width="3" stroke-linecap="round"/></svg>
@@ -70,6 +71,14 @@
         <ul><li>Once-through, hybrid or closed loop</li><li>The temperature-rise trade-off</li><li>Machine-readable disclosure</li></ul>
         <span class="go">Compare designs</span>
       </a>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="learn-cta-h">
+    <div class="wrap">
+      <h2 class="section" id="learn-cta-h">Learn to see underwater</h2>
+      <p class="lede">Nine modules, from pixels to claims you can defend about aquatic wildlife. Paths for new coders, people who already know machine learning, and readers who will not write code.</p>
+      <p><a class="btn glow" href="#/learn">Open the course</a></p>
     </div>
   </section>
 
@@ -90,7 +99,7 @@
     <div class="wrap grid2 wide-right">
       <div>
         <h2 class="section" id="sys-h">Three models, one system</h2>
-        <p class="lede">The research runs as three linked Colab notebooks. They pass validated JSON to each other, and the website, the policy text and the screening tool all run on the same tested library.</p>
+        <p class="lede">Heat, detection, and farmed-fish tools share one library. <a href="#/observe">Live ocean</a> runs them on a camera; <a href="#/learn">Learn</a> teaches the vision pipeline; Lab opens each model on its own.</p>
         <p class="muted">Select a model to see its results.</p>
       </div>
       <div class="system">
@@ -328,10 +337,10 @@
   <section class="pagehead">
     <canvas class="art-bg" id="lab-art" width="600" height="400" aria-hidden="true"></canvas>
     <div class="wrap">
-      <p class="kicker">For researchers and mentees</p>
-      <h1>The notebooks, running live.</h1>
-      <p class="lede">Results from the Thermal-Tidal, Aquatic Monitoring and Aquaculture Vision notebooks, recomputed with the tested library, plus simulations you can push until they break.</p>
-      <div class="jump"><button type="button" data-scroll="lab-thermal">Thermal-Tidal</button><button type="button" data-scroll="lab-monitoring">Aquatic Monitoring</button><button type="button" data-scroll="lab-aquaculture">Aquaculture Vision</button><button type="button" data-scroll="lab-verify">Verification</button></div>
+      <p class="kicker">For researchers</p>
+      <h1>Instruments</h1>
+      <p class="lede"><a href="#/observe">Live ocean</a> runs detection and heat screening on a camera. The tools below open the same physics on their own.</p>
+      <div class="jump"><a class="btn glow sm" href="#/observe">Live ocean</a><a class="btn line sm" href="#/learn">Learn computer vision</a><button type="button" data-scroll="lab-thermal">Heat in water</button><button type="button" data-scroll="lab-monitoring">Detection and imaging</button><button type="button" data-scroll="lab-aquaculture">Farmed fish and heat</button><button type="button" data-scroll="lab-verify">Verification</button></div>
     </div>
   </section>
   <section class="block">
@@ -346,8 +355,8 @@
         <!-- THERMAL -->
         <article class="nb" id="lab-thermal">
           <div class="nb-head">
-            <div><p class="nb-num">Notebook 1, Workstream D</p><h2>Thermal-Tidal</h2><p class="lede">How warm water from a diffuser mixes near the outfall, how the tide carries it, and whether the rise stays inside the allowed increment at the edge of the mixing zone.</p></div>
-            <div class="reported" id="rep-thermal"><h4>Found and fixed in the Colab runs</h4></div>
+            <div><p class="nb-num">Heat in water</p><h2>Thermal-Tidal</h2><p class="lede">How warm water from a diffuser mixes near the outfall, how the tide carries it, and whether the rise stays inside the allowed increment at the edge of the mixing zone. On <a href="#/observe">Live ocean</a> the same physics screens a data centre at a real camera.</p></div>
+            <div class="reported" id="rep-thermal"><h4>What this instrument found</h4></div>
           </div>
           <div class="stack">
             <div class="inst" id="sim-tide">
@@ -477,8 +486,8 @@
         <!-- MONITORING -->
         <article class="nb" id="lab-monitoring">
           <div class="nb-head">
-            <div><p class="nb-num">Notebook 2, Workstream A</p><h2>Aquatic Monitoring</h2><p class="lede">Camera and survey data can only show where animals were detected, not where they were. This notebook corrects occupancy for detection, and checks when underwater images can be trusted at all.</p></div>
-            <div class="reported" id="rep-monitoring"><h4>Found and fixed in the Colab runs</h4></div>
+            <div><p class="nb-num">Detection and imaging</p><h2>Aquatic Monitoring</h2><p class="lede">Camera and survey data can only show where animals were detected, not where they were. This corrects occupancy for detection, and checks when underwater images can be trusted. On <a href="#/observe">Live ocean</a> the same tools run on a live feed. <a href="#/learn">Learn</a> teaches the pipeline, from pixels to a claim you can defend.</p></div>
+            <div class="reported" id="rep-monitoring"><h4>What this instrument found</h4></div>
           </div>
           <div class="stack">
             <div class="inst" id="sim-occ">
@@ -521,8 +530,8 @@
         <!-- AQUACULTURE -->
         <article class="nb" id="lab-aquaculture">
           <div class="nb-head">
-            <div><p class="nb-num">Notebook 3, Workstream B</p><h2>Aquaculture Vision</h2><p class="lede">Tracking fish schools on camera, and asking how warm a contained farm can run on data-centre heat before oxygen, ammonia or welfare limits bind. The answer goes back to Thermal-Tidal as a loop-temperature ceiling.</p></div>
-            <div class="reported" id="rep-aquaculture"><h4>Found in the Colab runs</h4></div>
+            <div><p class="nb-num">Farmed fish and heat</p><h2>Aquaculture Vision</h2><p class="lede">Tracking fish schools on camera, and asking how warm a contained farm can run on data-centre heat before oxygen, ammonia or welfare limits bind. The answer feeds back as a loop-temperature ceiling.</p></div>
+            <div class="reported" id="rep-aquaculture"><h4>What this instrument found</h4></div>
           </div>
           <div class="stack">
             <div class="inst" id="sim-cam">
@@ -658,7 +667,7 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
     <div class="serif">
       <h2 class="section">The project</h2>
       <p>Phase 1, <a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Governing the Ocean Server Farm</a> (Elchami, Kaplan and Daher, April 2026), mapped the governance gap for offshore compute across four stressors: heat, electromagnetic fields, noise and chemicals.</p>
-      <p>Phase 2 turns that analysis into things governments can adopt: a framework, model language for live instruments, a disclosure standard, and three research notebooks built by mentees on thermal transport, aquatic monitoring and contained aquaculture. Supervision: Ibrahim Elchami, Ph.D.</p>
+      <p>Phase 2 turns that analysis into things governments can adopt: a framework, model language for live instruments, a disclosure standard, and research tools for thermal transport, aquatic monitoring and contained aquaculture — applied live on the ocean cameras. Supervision: Ibrahim Elchami, Ph.D.</p>
       <p>Sentient Futures works on field building for the welfare of all sentient beings as AI transforms the world. This project sits where AI infrastructure meets animal welfare.</p>
       <div class="sf-credit">
         <img class="sf-lockup" src="__ASSET:sf-lockup.png__" width="560" height="166" alt="Sentient Futures">
@@ -670,6 +679,25 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
       <p class="small muted">Code Apache-2.0. Text and data CC BY 4.0. Schemas CC0. Cite with CITATION.cff.</p>
     </div>
   </div></section>
+  <section class="block deep" id="cite" aria-labelledby="cite-h">
+    <div class="wrap">
+      <h2 class="section" id="cite-h">How to cite</h2>
+      <p class="lede serif">Please cite both phases when you use the toolkit, the Live ocean page, or the PLUMES rebuild.</p>
+      <div class="grid2">
+        <div class="serif">
+          <h3>This project (Phase 2)</h3>
+          <p><b>Aquatic Guardian</b> (v1.0, 2026). Ibrahim Elchami and Aquatic Guardian contributors. Sentient Futures. Software and policy toolkit: <a href="https://github.com/ejri/aquatic-guardian" rel="noopener">github.com/ejri/aquatic-guardian</a>. Cite machine-readably with <code>CITATION.cff</code>.</p>
+          <pre class="json" style="white-space:pre-wrap">Elchami, I., &amp; Aquatic Guardian contributors. (2026). Aquatic Guardian: a plug-in aquatic, ecological and sentience module for data-centre regulation (Version 1.0.0) [Computer software]. Sentient Futures. https://github.com/ejri/aquatic-guardian</pre>
+        </div>
+        <div class="serif">
+          <h3>Previous project (Phase 1)</h3>
+          <p><b>Governing the Ocean Server Farm</b> (April 2026). Ibrahim Elchami, Zachary Kaplan and Charbel Daher. Sentient Futures. Site: <a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">oceanic-datacenters-governance.netlify.app</a>.</p>
+          <pre class="json" style="white-space:pre-wrap">Elchami, I., Kaplan, Z., &amp; Daher, C. (2026). Governing the Ocean Server Farm. Sentient Futures. https://oceanic-datacenters-governance.netlify.app</pre>
+        </div>
+      </div>
+      <p class="small muted">Live camera operators (explore.org, Monterey Bay Aquarium, Ocean Networks Canada, Coral Morphologic and others) own their feeds; credit them when you show or analyse their streams. Ocean data: Open-Meteo (CC BY 4.0), NOAA Coral Reef Watch and CO-OPS (US public domain), DFO IWLS (Open Government Licence – Canada). Detection model bundled here: Brackish YOLOv8n (<a href="https://huggingface.co/dronefreak/brackish-yolov8n" rel="noopener">dronefreak/brackish-yolov8n</a>); see <code>site/models/models.json</code> for further candidates (Marine Detect, FathomNet/MBARI).</p>
+    </div>
+  </section>
 </div>
 </main>
 
@@ -677,10 +705,10 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
   <div class="wrap">
     <div>
       <img class="sf-mark" src="__ASSET:sf-mark.png__" width="44" height="44" alt="">
-      <b>Aquatic Guardian 0.2.1</b>, 29 September 2026. A Sentient Futures project.<br>Screening results are for scoping and public understanding. They are not legal advice and do not replace a regulatory mixing-zone study, a §316 demonstration, a Fisheries Act authorisation or species-expert review.
+      <b>Aquatic Guardian 1.0.0</b>, 17 October 2026. A Sentient Futures project.<br>Screening results are for scoping and public understanding. They are not legal advice and do not replace a regulatory mixing-zone study, a §316 demonstration, a Fisheries Act authorisation or species-expert review.
     </div>
-    <div><b>Audiences</b><br><a href="#/public">Public</a><br><a href="#/officials">Officials</a><br><a href="#/lab">Researchers</a><br><a href="#/industry">Industry</a></div>
-    <div><b>Project</b><br><a href="#/about">About</a><br><a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Phase 1 site</a></div>
+    <div><b>Audiences</b><br><a href="#/public">Public</a><br><a href="#/officials">Officials</a><br><a href="#/lab">Researchers</a><br><a href="#/industry">Industry</a><br><a href="#/observe">Live ocean</a><br><a href="#/learn">Learn</a></div>
+    <div><b>Project</b><br><a href="#/about">About</a><br><a href="#/about#cite">How to cite</a><br><a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Phase 1 site</a></div>
   </div>
 </footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

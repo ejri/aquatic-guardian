@@ -1,9 +1,12 @@
 {
-  "name": "aquatic-guardian-dev",
+  "name": "aquatic-guardian-site",
+  "version": "1.0.0",
   "private": true,
-  "description": "Development-only Node dependencies. The published site loads no scripts from npm or any CDN; axe-core is injected into the page by tests/test_site.py from this local node_modules copy.",
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "axe-core": "^4.10.0"
-  }
+  "description": "Aquatic Guardian v1.0: live ocean observatory and PLUMES 2.0 rebuild",
+  "scripts": {
+    "test:parity": "node tests/parity.test.mjs",
+    "test:browser": "python3 tests/browser/test_site.py /tmp/shots",
+    "serve": "python3 -m http.server 8765 --directory site"
+  },
+  "license": "Apache-2.0"
 }

@@ -223,31 +223,34 @@
     {
       "id": "ca-bc-bill31",
       "jurisdiction": "British Columbia",
-      "name": "Energy Statutes Amendment Act, 2025 (Bill 31) and BC Hydro calls for power",
+      "name": "Energy Statutes Amendment Act, 2025 (Bill 31) and BC Hydro calls for power / demand",
       "type": "statute and procurement",
-      "status": "In force; first-round results due",
+      "status": "In force; Call for Power EPAs awarded; Call for Demand notifications delayed",
       "stage": "enacted",
       "dates": [
         {
           "date": "2025-11-27",
-          "event": "Royal Assent"
+          "event": "Royal Assent (Bill 31)"
         },
         {
-          "date": "2026-03-09",
-          "event": "First call closed"
+          "date": "2026-05-13",
+          "event": "2025 Call for Power: four Electricity Purchase Agreements awarded (~3,500 GWh/year)"
         },
         {
-          "date": "2026-09-30",
-          "event": "Successful applicants expected (September 2026)"
+          "date": "2026-09-09",
+          "event": "2026 Call for Demand (AI/data centres) supplemental-application deadline"
         }
       ],
-      "hook": "Competitive allocation of 300 MW (AI) and 100 MW (conventional) per window, scored partly on environmental impact and First Nations involvement.",
+      "hook": "Competitive allocation of clean power and emerging-industry load (AI/data centres), scored partly on environmental impact and First Nations involvement.",
       "action": "Add an aquatic-impact sub-score and a closed-loop heat-reuse credit to the next call, co-developed with First Nations.",
       "doc": "policy/model-language/canada.md",
-      "verify": true,
-      "verify_note": "Confirm whether first-round results have been announced.",
-      "last_checked": "2026-09-29",
-      "sources": []
+      "verify": false,
+      "verify_note": "2025 Call for Power results announced 13 May 2026 (BC Hydro participants page). 2026 Call for Demand: 15 applications (~800 MW); applicants moving to the next stage notified; final outcome notifications delayed past mid-September 2026 pending government transition (BC Hydro emerging-industries page, checked 2026-10-17).",
+      "last_checked": "2026-10-17",
+      "sources": [
+        "https://www.bchydro.com/work-with-us/selling-clean-energy/2025-call-for-power/participants.html",
+        "https://app.bchydro.com/accounts-billing/electrical-connections/large-load/emerging-industries-connections.html"
+      ]
     },
     {
       "id": "ca-fisheries",

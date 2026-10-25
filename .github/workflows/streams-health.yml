@@ -1,0 +1,40 @@
+name: streams health
+# Nightly check that YouTube live streams in site/data/streams.json are still up.
+# Opens or updates a PR when statuses change. Requires repository secret YOUTUBE_API_KEY.
+on:
+  schedule:
+    - cron: "27 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Health-check streams
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          if [ -z "$YOUTUBE_API_KEY" ]; then
+            echo "YOUTUBE_API_KEY secret not set; skipping live YouTube checks."
+            exit 0
+          fi
+          python scripts/healthcheck_streams.py
+      - name: Open or update pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: refresh stream health statuses"
+          title: "Stream health check"
+          body: |
+            Nightly update from `scripts/healthcheck_streams.py`.
+            Review status changes before merging; never swap a video id without an operator check.
+          branch: chore/streams-health
+          add-paths: |
+            site/data/streams.json
+
