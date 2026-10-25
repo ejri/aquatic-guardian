@@ -35,7 +35,7 @@ python scripts/dev_server.py 8765   # site + /api/proxy (fixes Coral Reef Watch 
 | Instrument tracker | `data/instruments.json` |
 | Thresholds / jurisdictions | `data/criteria.json`, mirrored in `app/engine.js` |
 | Website audience markup | `web/parts/*.html`; Live ocean / PLUMES Lab / Learn via `tools/integrate_v1.py` |
-| Learn CV course | `learning_materials/learn-route/` (notebooks in `learning_materials/aquatic-guardian-learn-cv/`; public Colab copies at `ejri/aquatic-guardian-learning-modules`) |
+| Learn CV course | `learning_materials/learn-route/` (notebooks in `learning_materials/aquatic-guardian-learn-cv/`) |
 | Lab notebook results | `app/notebook_results.py` → `data/notebook_results.json` |
 | Lab sim kernels (legacy) | `app/sims.js` |
 | PLUMES physics | `python/plumes2py/`, mirrored in `site/js/plumes2.js` |

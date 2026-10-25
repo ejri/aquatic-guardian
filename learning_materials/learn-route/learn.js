@@ -16,16 +16,16 @@
   ];
 
   var TOUR = [
-    { title: "A picture is numbers", preset: { dist: 1.5, water: "clear_ocean", light: 1, view: "camera", thr: 0.08 },
-      body: "<p>A camera doesn’t record fish. It records a grid of tiny squares, called pixels, and three numbers for each one: how much red, green and blue light arrived there.</p><p class=\"lc-try\">Tap or click anywhere on the picture to read the numbers behind that pixel. Try a fish, then the water.</p>" },
-    { title: "Water steals colour", preset: { dist: 6, water: "coastal", light: 1, view: "camera", thr: 0.08 },
-      body: "<p>Light fades as it travels through water, and red fades first. Particles in the water also scatter daylight into the lens, adding a haze the colour of the sea.</p><p class=\"lc-try\">Drag the distance slider. Watch the red bar collapse and the orange fish turn the colour of the water.</p>" },
-    { title: "How a computer finds a fish", preset: { dist: 3, water: "coastal", light: 1, view: "diff", thr: 0.08 },
-      body: "<p>A simple detector asks one question of every pixel: how different is it from the background? Pixels that differ enough are grouped into blobs, and each blob gets a box.</p><p class=\"lc-try\">Switch the view between Picture, Difference, Mask and Boxes to watch each step. Then move the sensitivity slider.</p>" },
-    { title: "Missing isn’t gone", preset: { dist: 3.5, water: "turbid_harbour", light: 1, view: "boxes", thr: 0.08 },
-      body: "<p>Now the same five fish sit in murky harbour water. The detector misses fish it found easily in clearer water, yet every fish is still there.</p><p>If murky water is common near an outfall, a camera survey there will count fewer fish, even if the outfall harms none. Mistaking “the camera stopped seeing” for “the animals left” is the most important error this course teaches you to avoid.</p>" },
-    { title: "Ask good questions", preset: { dist: 5, water: "coastal", light: 0.25, view: "boxes", thr: 0.08 },
-      body: "<p>Dusk adds noise as well as darkness, and the detector starts drawing boxes around nothing. Real systems face all of this at once.</p><p>You now know enough to question any claim built on underwater cameras. Read the <a href=\"#/learn/five\">five questions</a> below, try a <a href=\"#/observe\">live reef camera</a>, or start the course.</p>" }
+    { title: "A picture is numbers", preset: { dist: 1.5, water: "clear_ocean", light: 1, view: "camera", thr: 0.08, photo: "reef-school" },
+      body: "<p>A camera doesn’t record fish. It records a grid of tiny squares, called pixels, and three numbers for each one: how much red, green and blue light arrived there.</p><p class=\"lc-try\">This is a real reef-school frame. Tap or click anywhere to read the numbers behind that pixel. Try a fish, then the water.</p>" },
+    { title: "Water steals colour", preset: { dist: 6, water: "coastal", light: 1, view: "camera", thr: 0.08, photo: "reef-school" },
+      body: "<p>Light fades as it travels through water, and red fades first. Particles in the water also scatter daylight into the lens, adding a haze the colour of the sea.</p><p class=\"lc-try\">Drag the distance slider. Watch the red bar collapse and the real fish turn the colour of the water.</p>" },
+    { title: "How a computer finds a fish", preset: { dist: 3, water: "coastal", light: 1, view: "diff", thr: 0.08, photo: "reef-school" },
+      body: "<p>A simple detector asks one question of every pixel: how different is it from the background? Pixels that differ enough are grouped into blobs, and each blob gets a box.</p><p class=\"lc-try\">Switch the view between Picture, Difference, Mask and Boxes. Then try another animal from the menu: turtle, shark, manatee, whale.</p>" },
+    { title: "Missing isn’t gone", preset: { dist: 3.5, water: "turbid_harbour", light: 1, view: "boxes", thr: 0.08, photo: "reef-school" },
+      body: "<p>Now the same real frame sits in murky harbour water. The detector misses animals it found easily in clearer water, yet every animal is still in the picture.</p><p>If murky water is common near an outfall, a camera survey there will count fewer fish, even if the outfall harms none. Mistaking “the camera stopped seeing” for “the animals left” is the most important error this course teaches you to avoid.</p>" },
+    { title: "Ask good questions", preset: { dist: 5, water: "coastal", light: 0.25, view: "boxes", thr: 0.08, photo: "noaa-honu" },
+      body: "<p>Dusk adds noise as well as darkness. On this NOAA green-turtle photograph the detector starts drawing boxes around nothing, or missing the turtle. Real systems face all of this at once.</p><p>You now know enough to question any claim built on underwater cameras. Read the <a href=\"#/learn/five\">five questions</a> below, try a <a href=\"#/observe\">live reef camera</a>, or start the course.</p>" }
   ];
 
   var MODULES = [
@@ -219,28 +219,6 @@
     coastal: { label: "Coastal", beta: [0.55, 0.20, 0.30], veil: [0.05, 0.32, 0.27] },
     turbid_harbour: { label: "Murky harbour", beta: [0.95, 0.60, 0.75], veil: [0.14, 0.30, 0.22] }
   };
-  var PHOTO_DIR = "img/learn/";
-  var PHOTOS = [
-    { id: "reef-school", file: "reef-school.jpg", label: "Reef school" },
-    { id: "manatees", file: "manatees.jpg", label: "Manatees" },
-    { id: "sea-lion", file: "sea-lion.jpg", label: "Sea lion" },
-    { id: "kelp-forest", file: "kelp-forest.jpg", label: "Kelp forest" },
-    { id: "nurse-shark", file: "nurse-shark.jpg", label: "Nurse shark" },
-    { id: "eagle-ray", file: "eagle-ray.jpg", label: "Eagle ray" },
-    { id: "grouper", file: "grouper.jpg", label: "Grouper" },
-    { id: "zebra-shark", file: "zebra-shark.jpg", label: "Zebra shark" },
-    { id: "turtle", file: "turtle.jpg", label: "Sea turtle" },
-    { id: "angelfish", file: "angelfish.jpg", label: "Angelfish" },
-    { id: "orca", file: "orca.jpg", label: "Orca" },
-    { id: "sand-tiger", file: "sand-tiger.jpg", label: "Sand tiger" },
-    { id: "noaa-honu", file: "noaa-honu.jpg", label: "Green turtle (NOAA)" },
-    { id: "noaa-whale", file: "noaa-whale.jpg", label: "Humpback (NOAA)" }
-  ];
-  PHOTOS.forEach(function (P) {
-    var im = new Image();
-    im.onload = function () { P.el = im; };
-    im.src = PHOTO_DIR + P.file;
-  });
   var ORANGE = [0.97, 0.55, 0.12];
 
   function q(s, r) { return (r || root).querySelector(s); }
@@ -314,63 +292,73 @@
         J[3 * i] = col[0]; J[3 * i + 1] = col[1]; J[3 * i + 2] = col[2]; idx[i] = k;
       }
     });
-    SCENE = { W: W, H: H, N: N, J: J, idx: idx, noise: noise, FISH: FISH, photo: null };
+    SCENE = { W: W, H: H, N: N, J: J, idx: idx, noise: noise, FISH: FISH };
     return SCENE;
   }
-  function photoById(id) {
-    var i;
-    for (i = 0; i < PHOTOS.length; i++) if (PHOTOS[i].id === id) return PHOTOS[i];
-    return PHOTOS[0];
-  }
-  function rasterPhoto(id) {
-    var P = photoById(id), el = P && P.el, W = 360, H = 216, N = W * H;
-    if (!el) return scene();
-    var c = document.createElement("canvas");
-    c.width = W; c.height = H;
-    var g = c.getContext("2d"), sw = el.naturalWidth || el.width, sh = el.naturalHeight || el.height;
-    var s = Math.max(W / sw, H / sh), dw = sw * s, dh = sh * s;
-    g.drawImage(el, (W - dw) / 2, (H - dh) / 2, dw, dh);
-    var pix = g.getImageData(0, 0, W, H).data, J = new Float32Array(N * 3), idx = new Int8Array(N), noise = new Float32Array(N * 3), r = rng(11), i, k;
-    var sx = 0, col = [0, 0, 0];
-    for (i = 0; i < N; i++) {
-      idx[i] = 0;
-      for (k = 0; k < 3; k++) {
-        J[3 * i + k] = pix[4 * i + k] / 255;
-        noise[3 * i + k] = gauss(r);
+  var PHOTOS = [
+    { id: "reef-school", label: "Reef school" },
+    { id: "manatees", label: "Manatees" },
+    { id: "nurse-shark", label: "Nurse shark" },
+    { id: "eagle-ray", label: "Eagle ray" },
+    { id: "noaa-honu", label: "Green turtle" },
+    { id: "noaa-whale", label: "Humpback" },
+    { id: "grouper", label: "Grouper" },
+    { id: "angelfish", label: "Angelfish" }
+  ];
+  var PHOTO_CACHE = {};
+  function loadPhoto(id, cb) {
+    if (PHOTO_CACHE[id]) { cb(PHOTO_CACHE[id]); return; }
+    var im = new Image();
+    im.onload = function () {
+      var W = 360, H = 216, N = W * H;
+      var cnv = document.createElement("canvas"); cnv.width = W; cnv.height = H;
+      var cg = cnv.getContext("2d");
+      var s = Math.max(W / im.width, H / im.height), dw = im.width * s, dh = im.height * s;
+      cg.drawImage(im, (W - dw) / 2, (H - dh) / 2, dw, dh);
+      var d = cg.getImageData(0, 0, W, H), J = new Float32Array(N * 3), noise = new Float32Array(N * 3), r = rng(7), i;
+      for (i = 0; i < N; i++) {
+        J[3 * i] = d.data[4 * i] / 255; J[3 * i + 1] = d.data[4 * i + 1] / 255; J[3 * i + 2] = d.data[4 * i + 2] / 255;
+        noise[3 * i] = gauss(r); noise[3 * i + 1] = gauss(r); noise[3 * i + 2] = gauss(r);
       }
-      if (i % W > W * 0.25 && i % W < W * 0.75 && (i / W | 0) > H * 0.2 && (i / W | 0) < H * 0.8) {
-        sx++; for (k = 0; k < 3; k++) col[k] += J[3 * i + k];
-      }
-    }
-    if (sx) for (k = 0; k < 3; k++) col[k] /= sx;
-    return { W: W, H: H, N: N, J: J, idx: idx, noise: noise, FISH: [{ cx: W / 2, cy: H / 2, L: 80, ang: 0, col: col, f: 1 }], photo: P };
+      var rec = PHOTOS.filter(function (p) { return p.id === id; })[0];
+      PHOTO_CACHE[id] = { W: W, H: H, N: N, J: J, noise: noise, photo: id, label: rec ? rec.label : id, FISH: [{ f: 1 }], idx: new Int8Array(N).fill(-1) };
+      cb(PHOTO_CACHE[id]);
+    };
+    im.onerror = function () { cb(null); };
+    im.src = "img/learn/" + id + ".jpg";
   }
   function renderScene(S, p, I) {   // fills I (Float32Array N*3) for preset p, returns transmittances
-    var Wt = WATER[p.water], sd = 0.012 / Math.sqrt(p.light), T = [], k, i, c;
-    for (k = 0; k < S.FISH.length; k++) T.push(Wt.beta.map(function (be) { return Math.exp(-be * p.dist * S.FISH[k].f); }));
-    T.push(Wt.beta.map(function (be) { return Math.exp(-be * (p.dist + 8)); }));
-    var bg = T.length - 1;
-    for (i = 0; i < S.N; i++) {
-      var t = T[S.idx[i] < 0 ? bg : Math.min(S.idx[i], bg)];
-      for (c = 0; c < 3; c++) { var v = S.J[3 * i + c] * t[c] + Wt.veil[c] * (1 - t[c]) + sd * S.noise[3 * i + c]; I[3 * i + c] = v < 0 ? 0 : v > 1 ? 1 : v; }
+    var Wt = WATER[p.water], sd = 0.012 / Math.sqrt(p.light), T = [];
+    if (S.photo) {
+      var t0 = Wt.beta.map(function (be) { return Math.exp(-be * p.dist); });
+      T = [t0, t0, t0, t0, t0, t0];
+      for (var i = 0; i < S.N; i++) {
+        for (var c = 0; c < 3; c++) { var v = S.J[3 * i + c] * t0[c] + Wt.veil[c] * (1 - t0[c]) + sd * S.noise[3 * i + c]; I[3 * i + c] = v < 0 ? 0 : v > 1 ? 1 : v; }
+      }
+      return T;
+    }
+    for (var k = 0; k <= 5; k++) { var d = k < 5 ? p.dist * S.FISH[k].f : p.dist + 8; T.push(Wt.beta.map(function (be) { return Math.exp(-be * d); })); }
+    for (var i = 0; i < S.N; i++) {
+      var t = T[S.idx[i] < 0 ? 5 : S.idx[i]];
+      for (var c = 0; c < 3; c++) { var v = S.J[3 * i + c] * t[c] + Wt.veil[c] * (1 - t[c]) + sd * S.noise[3 * i + c]; I[3 * i + c] = v < 0 ? 0 : v > 1 ? 1 : v; }
     }
     return T;
   }
 
   /* ---------------- instrument: underwater camera ---------------- */
   function mountCamera(host, preset) {
-    var id = "cam" + (++uid), p = Object.assign({ dist: 3, water: "coastal", light: 1, view: "boxes", thr: 0.08, photo: "reef-school" }, preset || {});
-    var S = rasterPhoto(p.photo), W = S.W, H = S.H, N = S.N;
+    var id = "cam" + (++uid), S = scene(), W = S.W, H = S.H, N = S.N;
+    var p = Object.assign({ dist: 3, water: "coastal", light: 1, view: "boxes", thr: 0.08, photo: "reef-school" }, preset || {});
     var view = '<div class="lc-canvas-wrap"><canvas width="360" height="216" id="' + id + '-cv" role="img"></canvas><div class="lc-pixel" id="' + id + '-px" hidden></div></div>' +
-      '<div class="readouts"><div class="ro hot"><b id="' + id + '-found"></b><span>regions the detector boxed</span></div><div class="ro"><b id="' + id + '-false"></b><span>very small blobs ignored</span></div><div class="ro"><b id="' + id + '-range"></b><span>how far this contrast would last</span></div></div>';
-    var opts = PHOTOS.map(function (ph) { return '<option value="' + ph.id + '"' + (ph.id === p.photo ? " selected" : "") + ">" + ph.label + "</option>"; }).join("");
-    var ctrl = '<label class="lc-ctl-label" for="' + id + '-photo">Real camera frame</label><select class="lc-photo" id="' + id + '-photo">' + opts + "</select>" +
+      '<div class="readouts"><div class="ro hot"><b id="' + id + '-found"></b><span>boxes the detector drew</span></div><div class="ro"><b id="' + id + '-false"></b><span>class of this frame</span></div><div class="ro"><b id="' + id + '-range"></b><span>how far red still reaches</span></div></div>';
+    var photoOpts = PHOTOS.map(function (ph) { return '<option value="' + ph.id + '"' + (ph.id === p.photo ? " selected" : "") + ">" + ph.label + "</option>"; }).join("");
+    var ctrl = '<label class="lc-ctl-label" for="' + id + '-photo">Wildlife frame</label><select class="lc-photo" id="' + id + '-photo">' + photoOpts + "</select>" +
       '<div style="height:.9rem"></div><span class="lc-ctl-label">What to show</span>' + seg("View", [["camera", "Picture"], ["diff", "Difference"], ["mask", "Mask"], ["boxes", "Boxes"]], p.view) +
       '<div style="height:.9rem"></div>' + range(id + "-d", "Distance through the water", 0.5, 15, 0.1, p.dist) +
       '<span class="lc-ctl-label">Water</span>' + seg("Water", [["clear_ocean", "Clear ocean"], ["coastal", "Coastal"], ["turbid_harbour", "Murky harbour"]], p.water) +
       '<div style="height:.9rem"></div>' + range(id + "-l", "Daylight", 0.06, 1, 0.01, p.light) + range(id + "-t", "Difference needed to count as an animal", 0.03, 0.2, 0.005, p.thr) +
       '<div class="lc-chbars" aria-label="Share of each colour reaching the lens"><span>Red</span><span class="t"><i id="' + id + '-r" style="background:#FF7A6B"></i></span><span class="v" id="' + id + '-rv"></span><span>Green</span><span class="t"><i id="' + id + '-g" style="background:#6FD39A"></i></span><span class="v" id="' + id + '-gv"></span><span>Blue</span><span class="t"><i id="' + id + '-b" style="background:#7EA6EC"></i></span><span class="v" id="' + id + '-bv"></span></div>' +
-      '<p class="small" style="color:var(--deep-muted);margin:.7rem 0 0">Real wildlife frame. Distance and water are teaching overlays, not the original camera’s conditions.</p>';
+      '<p class="small" style="color:var(--deep-muted);margin:.7rem 0 0">Real wildlife photograph. The water sliders are teaching values, not a measurement of this site.</p>';
     host.innerHTML = inst("Underwater camera", "tap the picture to read a pixel", view, ctrl, true);
     var cv = q("#" + id + "-cv", host), g = cv.getContext("2d"), img = g.createImageData(W, H);
     var I = new Float32Array(N * 3), diff = new Float32Array(N), mask = new Uint8Array(N), clean = new Uint8Array(N), lab = new Int32Array(N), stack = new Int32Array(N);
@@ -421,58 +409,72 @@
       }
       g.putImageData(img, 0, 0);
       if (p.view === "boxes" || p.view === "mask") { g.lineWidth = 2; g.strokeStyle = CK.glow; det.boxes.forEach(function (b) { g.strokeRect(b[0] + 0.5, b[1] + 0.5, b[2] - b[0] - 1, b[3] - b[1] - 1); }); }
-      var found = det.boxes.length;
-      q("#" + id + "-found", host).textContent = String(found);
-      q("#" + id + "-false", host).textContent = "—";
-      var rg = rangeFor(0); q("#" + id + "-range", host).textContent = rg >= 30 ? "30+ m" : rg.toFixed(1) + " m";
+      var nbox = det.boxes.length;
+      q("#" + id + "-found", host).textContent = String(nbox);
+      q("#" + id + "-false", host).textContent = S.label || "wildlife";
+      var rg = S.photo ? p.dist : rangeFor(2); q("#" + id + "-range", host).textContent = (S.photo ? "at " : "") + (rg >= 30 ? "30+ m" : rg.toFixed(1) + " m");
       q("#" + id + "-d-o", host).textContent = p.dist.toFixed(1) + " m";
       q("#" + id + "-l-o", host).textContent = p.light >= 0.8 ? "full sun" : p.light >= 0.35 ? "overcast" : p.light >= 0.15 ? "dusk" : "near dark";
       q("#" + id + "-t-o", host).textContent = p.thr.toFixed(3);
-      ["r", "g", "b"].forEach(function (ch, c) { q("#" + id + "-" + ch, host).style.width = (100 * T[0][c]).toFixed(1) + "%"; q("#" + id + "-" + ch + "v", host).textContent = pct(T[0][c]); });
-      var f = q(".finding", host), who = (S.photo && S.photo.label) || "this frame";
-      f.innerHTML = found === 0
-        ? "<b>The detector boxed nothing.</b> The animals in " + esc(who) + " are still there; the camera just can’t separate them from the water."
-        : "<b>The detector boxed " + found + (found === 1 ? " region." : " regions.") + "</b> Try murky water or a longer distance — the animals do not leave the picture.";
-      cv.setAttribute("aria-label", who + ", about " + p.dist.toFixed(1) + " metres through " + WATER[p.water].label.toLowerCase() + " water. Detector boxed " + found + " region" + (found === 1 ? "" : "s") + ".");
+      ["r", "g", "b"].forEach(function (ch, c) { q("#" + id + "-" + ch, host).style.width = (100 * T[2][c]).toFixed(1) + "%"; q("#" + id + "-" + ch + "v", host).textContent = pct(T[2][c]); });
+      var f = q(".finding", host);
+      if (S.photo) {
+        f.innerHTML = nbox ? "<b>" + nbox + (nbox === 1 ? " box" : " boxes") + " on this real " + esc(S.label.toLowerCase()) + " frame.</b> The animals are still in the picture. Murk, distance and dusk change how many boxes appear, not whether they are there."
+          : "<b>No boxes.</b> The animals are still in the picture; the camera can no longer separate them from the water.";
+      } else {
+        var inBox = function (F, b) { return F.cx >= b[0] && F.cx <= b[2] && F.cy >= b[1] && F.cy <= b[3]; };
+        var found = S.FISH.filter(function (F) { return det.boxes.some(function (b) { return inBox(F, b); }); }).length;
+        var fb = det.boxes.filter(function (b) { return !S.FISH.some(function (F) { return inBox(F, b); }); }).length;
+        f.innerHTML = found < 5 ? "<b>" + (5 - found) + " of 5 fish missed.</b> All five are still in the scene; the camera just can’t separate them from the water." + (fb ? " Noise is also producing false boxes." : "")
+          : fb ? "<b>All five found, plus " + fb + " false " + (fb === 1 ? "box" : "boxes") + ".</b> A lower threshold catches more fish and more noise." : "<b>All five fish found.</b> Try moving them farther away, or switch to murky water.";
+      }
+      cv.setAttribute("aria-label", (S.photo ? "Real " + S.label + " photograph" : "Synthetic underwater frame") + ", about " + p.dist.toFixed(1) + " metres of " + WATER[p.water].label.toLowerCase() + " water. Detector drew " + nbox + " boxes.");
     }
     function later() { if (!pending) { pending = true; requestAnimationFrame(draw); } }
     bindSeg(segs[0], function (v) { p.view = v; later(); });
     bindSeg(segs[1], function (v) { p.water = v; later(); });
-    q("#" + id + "-photo", host).addEventListener("change", function (e) {
-      p.photo = e.target.value;
-      S = rasterPhoto(p.photo); W = S.W; H = S.H; N = S.N;
-      later();
-    });
     [["-d", "dist"], ["-l", "light"], ["-t", "thr"]].forEach(function (a) { q("#" + id + a[0], host).addEventListener("input", function (e) { p[a[1]] = +e.target.value; later(); }); });
     function inspect(ev) {
       var r = cv.getBoundingClientRect(), x = Math.floor((ev.clientX - r.left) / r.width * W), y = Math.floor((ev.clientY - r.top) / r.height * H);
       if (x < 0 || y < 0 || x >= W || y >= H) return;
       var i = y * W + x, c = [I[3 * i], I[3 * i + 1], I[3 * i + 2]].map(function (v) { return Math.round(255 * v); });
       var px = q("#" + id + "-px", host); px.hidden = false;
-      px.innerHTML = '<span class="sw" style="background:rgb(' + c.join(",") + ')"></span>Row ' + y + ", column " + x + "<br>Red " + c[0] + ", green " + c[1] + ", blue " + c[2];
+      px.innerHTML = '<span class="sw" style="background:rgb(' + c.join(",") + ')"></span>Row ' + y + ", column " + x + "<br>Red " + c[0] + ", green " + c[1] + ", blue " + c[2] + "<br>" + (S.photo ? (S.label || "wildlife") + " frame" : (S.idx[i] >= 0 ? "a fish pixel" : "water and reef behind"));
     }
     cv.addEventListener("pointerdown", inspect);
     cv.addEventListener("pointermove", function (e) { if (e.buttons || e.pointerType === "mouse") inspect(e); });
     cv.addEventListener("pointerleave", function () { q("#" + id + "-px", host).hidden = true; });
-    (function waitPhoto(n) {
-      if (photoById(p.photo).el || n > 20) { S = rasterPhoto(p.photo); draw(); return; }
-      setTimeout(function () { waitPhoto(n + 1); }, 100);
-    }(0));
+    function usePhoto(photoId, then) {
+      loadPhoto(photoId, function (rec) {
+        if (rec) { S = rec; I = new Float32Array(S.N * 3); diff = new Float32Array(S.N); mask = new Uint8Array(S.N); clean = new Uint8Array(S.N); lab = new Int32Array(S.N); stack = new Int32Array(S.N); }
+        p.photo = photoId;
+        var sel = q("#" + id + "-photo", host); if (sel) sel.value = photoId;
+        draw();
+        if (then) then();
+      });
+    }
+    q("#" + id + "-photo", host).addEventListener("change", function (e) { usePhoto(e.target.value); });
+    usePhoto(p.photo);
     return {
       set: function (np) {
         Object.assign(p, np);
         setSeg(segs[0], p.view); setSeg(segs[1], p.water);
         q("#" + id + "-d", host).value = p.dist; q("#" + id + "-l", host).value = p.light; q("#" + id + "-t", host).value = p.thr;
-        q("#" + id + "-px", host).hidden = true; draw();
+        q("#" + id + "-px", host).hidden = true;
+        if (np.photo) usePhoto(np.photo); else draw();
       }
     };
   }
 
   /* ---------------- instrument: filter lab ---------------- */
   function mountFilter(host) {
-    var id = "fl" + (++uid), S = rasterPhoto("angelfish"), W = S.W, H = S.H, N = S.N, I = new Float32Array(N * 3);
-    renderScene(S, { dist: 2.5, water: "coastal", light: 0.35 }, I);
-    var gray = new Float32Array(N); for (var i = 0; i < N; i++) gray[i] = 0.299 * I[3 * i] + 0.587 * I[3 * i + 1] + 0.114 * I[3 * i + 2];
+    var id = "fl" + (++uid), S = scene(), W = S.W, H = S.H, N = S.N, I = new Float32Array(N * 3);
+    var gray = new Float32Array(N);
+    function fromScene() {
+      renderScene(S, { dist: 2.5, water: "coastal", light: 0.35 }, I);
+      for (var i = 0; i < N; i++) gray[i] = 0.299 * I[3 * i] + 0.587 * I[3 * i + 1] + 0.114 * I[3 * i + 2];
+    }
+    fromScene();
     var K = { orig: [[0, 0, 0], [0, 1, 0], [0, 0, 0]], blur: [[1, 1, 1], [1, 1, 1], [1, 1, 1]].map(function (r) { return r.map(function (v) { return v / 9; }); }),
       sharp: [[0, -1, 0], [-1, 5, -1], [0, -1, 0]], edge: [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]] };
     var TXT = { orig: "The picture as the computer receives it: one brightness number per pixel. Dusk light makes it grainy.",
@@ -518,7 +520,10 @@
     }
     bindSeg(q(".seg", host), function (v) { p.k = v; draw(); });
     q("#" + id + "-pre", host).addEventListener("change", function (e) { p.pre = e.target.checked; draw(); });
-    draw();
+    loadPhoto("nurse-shark", function (rec) {
+      if (rec) { S = rec; W = S.W; H = S.H; N = S.N; I = new Float32Array(S.N * 3); gray = new Float32Array(S.N); fromScene(); }
+      draw();
+    });
   }
 
   /* ---------------- instrument: abstention ---------------- */
@@ -663,11 +668,9 @@
 
   /* ---------------- module reader ---------------- */
   function nbButtons(file) {
-    var dl = root.dataset.downloadBase || "notebooks/";
-    var base = root.dataset.colabBase || "";
-    var gh = root.dataset.githubBase || "";
-    return '<a class="btn glow" href="' + base + file + '" target="_blank" rel="noopener">Open in Colab</a>' +
-      '<a class="btn line" href="' + gh + file + '" target="_blank" rel="noopener">View on GitHub</a>' +
+    var base = root.dataset.colabBase || "", gh = root.dataset.githubBase || "", dl = root.dataset.downloadBase || "notebooks/";
+    return (base ? '<a class="btn glow" href="' + base + file + '" target="_blank" rel="noopener">Open in Colab</a>' : "") +
+      (gh ? '<a class="btn line" href="' + gh + file + '" target="_blank" rel="noopener">View on GitHub</a>' : "") +
       '<a class="btn line" href="' + dl + file + '" download="' + file + '">Download</a>';
   }
   function renderModule(m) {
@@ -681,7 +684,7 @@
     if (m.project) h += '<section><div class="lc-box lc-proj"><h3>From the project</h3><p style="margin:0">' + m.project.replace(/^(From the project|For Capstone B): /, "") + "</p></div></section>";
     h += '<section class="lc-twocol"><div class="lc-box lc-warn"><h3>Common mistakes</h3><ul>' + m.mistakes.map(function (x) { return "<li>" + x + "</li>"; }).join("") + '</ul></div><div class="lc-box lc-fx"><h3>In the field: ' + m.field.t + '</h3><p style="margin:0 0 .5rem">' + m.field.b + "</p>" + (m.field.url ? '<a href="' + m.field.url + '" target="_blank" rel="noopener">Read the source</a>' : "") + "</div></section>";
     if (m.extra) h += '<section class="lc-box" style="max-width:var(--measure)">' + m.extra + "</section>";
-    h += '<section><h2>The notebook</h2><div class="lc-nbcard"><div><h3><code>' + m.nb.file + "</code></h3><p>" + m.nb.inside + '</p><p class="small">Runs top to bottom on Colab’s free CPU in ' + m.nb.run + ". Choose File, Save a copy in Drive first. Real wildlife frames load from the public learning-modules repository.</p></div><div class=\"row\">" + nbButtons(m.nb.file) + "</div></div></section>";
+    h += '<section><h2>The notebook</h2><div class="lc-nbcard"><div><h3><code>' + m.nb.file + "</code></h3><p>" + m.nb.inside + '</p><p class="small">Runs top to bottom on Colab’s free CPU in ' + m.nb.run + ". Choose File, Save a copy in Drive first. Photographs load from the public learning-modules repository.</p></div><div class=\"row\">" + nbButtons(m.nb.file) + "</div></div></section>";
     h += '<section><h2>Check yourself</h2><div class="lc-quiz">' + m.quiz.map(function (qq, k) {
       return '<div class="lc-q" data-q="' + k + '"><p>' + (k + 1) + ". " + qq[0] + '</p><div class="lc-opts">' + qq[1].map(function (o, j) { return '<button type="button" class="lc-opt" data-j="' + j + '" aria-pressed="false">' + esc(o) + "</button>"; }).join("") + '</div><p class="lc-fb" aria-live="polite"></p></div>';
     }).join("") + '</div><p class="lc-score" id="lc-score" aria-live="polite"></p></section>';

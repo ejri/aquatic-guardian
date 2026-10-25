@@ -5,11 +5,12 @@
 - **Learn** (`#/learn`): rebuilt course route (tour, path finder, module pages, quizzes) from
   `learning_materials/learn-route/`. Classes are `lc-` and scoped to `[data-route="learn"]` so they
   no longer collide with site `.hero` / `.lab` / `.nb` / `.field`. The build mirrors `learn.css` /
-  `learn.js` and `images/` into `site/`. Notebooks and photographs are published at
+  `learn.js` into `site/` and `--check` fails if they drift. Colab and GitHub buttons open
   [ejri/aquatic-guardian-learning-modules](https://github.com/ejri/aquatic-guardian-learning-modules).
-  Camera demos use real wildlife frames (live-camera stills and NOAA public-domain photographs).
-  Further-reading links that 403’d from publisher walls now use OpenCV’s GitHub tutorials, JSTOR
-  for MacKenzie 2002, and the CSIRO author page for Khokher et al. 2021.
+  Tour and module cameras use real wildlife frames (live-camera stills plus NOAA public-domain
+  turtle and humpback photographs) from `site/img/learn/`. Further-reading links that 403’d from
+  publisher walls now use OpenCV’s GitHub tutorials, JSTOR for MacKenzie 2002, and the CSIRO
+  author page for Khokher et al. 2021.
 
 ## 1.0.0 (2026-10-17)
 

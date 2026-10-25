@@ -12,7 +12,8 @@ folder: that page is a leftover draft. The site reads the rebuilt route.
 |---|---|
 | `learn-route/` | **Source of the live `#/learn` tab.** `learn.html` is the route block; `learn.css` and `learn.js` are mirrored into `site/` by `python app/build.py`. |
 | `learn-route/README.md` | Addresses (`#/learn/m03`, `#/learn/tour`, …) and what each section does. |
-| `aquatic-guardian-learn-cv/notebooks/` | Nine Colab notebooks, saved without outputs. Copied to `site/notebooks/` at build. |
+| `aquatic-guardian-learn-cv/notebooks/` | Nine Colab notebooks, saved without outputs. Copied to `site/notebooks/` at build. Public copy: [ejri/aquatic-guardian-learning-modules](https://github.com/ejri/aquatic-guardian-learning-modules). |
+| `aquatic-guardian-learn-cv/images/` | Wildlife JPEGs for the site cameras and the notebooks. Copied to `site/img/learn/` at build. |
 | `aquatic-guardian-learn-cv/source/` | Python scripts that generate the notebooks, and `run.py`, which executes them as a test. Edit these, not the notebooks. |
 | `learn.html`, `learn.css`, `learn.js` | Old standalone draft. Not used by the build. |
 
@@ -28,12 +29,14 @@ Lesson copy, quizzes and sources live in `learn-route/learn.js`. Edit those file
 
 **Linking to a module.** `#/learn/m07` opens Module 07.
 
-**Running a notebook.** Each module has **Open in Colab**, which loads from the public repository
-https://github.com/ejri/aquatic-guardian-learning-modules (path `notebooks/`). Choose File → Save a
-copy in Drive, then Runtime → Run all. Real wildlife frames are in that repo’s `images/` folder.
+**Running a notebook.** Each module has **Open in Colab**, which loads the file from
+[ejri/aquatic-guardian-learning-modules](https://github.com/ejri/aquatic-guardian-learning-modules)
+(`notebooks/` on `main`). Choose File → Save a copy in Drive, then Runtime → Run all. The notebooks
+download wildlife photographs from that repository on first run. No dataset or GPU is needed.
 
-**Photographs.** `learn-route/images/` (mirrored to `site/img/learn/` and to the public repo). Live-camera
-stills plus NOAA public-domain photographs. See `learn-route/images/ATTRIBUTION.md`.
+**GitHub.** Public teaching files live at
+`https://github.com/ejri/aquatic-guardian-learning-modules` (notebooks, `source/`, `images/`).
+The main Aquatic Guardian repository can stay private.
 
 **External requests.** The site tab uses the host page fonts. The page itself does not fetch
 lesson content from the network.

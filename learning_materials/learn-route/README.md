@@ -51,9 +51,10 @@ components are reused on purpose, never restyled.
 ## Editing content
 
 All lesson text, quizzes, sources, tour steps, paths and glossary entries are in the CONTENT block at the top of
-`learn.js`. Notebook links on `#lc` point at the public repo
-`https://github.com/ejri/aquatic-guardian-learning-modules` (`notebooks/` on `main`). Camera demos load
-real frames from `images/` (copied to `site/img/learn/` at build).
+`learn.js`. `#lc` attributes: `data-colab-base` and `data-github-base` point at
+`ejri/aquatic-guardian-learning-modules` (`notebooks/` on `main`); `data-download-base` is the built
+site’s `notebooks/` folder. Wildlife frames for the in-page cameras live in
+`learning_materials/aquatic-guardian-learn-cv/images/` and are copied to `site/img/learn/`.
 
 ## Storage and privacy
 

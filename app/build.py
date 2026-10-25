@@ -175,7 +175,7 @@ MIRROR = [
 ]
 NB_SRC = ROOT / "learning_materials" / "aquatic-guardian-learn-cv" / "notebooks"
 NB_DST = SITE / "notebooks"
-LEARN_IMG_SRC = ROOT / "learning_materials" / "learn-route" / "images"
+LEARN_IMG_SRC = ROOT / "learning_materials" / "aquatic-guardian-learn-cv" / "images"
 LEARN_IMG_DST = SITE / "img" / "learn"
 LEARN_ASSETS = (
     (ROOT / "learning_materials" / "learn-route" / "learn.css", SITE / "css" / "learn.css"),
@@ -211,9 +211,7 @@ def sync_learn_assets(check: bool) -> bool:
 
 
 def sync_learn_images(check: bool) -> bool:
-    """Keep site/img/learn identical to learning_materials/learn-route/images."""
-    if not LEARN_IMG_SRC.is_dir():
-        return False
+    """Copy Learn wildlife JPEGs into site/img/learn/ so the page needs no network."""
     src_files = sorted(p for p in LEARN_IMG_SRC.iterdir() if p.suffix.lower() in {".jpg", ".jpeg", ".png", ".md"})
     if not src_files:
         return False
