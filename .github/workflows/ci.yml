@@ -8,11 +8,11 @@ jobs:
       matrix:
         python: ["3.10", "3.12"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with: {python-version: "${{ matrix.python }}"}
-      - uses: actions/setup-node@v4
-        with: {node-version: "20"}
+      - uses: actions/setup-node@v5
+        with: {node-version: "22"}
       - run: pip install -e ".[test]"
       - run: python app/build.py --check
       - run: python app/briefs.py --check
@@ -21,8 +21,8 @@ jobs:
   plumes2py:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with: {python-version: "3.12"}
       - run: pip install -e "./python[test]"
       - run: pytest -q
@@ -31,28 +31,28 @@ jobs:
   parity:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with: {python-version: "3.12"}
-      - uses: actions/setup-node@v4
-        with: {node-version: "20"}
+      - uses: actions/setup-node@v5
+        with: {node-version: "22"}
       - run: pip install -e ./python
       - run: node tests/parity.test.mjs
 
   relay:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with: {python-version: "3.12"}
-      - run: pip install -r relay/requirements.txt -e ./python
+      - run: pip install pytest -r relay/requirements.txt -e ./python
       - run: pytest -q relay/tests
 
   site:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with: {python-version: "3.12"}
       - run: pip install playwright pytest && python -m playwright install --with-deps chromium
       - run: python app/build.py --check

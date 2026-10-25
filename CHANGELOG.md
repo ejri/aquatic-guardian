@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **CI**: `verify` installs `pytest` for the relay job (it was missing, so the job exited 127).
+  Checkout / setup-python / setup-node now use Node 24-compatible action majors; Node on the
+  runner is 22.
+- **Canada brief**: regenerated `briefs/canada.md` so it matches the BC Hydro Call for Power /
+  Call for Demand row already in `data/instruments.json`.
+
 - **Learn** (`#/learn`): rebuilt course route (tour, path finder, module pages, quizzes) from
   `learning_materials/learn-route/`. Classes are `lc-` and scoped to `[data-route="learn"]` so they
   no longer collide with site `.hero` / `.lab` / `.nb` / `.field`. The build mirrors `learn.css` /
