@@ -3,16 +3,15 @@
 <header class="site">
   <div class="wrap">
     <a class="brand" href="#/" aria-label="Aquatic Guardian home, a Sentient Futures project">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#082029" stroke="#1A3a46"/><path d="M5 18c3-2.6 5.5-2.6 8.2 0s5.4 2.6 8.3 0 4.7-2 5.5-1.3" fill="none" stroke="#9ED8E6" stroke-width="2" stroke-linecap="round"/><path d="M16 5c2.6 3.2 3.8 5.4 3.8 7.2a3.8 3.8 0 0 1-7.6 0c0-1.8 1.2-4 3.8-7.2z" fill="#F7B24A"/></svg>
+      <img class="brand-logo" src="__ASSET:ag-ocean-logo.png__" width="722" height="255" alt="">
       <span class="brand-text"><b>Aquatic Guardian</b><small>a Sentient Futures project</small></span>
-      <img class="sf-mark" src="__ASSET:sf-mark.png__" width="30" height="30" alt="Sentient Futures">
     </a>
     <nav class="primary" aria-label="Audiences">
       <a href="#/public" data-nav="public">For the public</a>
       <a href="#/officials" data-nav="officials">For officials</a>
       <a href="#/observe" data-nav="observe" class="nav-live">Live ocean</a>
-      <a href="#/learn" data-nav="learn">Learn</a>
       <a href="#/industry" data-nav="industry">For industry</a>
+      <a href="#/learn" data-nav="learn">Learn</a>
       <a href="#/about" data-nav="about">About</a>
     </nav>
   </div>
@@ -662,7 +661,13 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
 
 <!-- ================= ABOUT ================= -->
 <div data-route="about">
-  <section class="pagehead deep"><div class="wrap"><p class="kicker">About</p><h1>Built in the open, for all sentient beings.</h1><p class="lede">Aquatic Guardian is the second phase of a Sentient Futures fellowship project on governing ocean-cooled and underwater computing.</p></div></section>
+  <section class="pagehead deep about-head">
+    <div class="about-marks">
+      <img src="__ASSET:sf-stars-lockup.png__" width="1000" height="297" alt="Sentient Futures">
+      <img src="__ASSET:ag-emblem.png__" width="789" height="304" alt="Aquatic Guardian, a Sentient Futures project">
+    </div>
+    <div class="wrap"><p class="kicker">About</p><h1>Built in the open, for all sentient beings.</h1><p class="lede">Aquatic Guardian is the second phase of a Sentient Futures fellowship project on governing ocean-cooled and underwater computing.</p></div>
+  </section>
   <section class="block"><div class="wrap grid2">
     <div class="serif">
       <h2 class="section">The project</h2>
@@ -704,11 +709,11 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
 <footer class="site">
   <div class="wrap">
     <div>
-      <img class="sf-mark" src="__ASSET:sf-mark.png__" width="44" height="44" alt="">
+      <img class="footer-logo" src="__ASSET:ag-ocean-logo.png__" width="722" height="255" alt="Aquatic Guardian">
       <b>Aquatic Guardian 1.0.0</b>, 17 October 2026. A Sentient Futures project.<br>Screening results are for scoping and public understanding. They are not legal advice and do not replace a regulatory mixing-zone study, a §316 demonstration, a Fisheries Act authorisation or species-expert review.
     </div>
     <div><b>Audiences</b><br><a href="#/public">Public</a><br><a href="#/officials">Officials</a><br><a href="#/lab">Researchers</a><br><a href="#/industry">Industry</a><br><a href="#/observe">Live ocean</a><br><a href="#/learn">Learn</a></div>
-    <div><b>Project</b><br><a href="#/about">About</a><br><a href="#/about#cite">How to cite</a><br><a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Phase 1 site</a></div>
+    <div><b>Project</b><br><a href="#/about">About</a><br><a href="#/about/cite">How to cite</a><br><a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Phase 1 site</a></div>
   </div>
 </footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Site**: header and footer use the Aquatic Guardian lockup, with a transparent background. The footer shows the full lockup, lined up with the citation. About places the Sentient Futures wordmark and the Aquatic Guardian emblem beside the opening line. “For industry” sits before “Learn” in the menu. “How to cite” opens `#/about/cite` (and the older `#/about#cite` form) and scrolls to the citation on About.
 - **Tracker**: every instrument in `data/instruments.json` now has an opened
   primary-source URL (`verify: false`). SCIP status is applications closed
   (ISED, 1 June 2026); the AI Compute Challenge is still accepting applications.

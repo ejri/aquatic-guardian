@@ -100,7 +100,9 @@
 
   /* --- router --- */
   function go() {
-    var h = (location.hash || "#/").replace(/^#\/?/, "").split("/"), r = h[0] || "home", sub = h[1] || "";
+    var raw = (location.hash || "#/").replace(/^#\/?/, ""), extra = "", cut = raw.indexOf("#");
+    if (cut >= 0) { extra = raw.slice(cut + 1); raw = raw.slice(0, cut); }
+    var h = raw.split("/"), r = h[0] || "home", sub = h[1] || extra;
     if (!document.querySelector('[data-route="' + r + '"]')) r = "home";
     U.route = r;
     $$("[data-route]").forEach(function (el) { el.classList.toggle("on", el.getAttribute("data-route") === r); });
