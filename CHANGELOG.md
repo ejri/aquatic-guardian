@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- **Site**: header and footer use the Aquatic Guardian lockup, with a transparent background. The footer shows the full lockup, lined up with the citation. About places the Sentient Futures wordmark and the Aquatic Guardian emblem beside the opening line. “For industry” sits before “Learn” in the menu. “How to cite” opens `#/about/cite` (and the older `#/about#cite` form) and scrolls to the citation on About.
+- **Site**: header and footer use the Aquatic Guardian lockup, with a transparent background. The footer shows the lockup with the citation and two link lists, using the same gold headings as the rest of the site. About places the Sentient Futures wordmark and the Aquatic Guardian emblem inside the opening section, beside that line. “For industry” sits before “Learn” in the menu. “How to cite” opens `#/about/cite` (and the older `#/about#cite` form) and scrolls to the citation on About. Shared layout now uses a gold text selection, a scroll hint on the mobile menu, a shorter home hero on small screens, clearer jump-link and button targets, and a visible 404 return button. The five home-page water numbers sit in equal columns across the page. The home-page system diagram gives each model its own box and keeps the arrow labels off the lines. Long instrument-status labels wrap inside their chips. “For researchers” is back in the header menu.
 - **Tracker**: every instrument in `data/instruments.json` now has an opened
   primary-source URL (`verify: false`). SCIP status is applications closed
   (ISED, 1 June 2026); the AI Compute Challenge is still accepting applications.

@@ -9,6 +9,7 @@
     <nav class="primary" aria-label="Audiences">
       <a href="#/public" data-nav="public">For the public</a>
       <a href="#/officials" data-nav="officials">For officials</a>
+      <a href="#/lab" data-nav="lab">For researchers</a>
       <a href="#/observe" data-nav="observe" class="nav-live">Live ocean</a>
       <a href="#/industry" data-nav="industry">For industry</a>
       <a href="#/learn" data-nav="learn">Learn</a>
@@ -95,25 +96,53 @@
   </section>
 
   <section class="band deep" aria-labelledby="sys-h">
-    <div class="wrap grid2 wide-right">
-      <div>
+    <div class="wrap">
+      <div class="sys-intro">
         <h2 class="section" id="sys-h">Three models, one system</h2>
         <p class="lede">Heat, detection, and farmed-fish tools share one library. <a href="#/observe">Live ocean</a> runs them on a camera; <a href="#/learn">Learn</a> teaches the vision pipeline; Lab opens each model on its own.</p>
         <p class="muted">Select a model to see its results.</p>
       </div>
       <div class="system">
-        <svg viewBox="0 0 640 330" role="img" aria-labelledby="sys-t">
+        <svg viewBox="0 0 800 420" role="img" aria-labelledby="sys-t">
           <title id="sys-t">Thermal-Tidal feeds Aquatic Monitoring and Aquaculture Vision; Aquaculture returns a loop-temperature ceiling to Thermal-Tidal</title>
-          <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0l10 5-10 5z" fill="#F7B24A"/></marker></defs>
-          <g class="node" data-go="lab/thermal" tabindex="0" role="link" aria-label="Thermal-Tidal results"><rect x="20" y="115" width="200" height="100" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/><text x="40" y="150" fill="#F7B24A" style="font:800 22px var(--display)">Thermal-Tidal</text><text x="40" y="176" fill="#8AA7B0" style="font:13px var(--sans)">plumes, tides, mixing zones</text><text x="40" y="196" fill="#8AA7B0" style="font:13px var(--sans)">Workstream D</text></g>
-          <g class="node" data-go="lab/monitoring" tabindex="0" role="link" aria-label="Aquatic Monitoring results"><rect x="420" y="20" width="200" height="100" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/><text x="440" y="55" fill="#9ED8E6" style="font:800 22px var(--display)">Aquatic Monitoring</text><text x="440" y="81" fill="#8AA7B0" style="font:13px var(--sans)">detection-corrected occupancy</text><text x="440" y="101" fill="#8AA7B0" style="font:13px var(--sans)">Workstream A</text></g>
-          <g class="node" data-go="lab/aquaculture" tabindex="0" role="link" aria-label="Aquaculture Vision results"><rect x="420" y="210" width="200" height="100" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/><text x="440" y="245" fill="#9ED8E6" style="font:800 22px var(--display)">Aquaculture Vision</text><text x="440" y="271" fill="#8AA7B0" style="font:13px var(--sans)">tracking and bioenergetics</text><text x="440" y="291" fill="#8AA7B0" style="font:13px var(--sans)">Workstream B</text></g>
-          <path d="M220 150 C300 150 330 70 418 70" fill="none" stroke="#F7B24A" stroke-width="2.5" marker-end="url(#ah)"/>
-          <path d="M220 180 C300 180 330 250 418 250" fill="none" stroke="#F7B24A" stroke-width="2.5" marker-end="url(#ah)"/>
-          <path d="M418 290 C300 300 180 290 150 218" fill="none" stroke="#9ED8E6" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ah)"/>
-          <text x="258" y="92" fill="#DCEAEE" style="font:12px var(--mono)">plume, DO, NH₃ fields</text>
-          <text x="262" y="236" fill="#DCEAEE" style="font:12px var(--mono)">loop inlet temperature</text>
-          <text x="196" y="318" fill="#9ED8E6" style="font:12px var(--mono)">recommended ceiling returned</text>
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0l10 5-10 5z" fill="#F7B24A"/></marker>
+            <marker id="ah-ice" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0l10 5-10 5z" fill="#9ED8E6"/></marker>
+          </defs>
+          <path d="M280 188 C390 188 450 82 520 82" fill="none" stroke="#F7B24A" stroke-width="2.5" marker-end="url(#ah)"/>
+          <path d="M280 236 C390 236 450 338 520 338" fill="none" stroke="#F7B24A" stroke-width="2.5" marker-end="url(#ah)"/>
+          <path d="M520 372 C350 404 150 356 156 270" fill="none" stroke="#9ED8E6" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ah-ice)"/>
+          <g class="node" data-go="lab/thermal" tabindex="0" role="link" aria-label="Thermal-Tidal results">
+            <rect x="32" y="152" width="248" height="116" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/>
+            <text x="52" y="190" fill="#F7B24A" font-family="var(--display)" font-weight="800" font-size="22">Thermal-Tidal</text>
+            <text x="52" y="216" fill="#8AA7B0" font-family="var(--sans)" font-size="13">plumes, tides, mixing zones</text>
+            <text x="52" y="238" fill="#8AA7B0" font-family="var(--sans)" font-size="13">Workstream D</text>
+          </g>
+          <g class="node" data-go="lab/monitoring" tabindex="0" role="link" aria-label="Aquatic Monitoring results">
+            <rect x="520" y="24" width="248" height="116" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/>
+            <text x="540" y="62" fill="#9ED8E6" font-family="var(--display)" font-weight="800" font-size="22">Aquatic Monitoring</text>
+            <text x="540" y="88" fill="#8AA7B0" font-family="var(--sans)" font-size="13">detection-corrected</text>
+            <text x="540" y="106" fill="#8AA7B0" font-family="var(--sans)" font-size="13">occupancy</text>
+            <text x="540" y="128" fill="#8AA7B0" font-family="var(--sans)" font-size="13">Workstream A</text>
+          </g>
+          <g class="node" data-go="lab/aquaculture" tabindex="0" role="link" aria-label="Aquaculture Vision results">
+            <rect x="520" y="280" width="248" height="116" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/>
+            <text x="540" y="318" fill="#9ED8E6" font-family="var(--display)" font-weight="800" font-size="22">Aquaculture Vision</text>
+            <text x="540" y="344" fill="#8AA7B0" font-family="var(--sans)" font-size="13">tracking and bioenergetics</text>
+            <text x="540" y="366" fill="#8AA7B0" font-family="var(--sans)" font-size="13">Workstream B</text>
+          </g>
+          <g class="edge">
+            <rect x="292" y="48" width="176" height="24" rx="6" fill="#03121A"/>
+            <text x="380" y="65" text-anchor="middle" fill="#DCEAEE" font-family="var(--mono)" font-size="12">plume, DO, NH₃ fields</text>
+          </g>
+          <g class="edge">
+            <rect x="292" y="248" width="176" height="24" rx="6" fill="#03121A"/>
+            <text x="380" y="265" text-anchor="middle" fill="#DCEAEE" font-family="var(--mono)" font-size="12">loop inlet temperature</text>
+          </g>
+          <g class="edge">
+            <rect x="248" y="386" width="214" height="24" rx="6" fill="#03121A"/>
+            <text x="355" y="403" text-anchor="middle" fill="#9ED8E6" font-family="var(--mono)" font-size="12">recommended ceiling returned</text>
+          </g>
         </svg>
       </div>
     </div>
@@ -662,11 +691,15 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
 <!-- ================= ABOUT ================= -->
 <div data-route="about">
   <section class="pagehead deep about-head">
-    <div class="about-marks">
-      <img src="__ASSET:sf-stars-lockup.png__" width="1000" height="297" alt="Sentient Futures">
-      <img src="__ASSET:ag-emblem.png__" width="789" height="304" alt="Aquatic Guardian, a Sentient Futures project">
+    <div class="wrap">
+      <div class="about-intro">
+        <div><p class="kicker">About</p><h1>Built in the open, for all sentient beings.</h1><p class="lede">Aquatic Guardian is the second phase of a Sentient Futures fellowship project on governing ocean-cooled and underwater computing.</p></div>
+        <div class="about-marks">
+          <img src="__ASSET:sf-stars-lockup.png__" width="1000" height="297" alt="Sentient Futures">
+          <img src="__ASSET:ag-emblem.png__" width="789" height="304" alt="Aquatic Guardian, a Sentient Futures project">
+        </div>
+      </div>
     </div>
-    <div class="wrap"><p class="kicker">About</p><h1>Built in the open, for all sentient beings.</h1><p class="lede">Aquatic Guardian is the second phase of a Sentient Futures fellowship project on governing ocean-cooled and underwater computing.</p></div>
   </section>
   <section class="block"><div class="wrap grid2">
     <div class="serif">
@@ -708,12 +741,30 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
 
 <footer class="site">
   <div class="wrap">
-    <div>
+    <div class="footer-brand">
       <img class="footer-logo" src="__ASSET:ag-ocean-logo.png__" width="722" height="255" alt="Aquatic Guardian">
-      <b>Aquatic Guardian 1.0.0</b>, 17 October 2026. A Sentient Futures project.<br>Screening results are for scoping and public understanding. They are not legal advice and do not replace a regulatory mixing-zone study, a §316 demonstration, a Fisheries Act authorisation or species-expert review.
+      <p class="footer-cite"><b>Aquatic Guardian 1.0.0</b>, 17 October 2026. A Sentient Futures project.</p>
+      <p class="footer-note">Screening results are for scoping and public understanding. They are not legal advice and do not replace a regulatory mixing-zone study, a §316 demonstration, a Fisheries Act authorisation or species-expert review.</p>
     </div>
-    <div><b>Audiences</b><br><a href="#/public">Public</a><br><a href="#/officials">Officials</a><br><a href="#/lab">Researchers</a><br><a href="#/industry">Industry</a><br><a href="#/observe">Live ocean</a><br><a href="#/learn">Learn</a></div>
-    <div><b>Project</b><br><a href="#/about">About</a><br><a href="#/about/cite">How to cite</a><br><a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Phase 1 site</a></div>
+    <nav class="footer-nav" aria-labelledby="footer-audiences">
+      <h2 id="footer-audiences">Audiences</h2>
+      <ul>
+        <li><a href="#/public">Public</a></li>
+        <li><a href="#/officials">Officials</a></li>
+        <li><a href="#/lab">Researchers</a></li>
+        <li><a href="#/industry">Industry</a></li>
+        <li><a href="#/observe">Live ocean</a></li>
+        <li><a href="#/learn">Learn</a></li>
+      </ul>
+    </nav>
+    <nav class="footer-nav" aria-labelledby="footer-project">
+      <h2 id="footer-project">Project</h2>
+      <ul>
+        <li><a href="#/about">About</a></li>
+        <li><a href="#/about/cite">How to cite</a></li>
+        <li><a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">Phase 1 site</a></li>
+      </ul>
+    </nav>
   </div>
 </footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
