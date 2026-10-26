@@ -21,8 +21,8 @@ FONTS = ("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600
 
 VISION_DETAILS = r'''          <details>
             <summary>Detection model</summary>
-            <p class="small">Bundled YOLOv8n (Brackish: crab, fish, jellyfish, shrimp, small_fish, starfish) via ONNX Runtime Web. Motion detection is the fallback.</p>
-            <label class="field">Bundled model<select id="vis-model-pick"><option value="brackish-yolov8n">Brackish underwater (YOLOv8n)</option><option value="motion">Motion only</option></select></label>
+            <p class="small">Bundled nano detectors via ONNX Runtime Web (Brackish six-class, NOAA MOUSS fish, NOAA urchin). Motion detection is the fallback. Larger Marine Detect / FathomNet weights stay on the candidate list.</p>
+            <label class="field">Bundled model<select id="vis-model-pick"><option value="brackish-yolov8n">Brackish underwater (YOLOv8n, fast)</option><option value="noaa-mouss-fish-yolov8n">NOAA MOUSS fish (YOLOv8n, grayscale)</option><option value="noaa-urchin-yolo11n">NOAA sea urchin (YOLO11n, fast)</option><option value="motion">Motion only</option></select></label>
             <label class="field">Or upload .onnx<input type="file" id="vis-model" accept=".onnx"></label>
             <label class="field">Input size<select id="vis-model-size"><option value="320" selected>320 px (fast)</option><option value="640">640 px (accurate)</option></select></label>
             <label class="field">Class names, comma separated<input type="text" id="vis-model-labels" value="crab, fish, jellyfish, shrimp, small_fish, starfish"></label>
@@ -84,7 +84,7 @@ OBSERVE = r'''
           <div class="obs-detect-bar">
             <button type="button" class="btn glow sm" id="vis-run">Detect animals</button>
             <button type="button" class="btn line sm" id="vis-stop" disabled>Stop</button>
-            <p id="vis-msg" class="small muted" role="status">YOLOv8n (crab, fish, jellyfish, shrimp, small_fish, starfish) runs on this device.</p>
+            <p id="vis-msg" class="small muted" role="status">Detection runs on this device. Choose a model under Detection model; the default is Brackish YOLOv8n.</p>
           </div>
           <p class="obs-credit" id="obs-credit"></p>
         </div>
@@ -123,7 +123,7 @@ OBSERVE = r'''
         </div>
 
         <div role="tabpanel" id="obs-p-vision" aria-labelledby="obs-tab-vision" tabindex="0">
-          <p class="obs-lede">Object detection and tracking on the live feed (bundled YOLOv8n). Boxes draw on the video above. Metrics below use this camera's own baseline.</p>
+          <p class="obs-lede">Object detection and tracking on the live feed (bundled nano YOLO). Boxes draw on the video above. Metrics below use this camera's own baseline.</p>
           <div class="vis-actions">
             <button type="button" class="btn glow sm" id="vis-tab">Detect on this stream</button>
             <button type="button" class="btn line sm" id="vis-other">Share another tab</button>
@@ -139,7 +139,7 @@ OBSERVE = r'''
 ''' + VISION_DETAILS + r'''
           <details>
             <summary>Limits</summary>
-            <p class="small">Behaviour indicators, not welfare scores. Low visibility (&lt;25/100) makes counts unreliable. When the page can pull a same-origin HLS copy of the stream, detection reads that video; otherwise Chrome asks you to share this tab so pixels are available. Model classes are brackish-trained — treat open-ocean labels as screening only.</p>
+            <p class="small">Behaviour indicators, not welfare scores. Low visibility (&lt;25/100) makes counts unreliable. When the page can pull a same-origin HLS copy of the stream, detection reads that video. Otherwise Chrome asks you to share this tab and crops to the camera box, not the rest of the page. Each bundled model was trained on a different habitat — treat labels as screening only.</p>
           </details>
         </div>
 

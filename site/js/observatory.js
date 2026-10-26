@@ -308,7 +308,7 @@
     function ready() {
       if (!ST.stream || ST.stream.id !== s.id) return false;
       var msg = $("#vis-msg");
-      if (msg) msg.textContent = "Stream ready. Detect animals runs YOLOv8n on this video in the browser.";
+      if (msg) msg.textContent = "Stream ready. Detect animals runs the selected model on this video in the browser.";
       return true;
     }
     if (v.canPlayType("application/vnd.apple.mpegurl")) {
@@ -335,7 +335,7 @@
     media.innerHTML = '<div id="obs-yt"></div>';
     credit.innerHTML = esc(s.operator) + " via YouTube embed. Detection needs Share another tab, or run Detect if a same-origin stream loads. Source: " + link + exploreLink + ".";
     var msg = $("#vis-msg");
-    if (msg) msg.textContent = "Playing as embed (pixels locked). Use Detect → Share this tab, or Share another tab.";
+    if (msg) msg.textContent = "Playing as embed (pixels locked). Detect asks to share this tab, then crops to the camera — not the rest of the page.";
     loadYT().then(function (YT) {
       if (!ST.stream || ST.stream.id !== s.id) return;
       ST.player = new YT.Player("obs-yt", { host: "https://www.youtube-nocookie.com", videoId: s.provider.video_id,
@@ -434,12 +434,32 @@
     });
     loadModelCatalog();
   }
+  function liveVideo() {
+    var v = ST.video || $("#obs-video");
+    return v && v.tagName === "VIDEO" ? v : null;
+  }
+  function playerCropTarget() {
+    return $("#obs-yt") || ($("#obs-media") && $("#obs-media").querySelector("iframe")) || $("#obs-video") || $("#obs-media") || $("#obs-player");
+  }
+  function videoPixelsReadable(v) {
+    if (!v || v.readyState < 2 || !v.videoWidth) return false;
+    try {
+      var c = document.createElement("canvas"); c.width = 8; c.height = 8;
+      var x = c.getContext("2d"); x.drawImage(v, 0, 0, 8, 8); x.getImageData(0, 0, 1, 1);
+      return true;
+    } catch (e) { return false; }
+  }
   function startDetect() {
-    if (ST.video && ST.video.readyState >= 2) {
-      V.fromVideo(ST.video).then(function (src) { run(src, "live stream", true); }, fail);
+    var v = liveVideo();
+    if (v && videoPixelsReadable(v)) {
+      V.fromVideo(v).then(function (src) { run(src, "live stream", true); }, fail);
       return;
     }
-    startCapture($("#obs-player"));
+    if (v && v.readyState < 2) {
+      V.fromVideo(v).then(function (src) { run(src, "live stream", true); }, function () { startCapture(playerCropTarget()); });
+      return;
+    }
+    startCapture(playerCropTarget());
   }
   function loadModelCatalog() {
     fetch("models/models.json").then(function (r) { return r.json(); }).then(function (cat) {
@@ -469,34 +489,39 @@
     var st = $("#vis-model-status");
     if (!m) return;
     if (!m.file) {
-      ST.detector = null; if (ST.engine) ST.engine.detector = null;
+      ST.detector = null; ST.detectorConf = undefined;
+      if (ST.engine) ST.engine.detector = null;
       if (st) st.textContent = "Using motion detection only.";
       return;
     }
     if (st) st.textContent = "Loading " + m.label + "…";
     if ($("#vis-model-size")) $("#vis-model-size").value = String(m.size || 320);
     if ($("#vis-model-labels")) $("#vis-model-labels").value = (m.labels || []).join(", ");
-    V.OnnxDetector.load(m.file, m.size || 320, m.labels || [])
+    ST.detectorConf = (m.conf != null) ? m.conf : undefined;
+    V.OnnxDetector.load(m.file, m.size || 320, m.labels || [], { preprocess: m.preprocess })
       .then(function (d) {
-        ST.detector = d; if (ST.engine) ST.engine.detector = d;
+        ST.detector = d;
+        if (ST.engine) { ST.engine.detector = d; if (ST.detectorConf != null) ST.engine.o.conf = ST.detectorConf; }
         if (st) st.textContent = m.label + " ready (" + (m.labels || []).join(", ") + "). " + (m.note || "");
       }, function (er) { if (st) st.textContent = "Could not load model: " + er.message + ". Falling back to motion."; });
   }
   function fail(e) { $("#vis-msg").textContent = (e && e.name === "NotAllowedError") ? "Screen share cancelled." : (e.message || String(e)); }
   function startCapture(el) {
     V.captureTab(el).then(function (src) {
-      if (!src.cropped && el) {
-        var r = el.getBoundingClientRect(), v = src.video, sx = v.videoWidth / window.innerWidth;
-        src.crop = { x: Math.max(0, r.left * sx), y: Math.max(0, r.top * sx), w: Math.min(v.videoWidth, r.width * sx), h: Math.min(v.videoHeight, r.height * sx) };
+      if (!src.cropped && el && !src.crop) src.crop = V.cropFromElement(src.video, el);
+      var full = src.video.videoWidth * src.video.videoHeight, used = src.crop ? src.crop.w * src.crop.h : full;
+      if (!src.cropped && full && used / full > 0.85 && el) {
+        var retry = V.cropFromElement(src.video, $("#obs-player") || el);
+        if (retry && retry.w * retry.h < used) src.crop = retry;
       }
-      run(src, el ? "this tab" : "another tab", false);
+      run(src, el ? "this camera" : "another tab", true);
     }, fail);
   }
   function run(src, label, boxesOnly) {
     stopVision(true);
     ST.history = [];
     var overlay = $("#vis-overlay") || $("#vis-canvas");
-    var eng = new V.Engine({ streamId: (ST.stream && ST.stream.id) || "file", fps: 5 });
+    var eng = new V.Engine({ streamId: (ST.stream && ST.stream.id) || "file", fps: 5, conf: ST.detectorConf });
     eng.attach(src, overlay, { boxesOnly: !!boxesOnly });
     if (src.crop) eng.setCrop(src.crop);
     if (ST.detector) eng.detector = ST.detector;

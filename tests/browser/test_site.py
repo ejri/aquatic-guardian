@@ -89,6 +89,11 @@ def main():
     page.wait_for_function("document.querySelector('#obs-yt') || document.querySelector('#obs-player iframe') || document.querySelector('#obs-video')", timeout=8000)
     check(page.evaluate("() => !!(document.querySelector('#obs-yt') || document.querySelector('#obs-player iframe') || document.querySelector('#obs-video'))"), "stream player mounted")
     check(page.locator("#vis-run").count() == 1 and page.locator("#vis-overlay").count() == 1, "detect button + overlay present")
+    page.wait_for_function("document.querySelectorAll('#vis-model-pick option').length >= 4", timeout=8000)
+    pick = page.locator("#vis-model-pick option").all_inner_texts()
+    check(any("Brackish" in t for t in pick), "picker lists Brackish")
+    check(any("MOUSS" in t or "fish" in t.lower() for t in pick), "picker lists NOAA fish")
+    check(any("urchin" in t.lower() for t in pick), "picker lists NOAA urchin")
     check("29.4" in page.inner_text("#obs-now"), "live SST shown from Open-Meteo")
     check("5.2" in page.inner_text("#obs-now"), "degree heating weeks shown")
     check(page.locator("#obs-deadline").is_visible() == (datetime.now(timezone.utc) < datetime(2026, 10, 19, 21, tzinfo=timezone.utc)), "FERC deadline banner visibility matches the date")
@@ -153,6 +158,26 @@ def main():
     check(m and m["pol"] is not None and m["pol"] > 0.8, "aligned school gives high polarization")
     page.locator("#obs-player").screenshot(path=f"{OUT}/vision.png")
     page.evaluate("() => window.__eng.stop()")
+
+    # tab-share crop must map the camera box, not the whole page (V-3)
+    crop_tab = page.evaluate("""() => {
+      const v = { videoWidth: 1280, videoHeight: 800 };
+      const el = { getBoundingClientRect: () => ({ left: 100, top: 200, width: 640, height: 360 }) };
+      const win = { innerWidth: 1280, innerHeight: 800, outerWidth: 1280, outerHeight: 800, devicePixelRatio: 1, screen: { width: 1280, height: 800 }, screenX: 0, screenY: 0 };
+      return Vision.cropFromElement(v, el, win);
+    }""")
+    check(crop_tab and abs(crop_tab["x"] - 100) < 0.5 and abs(crop_tab["y"] - 200) < 0.5
+          and abs(crop_tab["w"] - 640) < 0.5 and abs(crop_tab["h"] - 360) < 0.5,
+          "tab capture crop is the player rectangle")
+    crop_nonsquare = page.evaluate("""() => {
+      const v = { videoWidth: 2000, videoHeight: 500 };
+      const el = { getBoundingClientRect: () => ({ left: 100, top: 50, width: 400, height: 200 }) };
+      const win = { innerWidth: 1000, innerHeight: 500, outerWidth: 1000, outerHeight: 500, devicePixelRatio: 1, screen: { width: 3000, height: 2000 }, screenX: 0, screenY: 0 };
+      return Vision.cropFromElement(v, el, win);
+    }""")
+    check(crop_nonsquare and abs(crop_nonsquare["x"] - 200) < 0.5 and abs(crop_nonsquare["y"] - 50) < 0.5
+          and abs(crop_nonsquare["w"] - 800) < 0.5 and abs(crop_nonsquare["h"] - 200) < 0.5,
+          "crop uses separate x and y scales (does not run on the whole frame)")
 
     # learn tab (full coverage is tests/browser/test_learn.py)
     page.goto("http://127.0.0.1:8765/index.html#/learn")

@@ -1,16 +1,37 @@
 {
-  "as_of": "2026-10-17",
+  "as_of": "2026-10-26",
   "default": "brackish-yolov8n",
   "models": [
     {
       "id": "brackish-yolov8n",
-      "label": "Brackish underwater (YOLOv8n)",
+      "label": "Brackish underwater (YOLOv8n, fast)",
       "file": "models/brackish-yolov8n.onnx",
       "size": 320,
       "labels": ["crab", "fish", "jellyfish", "shrimp", "small_fish", "starfish"],
       "source": "https://huggingface.co/dronefreak/brackish-yolov8n",
       "license": "See model card; trained on Brackish Underwater (Denmark)",
       "note": "Classes: crab, fish, jellyfish, shrimp, small_fish, starfish. Single-camera / brackish water — treat open-ocean detections as screening only."
+    },
+    {
+      "id": "noaa-mouss-fish-yolov8n",
+      "label": "NOAA MOUSS fish (YOLOv8n, grayscale)",
+      "file": "models/noaa-mouss-fish-yolov8n.onnx",
+      "size": 320,
+      "preprocess": "grayscale",
+      "labels": ["fish"],
+      "source": "https://huggingface.co/akridge/yolo8-fish-detector-grayscale",
+      "license": "NOAA/DOC scientific product; see model card disclaimer. Not official NOAA communication.",
+      "note": "One class: fish. Trained on grayscale MOUSS (Pacific Islands Fisheries Science Center) imagery. The page converts the frame to grayscale before inference. Model card: may not generalise to colour reef cameras; screening only."
+    },
+    {
+      "id": "noaa-urchin-yolo11n",
+      "label": "NOAA sea urchin (YOLO11n, fast)",
+      "file": "models/noaa-urchin-yolo11n.onnx",
+      "size": 320,
+      "labels": ["urchin"],
+      "source": "https://huggingface.co/akridge/yolo11n-sea-urchin-detector",
+      "license": "NOAA/DOC scientific product; see model card disclaimer. Not official NOAA communication.",
+      "note": "One class: urchin. Trained on Marine Detect + Roboflow urchin images (CC BY 4.0). Screening only."
     },
     {
       "id": "motion",
@@ -26,19 +47,31 @@
       "id": "marine-detect-fishinv",
       "label": "Marine Detect Fish+Invertebrates (Indo-Pacific)",
       "url": "https://github.com/Orange-OpenSource/marine-detect",
-      "note": "17 bio-indicator classes; .pt only — export to ONNX before shipping."
+      "note": "YOLOv8l, 15 reef classes (fish families, urchin, giant clam, sea cucumber, lobster, crown-of-thorns). Published .pt is 84 MB; ONNX export at 320 px is 167 MB (over GitHub’s 100 MB file limit) and about 20× the FLOPs of the bundled nano models. Export locally with scripts/export_vision_models.py and upload the .onnx. License: AGPL-3.0. Author confidence threshold 0.523."
     },
     {
       "id": "marine-detect-megafauna",
       "label": "Marine Detect MegaFauna (shark, turtle, ray)",
       "url": "https://github.com/Orange-OpenSource/marine-detect",
-      "note": "Requires ONNX export."
+      "note": "YOLOv8l, 3 classes. Same size/speed constraint as FishInv. Author confidence threshold 0.546. License: AGPL-3.0."
+    },
+    {
+      "id": "fathomnet-vme",
+      "label": "FathomNet VME (coral, crinoid, sponge, fish)",
+      "url": "https://huggingface.co/FathomNet/vulnerable-marine-ecosystems",
+      "note": "YOLOv8x, 137 MB .pt; too large for in-browser default. Deep-sea benthic imagery, not kelp-forest cameras."
     },
     {
       "id": "fathomnet-mbari",
       "label": "FathomNet / MBARI-315k YOLOv8",
       "url": "https://huggingface.co/FathomNet/MBARI-315k-yolov8",
       "note": "Deep-sea taxa; large; not yet bundled."
+    },
+    {
+      "id": "hakai-kelp-rgb",
+      "label": "Hakai Kelp-RGB (aerial segmentation)",
+      "url": "https://huggingface.co/HakaiInstitute/kelp-rgb",
+      "note": "Giant kelp / bull kelp semantic segmentation on 2048×2048 drone stills, not a live-camera box detector. No in-browser YOLO kelp model was found with a named source."
     }
   ]
 }

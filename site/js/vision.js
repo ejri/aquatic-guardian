@@ -13,20 +13,55 @@
   var ORT_URL = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.min.js";
 
   /* ------------------------------------------------ sources ---- */
+  function near(a, b, tol) { return Math.abs(a - b) <= (tol || 8); }
+  // Map a viewport rectangle onto a captured frame (this tab, this window, or the screen).
+  function captureLayout(vw, vh, win) {
+    var iw = win.innerWidth, ih = win.innerHeight, dpr = win.devicePixelRatio || 1;
+    var ow = win.outerWidth, oh = win.outerHeight;
+    var scr = win.screen || {}, sw = scr.width, sh = scr.height;
+    if (iw && ih && near(vw, iw) && near(vh, ih)) return { sx: vw / iw, sy: vh / ih, ox: 0, oy: 0 };
+    if (iw && ih && near(vw, iw * dpr) && near(vh, ih * dpr)) return { sx: dpr, sy: dpr, ox: 0, oy: 0 };
+    if (ow && oh && (near(vw, ow) || near(vw, ow * dpr)))
+      return { sx: vw / ow, sy: vh / oh, ox: (ow - iw) / 2, oy: Math.max(0, oh - ih) };
+    if (sw && sh && (near(vw, sw) || near(vw, sw * dpr)))
+      return { sx: vw / sw, sy: vh / sh, ox: win.screenX || 0, oy: (win.screenY || 0) + Math.max(0, (oh || ih) - ih) };
+    return { sx: iw ? vw / iw : 1, sy: ih ? vh / ih : 1, ox: 0, oy: 0 };
+  }
+  function cropFromElement(video, el, win) {
+    win = win || root;
+    var vw = video.videoWidth, vh = video.videoHeight;
+    if (!vw || !vh || !el || !el.getBoundingClientRect) return null;
+    var r = el.getBoundingClientRect(), L = captureLayout(vw, vh, win);
+    var x = Math.max(0, (L.ox + r.left) * L.sx), y = Math.max(0, (L.oy + r.top) * L.sy);
+    var w = Math.min(vw - x, r.width * L.sx), h = Math.min(vh - y, r.height * L.sy);
+    if (w < 8 || h < 8) return null;
+    return { x: x, y: y, w: w, h: h };
+  }
+  function isolateTrack(track, el) {
+    if (!el) return Promise.resolve(false);
+    function crop() {
+      if (!(root.CropTarget && track.cropTo)) return Promise.resolve(false);
+      return root.CropTarget.fromElement(el).then(function (ct) { return track.cropTo(ct); }).then(function () { return true; }).catch(function () { return false; });
+    }
+    if (root.RestrictionTarget && track.restrictTo) {
+      return root.RestrictionTarget.fromElement(el).then(function (t) { return track.restrictTo(t); }).then(function () { return true; }).catch(function () { return crop(); });
+    }
+    return crop();
+  }
   function captureTab(targetEl) {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia)
       return Promise.reject(new Error("This browser cannot capture a tab. Try Chrome or Edge on a desktop, or analyse a video file instead."));
     var opts = { video: { displaySurface: "browser", frameRate: 15 }, audio: false, preferCurrentTab: true, selfBrowserSurface: "include", surfaceSwitching: "exclude" };
     return navigator.mediaDevices.getDisplayMedia(opts).then(function (stream) {
-      var track = stream.getVideoTracks()[0], cropped = false;
-      var p = Promise.resolve();
-      if (targetEl && root.CropTarget && track.cropTo) {
-        p = root.CropTarget.fromElement(targetEl).then(function (ct) { return track.cropTo(ct); }).then(function () { cropped = true; }).catch(function () {});
-      }
-      return p.then(function () {
+      var track = stream.getVideoTracks()[0];
+      return isolateTrack(track, targetEl).then(function (cropped) {
         var v = document.createElement("video");
         v.muted = true; v.playsInline = true; v.srcObject = stream;
-        return v.play().then(function () { return { video: v, stream: stream, cropped: cropped, kind: "tab" }; });
+        return v.play().then(function () {
+          var src = { video: v, stream: stream, cropped: !!cropped, kind: "tab" };
+          if (!src.cropped && targetEl) src.crop = cropFromElement(v, targetEl, root);
+          return src;
+        });
       });
     });
   }
@@ -165,12 +200,16 @@
     });
     return ortPromise;
   }
-  function OnnxDetector(session, size, labels) { this.s = session; this.size = size; this.labels = labels || []; this.canvas = document.createElement("canvas"); this.canvas.width = this.canvas.height = size; }
-  OnnxDetector.load = function (source, size, labels) {
+  function OnnxDetector(session, size, labels, opts) {
+    this.s = session; this.size = size; this.labels = labels || [];
+    this.preprocess = (opts && opts.preprocess) || "rgb";
+    this.canvas = document.createElement("canvas"); this.canvas.width = this.canvas.height = size;
+  }
+  OnnxDetector.load = function (source, size, labels, opts) {
     return loadOrt().then(function (ort) {
       var buf = source instanceof Blob ? source.arrayBuffer() : fetch(source).then(function (r) { if (!r.ok) throw new Error("Model download failed: HTTP " + r.status); return r.arrayBuffer(); });
       return buf.then(function (b) { return ort.InferenceSession.create(b, { executionProviders: ["webgpu", "wasm"] }); })
-        .then(function (sess) { return new OnnxDetector(sess, size || 320, labels); });
+        .then(function (sess) { return new OnnxDetector(sess, size || 320, labels, opts); });
     });
   };
   OnnxDetector.prototype.detect = function (srcCanvas, conf) {
@@ -178,7 +217,15 @@
     var sc = Math.min(S / sw, S / sh), nw = sw * sc, nh = sh * sc, ox = (S - nw) / 2, oy = (S - nh) / 2;
     ctx.fillStyle = "#727272"; ctx.fillRect(0, 0, S, S); ctx.drawImage(srcCanvas, ox, oy, nw, nh);
     var px = ctx.getImageData(0, 0, S, S).data, input = new Float32Array(3 * S * S);
-    for (var i = 0; i < S * S; i++) { input[i] = px[i * 4] / 255; input[S * S + i] = px[i * 4 + 1] / 255; input[2 * S * S + i] = px[i * 4 + 2] / 255; }
+    var gray = this.preprocess === "grayscale";
+    for (var i = 0; i < S * S; i++) {
+      if (gray) {
+        var y = (0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2]) / 255;
+        input[i] = input[S * S + i] = input[2 * S * S + i] = y;
+      } else {
+        input[i] = px[i * 4] / 255; input[S * S + i] = px[i * 4 + 1] / 255; input[2 * S * S + i] = px[i * 4 + 2] / 255;
+      }
+    }
     var ort = root.ort, feeds = {}, self = this;
     feeds[this.s.inputNames[0]] = new ort.Tensor("float32", input, [1, 3, S, S]);
     return this.s.run(feeds).then(function (out) {
@@ -229,6 +276,10 @@
   Engine.prototype.process = function () {
     var v = this.video; if (!v || v.readyState < 2 || !v.videoWidth) return Promise.resolve(null);
     var cr = this.crop || { x: 0, y: 0, w: v.videoWidth, h: v.videoHeight };
+    cr = { x: Math.max(0, cr.x), y: Math.max(0, cr.y), w: cr.w, h: cr.h };
+    if (cr.x + cr.w > v.videoWidth) cr.w = v.videoWidth - cr.x;
+    if (cr.y + cr.h > v.videoHeight) cr.h = v.videoHeight - cr.y;
+    if (cr.w < 8 || cr.h < 8) cr = { x: 0, y: 0, w: v.videoWidth, h: v.videoHeight };
     var W = this.o.width, H = Math.max(8, Math.round(W * cr.h / cr.w));
     if (this.work.width !== W || this.work.height !== H) { this.work.width = W; this.work.height = H; this.bg = null; }
     this.ctx.drawImage(v, cr.x, cr.y, cr.w, cr.h, 0, 0, W, H);
@@ -356,5 +407,6 @@
   }
 
   root.Vision = { captureTab: captureTab, fromFile: fromFile, fromVideo: fromVideo, Engine: Engine, OnnxDetector: OnnxDetector, connectRelay: connectRelay,
-    _internals: { components: components, iou: iou, hull: hull, Tracker: Tracker, KF1: KF1, erode: erode, dilate: dilate } };
+    cropFromElement: cropFromElement,
+    _internals: { components: components, iou: iou, hull: hull, Tracker: Tracker, KF1: KF1, erode: erode, dilate: dilate, captureLayout: captureLayout, cropFromElement: cropFromElement } };
 })(typeof self !== "undefined" ? self : this);
