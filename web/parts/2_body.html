@@ -720,7 +720,7 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
   <section class="block deep" id="cite" aria-labelledby="cite-h">
     <div class="wrap">
       <h2 class="section" id="cite-h">How to cite</h2>
-      <p class="lede serif">Please cite both phases when you use the toolkit, the Live ocean page, or the PLUMES rebuild.</p>
+      <p class="lede serif">Please cite both phases when you use the toolkit or the Live ocean page, and cite the EPA PLUMES 2.0 manual when you use the rebuild.</p>
       <div class="grid2">
         <div class="serif">
           <h3>This project (Phase 2)</h3>
@@ -732,6 +732,12 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
           <p><b>Governing the Ocean Server Farm</b> (April 2026). Ibrahim Elchami, Zachary Kaplan and Charbel Daher. Sentient Futures. Site: <a href="https://oceanic-datacenters-governance.netlify.app" rel="noopener">oceanic-datacenters-governance.netlify.app</a>.</p>
           <pre class="json" style="white-space:pre-wrap">Elchami, I., Kaplan, Z., &amp; Daher, C. (2026). Governing the Ocean Server Farm. Sentient Futures. https://oceanic-datacenters-governance.netlify.app</pre>
         </div>
+      </div>
+      <div class="serif" style="margin-top:1.5rem">
+        <h3>EPA PLUMES 2.0 (source for the Lab rebuild)</h3>
+        <p>The Lab’s near- and far-field heat model follows the published PLUMES 2.0 theory and user manual. Cite the EPA document when you use that instrument or the <code>plumes2py</code> rebuild.</p>
+        <pre class="json" style="white-space:pre-wrap">US EPA. 2024. PLUMES2.0 – Dilution Model: Model Theory and User Manual. EPA 600/B-24/339. Office of Research and Development. https://www.epa.gov/hydrowq/PLUMES2</pre>
+        <p class="small muted">Primary page: <a href="https://www.epa.gov/hydrowq/PLUMES2" rel="noopener">epa.gov/hydrowq/PLUMES2</a>. Report number EPA 600/B-24/339.</p>
       </div>
       <p class="small muted">Live camera operators (explore.org, Monterey Bay Aquarium, Ocean Networks Canada, Coral Morphologic and others) own their feeds; credit them when you show or analyse their streams. Ocean data: Open-Meteo (CC BY 4.0), NOAA Coral Reef Watch and CO-OPS (US public domain), DFO IWLS (Open Government Licence – Canada). Detection models bundled here: Brackish YOLOv8n (<a href="https://huggingface.co/dronefreak/brackish-yolov8n" rel="noopener">dronefreak/brackish-yolov8n</a>), NOAA MOUSS fish YOLOv8n (<a href="https://huggingface.co/akridge/yolo8-fish-detector-grayscale" rel="noopener">akridge/yolo8-fish-detector-grayscale</a>), NOAA sea urchin YOLO11n (<a href="https://huggingface.co/akridge/yolo11n-sea-urchin-detector" rel="noopener">akridge/yolo11n-sea-urchin-detector</a>); see <code>site/models/models.json</code> for further candidates (Marine Detect YOLOv8l, FathomNet/MBARI, Hakai kelp aerial segmentation).</p>
     </div>

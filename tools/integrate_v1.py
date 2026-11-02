@@ -201,7 +201,7 @@ OBSERVE = r'''
       <div class="cols">
         <div><h3>Streams</h3><p>Many open-ocean cams come from <a href="https://explore.org/livecams/oceans/" rel="noopener">explore.org Oceans</a> and play here through YouTube's privacy-enhanced player. Others keep their own players. Aquariums, surface views and scheduled clips are labelled. Streams restart under new ids, so an entry can break between nightly checks.</p></div>
         <div><h3>Ocean data</h3><p>Sea temperature, currents and sea level come from Open-Meteo Marine. Heat stress comes from NOAA Coral Reef Watch. Tide predictions come from NOAA CO-OPS and Fisheries and Oceans Canada. Nothing loads until you open this page.</p></div>
-        <div><h3>Heat model</h3><p>The EPA's PLUMES 2.0 near- and far-field mixing, rebuilt so it runs in the browser. Full controls and verification live in the <a href="#/lab/sim-plumes">Lab</a>.</p></div>
+        <div><h3>Heat model</h3><p>The EPA’s PLUMES 2.0 near- and far-field mixing (<a href="https://www.epa.gov/hydrowq/PLUMES2" rel="noopener">EPA 600/B-24/339</a>), rebuilt so it runs in the browser. Full controls and verification live in the <a href="#/lab/sim-plumes">Lab</a>.</p></div>
         <div><h3>What it is not</h3><p>Screening, not a permit decision. Species thresholds marked as placeholders need literature or veterinary input before they are relied on.</p></div>
       </div>
     </div>
@@ -211,7 +211,7 @@ OBSERVE = r'''
 
 PLUMES_LAB = r'''
             <div class="inst" id="sim-plumes">
-              <div class="inst-head"><h3>PLUMES 2.0, rebuilt in Python and running here</h3><span class="tag">UM3 near field and Brooks far field from EPA/600/B-24/339; checked against the EPA's Example_project output; browser copy parity-tested</span></div>
+              <div class="inst-head"><h3>PLUMES 2.0, rebuilt in Python and running here</h3><span class="tag">UM3 near field and Brooks far field from US EPA (2024) EPA 600/B-24/339; checked against the EPA's Example_project output; browser copy parity-tested</span></div>
               <div class="inst-body">
                 <div class="inst-view">
                   <svg id="pl-traj" viewBox="0 0 720 300" style="width:100%;height:auto;display:block;background:#021017;border-radius:8px" role="img" aria-label="Plume trajectory in side view, with the EPA reference points when the example is loaded"></svg>
@@ -254,6 +254,7 @@ PLUMES_LAB = r'''
                 </div>
               </div>
               <p class="finding"><b>What the rebuild found.</b> PLUMES 2.0's Fortran source is not public, so the model was rebuilt from the manual and checked against the EPA's shipped example. The first 25 steps match to three decimals; along the whole plume dilution is within 2.9 % and the surfacing point within 1.2 %, with one forced-entrainment scale (0.81) fitted to that single case, to be confirmed with the 16-case benchmark kit. Three discrepancies in the EPA materials: the example effluent is 2.63 °C in the shipped files but 26.3 °C in the manual text; manual eq. 11 doubles the case-2 width growth that eq. 15 and the derivation imply; and the manual's table and the shipped program start the far field at different distances (about 7.2 m against 4.4 m).</p>
+              <p class="small muted">Source: US EPA. 2024. <i>PLUMES2.0 – Dilution Model: Model Theory and User Manual</i>. EPA 600/B-24/339. Office of Research and Development. <a href="https://www.epa.gov/hydrowq/PLUMES2" rel="noopener">https://www.epa.gov/hydrowq/PLUMES2</a>. Cite this document when you use this instrument; see also <a href="#/about/cite">How to cite</a>.</p>
             </div>
 '''
 
@@ -376,6 +377,30 @@ def _ensure_learn_assets(html: str) -> str:
     return html
 
 
+def _replace_div_by_id(html: str, div_id: str, replacement: str) -> str:
+    """Replace the outermost <div id="…">…</div> with replacement (keeps surrounding whitespace)."""
+    needle = f'<div class="inst" id="{div_id}"' if div_id == "sim-plumes" else f'<div id="{div_id}"'
+    open_at = html.find(needle)
+    if open_at < 0 and div_id == "sim-plumes":
+        open_at = html.find(f'<div id="{div_id}"')
+    if open_at < 0:
+        return html
+    i, depth = open_at, 0
+    while i < len(html):
+        if html.startswith("</div>", i):
+            depth -= 1
+            i += 6
+            if depth == 0:
+                return html[:open_at] + replacement.strip() + html[i:]
+            continue
+        if html.startswith("<div", i) and (i + 4 == len(html) or html[i + 4] in " \t\r\n>"):
+            depth += 1
+            i += 4
+            continue
+        i += 1
+    return html
+
+
 def _refresh_observe(html: str) -> str:
     """Replace the Live ocean route block so layout edits ship on re-integrate."""
     mark = "<!-- ================= LIVE OCEAN ================= -->"
@@ -406,10 +431,18 @@ def _refresh_observe(html: str) -> str:
     return html
 
 
+def _refresh_plumes_lab(html: str) -> str:
+    """Replace the Lab PLUMES instrument so citation and copy edits ship on re-integrate."""
+    if 'id="sim-plumes"' not in html:
+        return html
+    return _replace_div_by_id(html, "sim-plumes", PLUMES_LAB)
+
+
 def patch(html: str) -> str:
     """Return html with Live ocean + PLUMES Lab + Learn layered on. Idempotent when MARK is present."""
     if MARK in html:
         html = _refresh_vision_panel(_refresh_observe(html))
+        html = _refresh_plumes_lab(html)
         html = _ensure_learn_assets(_refresh_learn(html))
         return html
 
