@@ -35,3 +35,6 @@ learning_materials/Learn computer vision · Aquatic Guardian_files/
 # Local editor / OS noise
 *.swp
 *~
+# Agent build prompt packs (not for the public tree)
+cursor/
+Cursor_prompts.md
