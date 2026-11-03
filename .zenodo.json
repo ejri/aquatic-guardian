@@ -1,6 +1,6 @@
 {
   "title": "Aquatic Guardian: a plug-in aquatic, ecological and sentience module for data-centre regulation",
-  "description": "Verified screening physics, water quality, occupancy, imaging, tracking, bioenergetics, disclosure schemas, policy model language and a public screening website for the aquatic and animal-welfare impacts of data centres. A Sentient Futures project.",
+  "description": "Verified screening physics, water quality, occupancy, imaging, tracking, bioenergetics, disclosure schemas, policy model language, Live ocean cameras, and a Python rebuild of EPA PLUMES 2.0 for the aquatic and animal-welfare impacts of data centres. A Sentient Futures project.",
   "license": "Apache-2.0",
   "upload_type": "software",
   "keywords": [
@@ -10,8 +10,10 @@
     "animal welfare",
     "aquatic ecology",
     "sentience",
+    "PLUMES",
     "environmental regulation",
-    "screening"
+    "screening",
+    "computer vision"
   ],
   "creators": [
     {"name": "Elchami, Ibrahim"},
@@ -22,6 +24,16 @@
       "relation": "isSupplementTo",
       "identifier": "https://github.com/ejri/aquatic-guardian",
       "resource_type": "software"
+    },
+    {
+      "relation": "cites",
+      "identifier": "https://www.epa.gov/hydrowq/PLUMES2",
+      "resource_type": "publication-technicalnote"
+    },
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://oceanic-datacenters-governance.netlify.app",
+      "resource_type": "other"
     }
   ]
 }

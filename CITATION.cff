@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this software or framework, please cite it as below."
+message: "If you use this software, the Live ocean page, or the PLUMES rebuild, please cite Aquatic Guardian as below, and cite the EPA PLUMES 2.0 manual when you use that instrument."
 title: "Aquatic Guardian: a plug-in aquatic, ecological and sentience module for data-centre regulation"
 version: 1.0.0
 date-released: 2026-10-17
@@ -9,6 +9,17 @@ authors:
     given-names: Ibrahim
   - name: "Aquatic Guardian contributors"
 repository-code: "https://github.com/ejri/aquatic-guardian"
+url: "https://github.com/ejri/aquatic-guardian"
+keywords:
+  - data centres
+  - thermal discharge
+  - cooling water
+  - animal welfare
+  - aquatic ecology
+  - sentience
+  - PLUMES
+  - environmental regulation
+  - screening
 references:
   - type: report
     title: "Governing the Ocean Server Farm"
@@ -20,4 +31,15 @@ references:
       - family-names: Daher
         given-names: Charbel
     year: 2026
-    publisher: {name: "Sentient Futures"}
+    publisher:
+      name: "Sentient Futures"
+    url: "https://oceanic-datacenters-governance.netlify.app"
+  - type: manual
+    title: "PLUMES2.0 – Dilution Model: Model Theory and User Manual"
+    authors:
+      - name: "US Environmental Protection Agency"
+    year: 2024
+    report-number: "EPA 600/B-24/339"
+    institution:
+      name: "Office of Research and Development"
+    url: "https://www.epa.gov/hydrowq/PLUMES2"

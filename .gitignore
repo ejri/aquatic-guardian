@@ -6,9 +6,11 @@ __pycache__/
 build/
 dist/
 node_modules/
-# Briefs are committed as Markdown only; PDF and DOCX are produced locally by pandoc.
+# Briefs are committed as Markdown only under briefs/; PDF and DOCX are local pandoc output.
 briefs/*.pdf
 briefs/*.docx
+# Generated copies under the publish tree (canonical briefs live in briefs/)
+site/briefs/
 .DS_Store
 .ipynb_checkpoints/
 benchmarks/visual_plumes/decks/*
@@ -29,3 +31,7 @@ epa_ssmc-plumes2.0_usermanual.pdf
 # Accidental curl dump and a browser "Save Page As" of the Learn tab
 -q/
 learning_materials/Learn computer vision · Aquatic Guardian_files/
+
+# Local editor / OS noise
+*.swp
+*~

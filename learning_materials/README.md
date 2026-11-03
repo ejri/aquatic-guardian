@@ -103,3 +103,14 @@ These came up while building the course and are written into the capstones.
 All scenes and surveys are synthetic. Attenuation coefficients, turbidity units and detection parameters are
 illustrative teaching values, not site measurements. Species parameters and welfare bands remain placeholders to be
 set with aquatic-science input, as in the project notebooks.
+
+## Cite EPA PLUMES 2.0
+
+The Aquatic Guardian Lab rebuild of near- and far-field mixing follows the published PLUMES 2.0 manual. Cite that
+document when you use the Lab instrument or the `plumes2py` rebuild (also linked from the site’s How to cite page):
+
+```
+US EPA. 2024. PLUMES2.0 – Dilution Model: Model Theory and User Manual. EPA 600/B-24/339. Office of Research and Development. https://www.epa.gov/hydrowq/PLUMES2
+```
+
+Primary page: [epa.gov/hydrowq/PLUMES2](https://www.epa.gov/hydrowq/PLUMES2). Report number EPA 600/B-24/339.

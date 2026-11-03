@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Public repo layout**: root brand PNG dumps moved to `docs/brand/`; duplicate root `Cursor_prompts.md` removed (keep `cursor/PROMPTS.md`); `site/briefs/` ignored (canonical briefs stay in `briefs/`); README, CONTRIBUTING, CITATION.cff, SECURITY.md and Zenodo metadata refreshed for a public GitHub presentation; learning materials README cites EPA PLUMES 2.0.
 - **Cite**: About → How to cite, the Lab PLUMES instrument, and Live ocean’s heat-model note now give the full EPA PLUMES 2.0 citation (US EPA 2024, EPA 600/B-24/339, https://www.epa.gov/hydrowq/PLUMES2). The Lab panel is refreshed on rebuild so that citation stays current.
 - **Live ocean**: Detect runs on the camera pixels. A same-origin stream is read from the `<video>` element; a YouTube embed still needs a tab share, but that share is cropped to the player (Element Capture / Region Capture, then a viewport crop) so the model does not see the rest of the page. Boxes draw on the overlay only.
 - **Live ocean detectors**: picker now includes NOAA MOUSS fish (YOLOv8n, grayscale) and NOAA sea urchin (YOLO11n) beside the Brackish default. All three are nano ONNX at 320 px. Marine Detect / FathomNet / Hakai kelp stay on the candidate list: the Marine Detect weights are YOLOv8l (~167 MB ONNX, over GitHub’s 100 MB file limit and much slower in the browser); Hakai kelp is aerial segmentation, not a live-camera box model. Export recipe in `scripts/export_vision_models.py`.

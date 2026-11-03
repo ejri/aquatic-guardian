@@ -1,6 +1,6 @@
 # Building Aquatic Guardian in Cursor: prompt pack
 
-Run these in order in Cursor's Agent mode. Each prompt is self-contained. Paste it, let the agent work, then check the "Before you move on" line yourself. The rules in `.cursor/rules/` and `AGENTS.md` load automatically and carry the project's invariants, so the prompts don't repeat them.
+Canonical copy (the former root `Cursor_prompts.md` pointed here). Run these in order in Cursor's Agent mode. Each prompt is self-contained. Paste it, let the agent work, then check the "Before you move on" line yourself. The rules in `.cursor/rules/` and `AGENTS.md` load automatically and carry the project's invariants, so the prompts don't repeat them.
 
 Tips:
 - Start each phase in a new chat so the context stays clean.
