@@ -2,9 +2,12 @@
 
 **A plug-in aquatic, ecological and animal-welfare module for data-centre regulation** — screening physics, policy model language, live ocean cameras, in-browser detection, and a Python rebuild of EPA PLUMES 2.0. A [Sentient Futures](https://oceanic-datacenters-governance.netlify.app) project.
 
+**Live site:** [https://aquaticguardian.netlify.app/](https://aquaticguardian.netlify.app/)
+
 | | |
 |---|---|
 | **Version** | 1.0.0 |
+| **Live site** | [aquaticguardian.netlify.app](https://aquaticguardian.netlify.app/) |
 | **Code** | [Apache-2.0](LICENSE) |
 | **Docs / text** | [CC BY 4.0](LICENSE-docs.md) (schemas [CC0](LICENSE-docs.md)) |
 | **Repository** | [github.com/ejri/aquatic-guardian](https://github.com/ejri/aquatic-guardian) |
