@@ -45,6 +45,14 @@ def route(r):
     if u.startswith("http://127.0.0.1:8765"): return r.continue_()
     if "marine-api.open-meteo.com" in u: return r.fulfill(status=200, content_type="application/json", body=json.dumps(MARINE), headers={"Access-Control-Allow-Origin": "*"})
     if "coastwatch.pfeg.noaa.gov" in u or "pae-paha.pacioos.hawaii.edu" in u or "coastwatch.noaa.gov" in u:
+        # Point query and multi-day series both get a valid CRW table (series needs ≥1 SST row).
+        if "CRW_SST[(" in u and "):1:(" in u:
+            rows = []
+            for i in range(90):
+                t = (now - timedelta(days=89 - i)).strftime("%Y-%m-%dT12:00:00Z")
+                rows.append([t, 16.075, -86.925, 29.6 + 0.2 * math.sin(i / 10), max(0, 5.2 - (89 - i) * 0.04), 1.1, 3])
+            series = {"table": {"columnNames": ["time", "latitude", "longitude", "CRW_SST", "CRW_DHW", "CRW_SSTANOMALY", "CRW_BAA_7D_MAX"], "rows": rows}}
+            return r.fulfill(status=200, content_type="application/json", body=json.dumps(series), headers={"Access-Control-Allow-Origin": "*"})
         return r.fulfill(status=200, content_type="application/json", body=json.dumps(CRW), headers={"Access-Control-Allow-Origin": "*"})
     if "tidesandcurrents.noaa.gov" in u: return r.fulfill(status=200, content_type="application/json", body=json.dumps(COOPS if "predictions" in u else {"data": [{"t": "x", "v": "14.1"}]}), headers={"Access-Control-Allow-Origin": "*"})
     if "youtube.com/iframe_api" in u: return r.fulfill(status=200, content_type="text/javascript", body=YT_STUB)
@@ -84,7 +92,8 @@ def main():
     check(page.locator('#obs-regions .chip[data-region="se-asia"]').count() == 0, "empty regions hidden from chips")
     check(page.locator('#obs-regions .chip[data-region="aquaculture"]').count() == 0, "salmon-farms empty chip hidden")
     check(page.locator(".obs-research .res-card").count() == 3, "research desk has three tools")
-    page.wait_for_function("document.querySelector('#obs-now .ro') !== null", timeout=8000)
+    # Live strip uses .tile (Temperature / Water movement groups), not Lab .ro readouts
+    page.wait_for_function("document.querySelector('#obs-now .tile') !== null", timeout=8000)
     check("Utila" in page.inner_text("#obs-name"), "default station is Utila top of wall")
     page.wait_for_function("document.querySelector('#obs-yt') || document.querySelector('#obs-player iframe') || document.querySelector('#obs-video')", timeout=8000)
     check(page.evaluate("() => !!(document.querySelector('#obs-yt') || document.querySelector('#obs-player iframe') || document.querySelector('#obs-video'))"), "stream player mounted")
@@ -95,8 +104,10 @@ def main():
     check("brackish-yolov8n" in pick, "picker lists Brackish")
     check("noaa-mouss-fish-yolov8n" in pick, "picker lists NOAA fish")
     check("noaa-urchin-yolo11n" in pick, "picker lists NOAA urchin")
-    check("29.4" in page.inner_text("#obs-now"), "live SST shown from Open-Meteo")
-    check("5.2" in page.inner_text("#obs-now"), "degree heating weeks shown")
+    # Temperature tiles prefer Coral Reef Watch SST (stub 29.6) over Open-Meteo (29.4)
+    now_txt = page.inner_text("#obs-now")
+    check("29.6" in now_txt or "29.4" in now_txt, "live SST shown (CRW or Open-Meteo)")
+    check("5.2" in now_txt, "degree heating weeks shown")
     check(page.locator("#obs-deadline").is_visible() == (datetime.now(timezone.utc) < datetime(2026, 10, 19, 21, tzinfo=timezone.utc)), "FERC deadline banner visibility matches the date")
     page.screenshot(path=f"{OUT}/observe_top.png")
 

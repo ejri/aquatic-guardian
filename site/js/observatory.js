@@ -3,129 +3,101 @@
 (function () {
   "use strict";
   var U = window.AGU, $ = U.$, $$ = U.$$, fmt = U.fmt, esc = U.esc, P = window.Plumes2, OD = window.OceanData, V = window.Vision;
-  var REG = null, ST = { stream: null, ocean: null, engine: null, ws: null, history: [], site: null, lastRun: null, ytReady: null, player: null, hls: null, video: null, region: "all", scrolled: false, map: null, mapReady: false };
+  var REG = null, WORLD = null, ST = { stream: null, ocean: null, engine: null, ws: null, history: [], site: null, lastRun: null, ytReady: null, player: null, hls: null, video: null, region: "all", scrolled: false };
   var HLS_CDN = "https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js";
+  var EE = { A1: 1.340264, A2: -0.081106, A3: 0.000893, A4: 0.003796 };
   var KIND = { open_ocean: "Open ocean", aquarium: "Aquarium", expedition: "Expedition", scheduled: "Scheduled clips", surface: "Surface view" };
-  var MAP_STYLE = "https://demotiles.maplibre.org/style.json";
+
+  /* Equal Earth projection → SVG pixel (matches site/data/world.json). */
+  function project(lon, lat) {
+    var M = Math.sqrt(3) / 2, l = lon * Math.PI / 180, p = lat * Math.PI / 180, th = Math.asin(M * Math.sin(p)), t2 = th * th, t6 = t2 * t2 * t2;
+    var x = 2 * Math.sqrt(3) * l * Math.cos(th) / (3 * (9 * EE.A4 * t6 * t2 + 7 * EE.A3 * t6 + 3 * EE.A2 * t2 + EE.A1));
+    var y = th * (EE.A1 + EE.A2 * t2 + t6 * (EE.A3 + EE.A4 * t2));
+    return [(x / WORLD.xmax + 1) * WORLD.width / 2, (1 - y / WORLD.ymax) * WORLD.height / 2];
+  }
 
   /* ------------------------------------------------------------ init */
   U.inits.observe = function (sub) {
-    fetch("data/streams.json", { cache: "no-store" }).then(function (r) { return r.json(); })
-      .then(function (reg) {
-        REG = reg;
-        drawMap(); drawRegions(); drawGallery(); deadlineBanner(); bindTabs(); bindVision(); bindScenario(); bindResearch();
-        var nYt = REG.streams.filter(function (s) { return s.embed && s.provider && s.provider.type === "youtube_video"; }).length;
-        $("#obs-status").innerHTML = REG.streams.length + " cameras · " + nYt + " play on this page · click a pin or card";
-        select(sub && byId(sub) ? sub : (sub && site(sub) ? null : "utila-top"));
-        if (sub && site(sub)) openSite(sub);
-      })
-      .catch(function (e) { $("#obs-status").textContent = "The stream list did not load (" + e.message + "). Reload the page to try again."; });
+    Promise.all([
+      fetch("data/streams.json", { cache: "no-store" }).then(function (r) { return r.json(); }),
+      fetch("data/world.json", { cache: "no-store" }).then(function (r) { return r.json(); })
+    ]).then(function (a) {
+      REG = a[0]; WORLD = a[1];
+      drawMap(); drawRegions(); drawGallery(); deadlineBanner(); bindTabs(); bindVision(); bindScenario(); bindResearch();
+      var nYt = REG.streams.filter(function (s) { return s.embed && s.provider && s.provider.type === "youtube_video"; }).length;
+      $("#obs-status").innerHTML = REG.streams.length + " cameras · " + nYt + " play on this page · click a pin or card";
+      select(sub && byId(sub) ? sub : (sub && site(sub) ? null : "utila-top"));
+      if (sub && site(sub)) openSite(sub);
+    }).catch(function (e) { $("#obs-status").textContent = "The stream list did not load (" + e.message + "). Reload the page to try again."; });
   };
-  U.onRoute.observe = function (sub) { if (REG && sub) { if (byId(sub)) select(sub); else if (site(sub)) openSite(sub); } if (!sub || !REG) return; if (ST.map) try { ST.map.resize(); } catch (e) {} };
+  U.onRoute.observe = function (sub) { if (REG && sub) { if (byId(sub)) select(sub); else if (site(sub)) openSite(sub); } if (!sub || !REG) return; };
   function byId(id) { return REG && REG.streams.filter(function (s) { return s.id === id; })[0]; }
   function site(id) { return REG && REG.sites.filter(function (s) { return s.id === id; })[0]; }
 
   /* ------------------------------------------------------------- map */
-  function camFeatures(region) {
-    return REG.streams.filter(function (s) { return region === "all" || s.region === region; }).map(function (s) {
-      var off = /^(offline|removed|ended)$/.test(s.status || "");
-      return { type: "Feature", properties: { id: s.id, name: s.name, kind: s.kind, region: s.region, offline: off, thumb: thumbUrl(s) || "", embed: !!s.embed }, geometry: { type: "Point", coordinates: [s.lon, s.lat] } };
-    });
-  }
-  function siteFeatures() {
-    return REG.sites.map(function (s) {
-      return { type: "Feature", properties: { id: s.id, name: s.name, status: s.status, site: true }, geometry: { type: "Point", coordinates: [s.lon, s.lat] } };
-    });
-  }
-  function syncA11yMarkers() {
+  function drawMap() {
+    var svg = $("#obs-map-svg");
+    if (!svg || !WORLD) return;
+    svg.setAttribute("viewBox", "0 0 " + WORLD.width + " " + WORLD.height);
+    svg.innerHTML =
+      '<defs>' +
+      '<linearGradient id="obsOceanGrad" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="#0a4a5c"/><stop offset="55%" stop-color="#053142"/><stop offset="100%" stop-color="#031820"/></linearGradient>' +
+      '<radialGradient id="obsGlow" cx="35%" cy="30%" r="65%">' +
+      '<stop offset="0%" stop-color="rgba(90,180,200,0.22)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient>' +
+      '<filter id="obsLandSoft" x="-2%" y="-2%" width="104%" height="104%">' +
+      '<feDropShadow dx="0" dy="0.6" stdDeviation="0.8" flood-color="#000" flood-opacity="0.35"/></filter>' +
+      '</defs>' +
+      '<rect width="' + WORLD.width + '" height="' + WORLD.height + '" fill="url(#obsOceanGrad)"/>' +
+      '<rect width="' + WORLD.width + '" height="' + WORLD.height + '" fill="url(#obsGlow)"/>' +
+      '<path class="m-ocean" d="' + WORLD.outline + '" fill="url(#obsOceanGrad)"/>' +
+      '<path class="m-grat" d="' + WORLD.graticule + '"/>' +
+      '<path class="m-land" d="' + WORLD.land + '" filter="url(#obsLandSoft)"/>';
     var layer = $("#obs-markers"); if (!layer) return;
     layer.innerHTML = "";
     REG.streams.forEach(function (s) {
+      var p = project(s.lon, s.lat), b = document.createElement("button");
       var off = /^(offline|removed|ended)$/.test(s.status || "");
-      var t = thumbUrl(s), b = document.createElement("button");
+      var t = thumbUrl(s);
       b.type = "button";
-      b.className = "mk pin k-" + s.kind + (off ? " off" : "") + (s.embed ? " embed" : "") + (ST.region !== "all" && s.region !== ST.region ? " dim" : "");
+      b.className = "mk pin k-" + s.kind + (off ? " off" : "") + (s.embed ? " embed" : "");
+      b.style.left = (100 * p[0] / WORLD.width) + "%"; b.style.top = (100 * p[1] / WORLD.height) + "%";
       b.dataset.id = s.id; b.dataset.region = s.region;
       b.setAttribute("aria-label", s.name + ", " + KIND[s.kind] + (s.embed ? ", plays here" : ", opens operator site"));
-      b.innerHTML = (t ? '<img src="' + esc(t) + '" alt="" width="64" height="64" loading="lazy">' : '<span class="ph">' + esc((KIND[s.kind] || "Cam").slice(0, 3)) + "</span>") +
+      b.innerHTML = (t
+        ? '<img src="' + esc(t) + '" alt="" width="64" height="64" loading="lazy">'
+        : '<span class="ph">' + esc((KIND[s.kind] || "Cam").slice(0, 3)) + "</span>") +
         '<span class="mk-tip">' + esc(s.name) + "</span>";
       b.addEventListener("click", function () { location.hash = "#/observe/" + s.id; });
       layer.appendChild(b);
     });
     REG.sites.forEach(function (s) {
-      var b = document.createElement("button");
+      var p = project(s.lon, s.lat), b = document.createElement("button");
       b.type = "button"; b.className = "mk site st-" + s.status.split(" ")[0]; b.dataset.site = s.id;
+      b.style.left = (100 * p[0] / WORLD.width) + "%"; b.style.top = (100 * p[1] / WORLD.height) + "%";
       b.setAttribute("aria-label", "Ocean compute site: " + s.name + " (" + s.status + ")");
       b.innerHTML = '<span class="mk-tip">' + esc(s.name) + "</span>";
       b.addEventListener("click", function () { location.hash = "#/observe/" + s.id; });
       layer.appendChild(b);
     });
-  }
-  function drawMap() {
-    syncA11yMarkers();
-    var el = $("#obs-maplibre");
-    if (!el || typeof maplibregl === "undefined") {
-      $("#obs-status").textContent = (REG.streams.length || 0) + " cameras · map library did not load; use the camera list below";
-      return;
-    }
-    if (ST.map) { try { ST.map.remove(); } catch (e) {} ST.map = null; ST.mapReady = false; }
-    ST.map = new maplibregl.Map({
-      container: el, style: MAP_STYLE, center: [-40, 20], zoom: 1.2, attributionControl: true,
-      cooperativeGestures: true
-    });
-    ST.map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
-    ST.map.on("load", function () {
-      ST.mapReady = true;
-      ST.map.addSource("cams", { type: "geojson", data: { type: "FeatureCollection", features: camFeatures("all") }, cluster: true, clusterMaxZoom: 6, clusterRadius: 42 });
-      ST.map.addSource("sites", { type: "geojson", data: { type: "FeatureCollection", features: siteFeatures() } });
-      ST.map.addLayer({ id: "cam-clusters", type: "circle", source: "cams", filter: ["has", "point_count"],
-        paint: { "circle-color": "#F7B24A", "circle-radius": ["step", ["get", "point_count"], 16, 4, 20, 8, 26], "circle-stroke-width": 2, "circle-stroke-color": "#021018" } });
-      ST.map.addLayer({ id: "cam-cluster-count", type: "symbol", source: "cams", filter: ["has", "point_count"],
-        layout: { "text-field": "{point_count_abbreviated}", "text-size": 12 }, paint: { "text-color": "#1b1100" } });
-      ST.map.addLayer({ id: "cam-points", type: "circle", source: "cams", filter: ["!", ["has", "point_count"]],
-        paint: { "circle-color": ["case", ["get", "offline"], "#6a7a80", "#9ED8E6"], "circle-radius": 7, "circle-stroke-width": 2, "circle-stroke-color": "#021018" } });
-      ST.map.addLayer({ id: "site-points", type: "circle", source: "sites",
-        paint: { "circle-color": "#FF9470", "circle-radius": 8, "circle-stroke-width": 2, "circle-stroke-color": "#021018" } });
-      ST.map.on("click", "cam-clusters", function (e) {
-        var feats = ST.map.queryRenderedFeatures(e.point, { layers: ["cam-clusters"] });
-        var clusterId = feats[0].properties.cluster_id, src = ST.map.getSource("cams");
-        src.getClusterExpansionZoom(clusterId, function (err, zoom) {
-          if (err) return;
-          ST.map.easeTo({ center: feats[0].geometry.coordinates, zoom: zoom });
-        });
-      });
-      ST.map.on("click", "cam-points", function (e) {
-        var id = e.features[0].properties.id; if (id) location.hash = "#/observe/" + id;
-      });
-      ST.map.on("click", "site-points", function (e) {
-        var id = e.features[0].properties.id; if (id) location.hash = "#/observe/" + id;
-      });
-      ["cam-clusters", "cam-points", "site-points"].forEach(function (lid) {
-        ST.map.on("mouseenter", lid, function () { ST.map.getCanvas().style.cursor = "pointer"; });
-        ST.map.on("mouseleave", lid, function () { ST.map.getCanvas().style.cursor = ""; });
-      });
-      zoomTo(ST.region || "all");
-    });
     var tog = $("#obs-sites-toggle");
     if (tog && !tog._bound) {
       tog._bound = true;
-      tog.addEventListener("change", function (e) {
-        $("#obs-map").classList.toggle("hide-sites", !e.target.checked);
-        if (ST.mapReady) ST.map.setLayoutProperty("site-points", "visibility", e.target.checked ? "visible" : "none");
-      });
+      tog.addEventListener("change", function (e) { $("#obs-map").classList.toggle("hide-sites", !e.target.checked); });
     }
   }
   function zoomTo(region) {
-    if (!ST.map) return;
-    var feats = camFeatures(region === "all" ? "all" : region);
-    if (ST.mapReady && ST.map.getSource("cams")) {
-      ST.map.getSource("cams").setData({ type: "FeatureCollection", features: feats });
-    }
-    if (!feats.length) return;
-    if (region === "all") { ST.map.easeTo({ center: [-40, 20], zoom: 1.2 }); return; }
-    var b = new maplibregl.LngLatBounds();
-    feats.forEach(function (f) { b.extend(f.geometry.coordinates); });
-    ST.map.fitBounds(b, { padding: 48, maxZoom: 5, duration: U.reduced ? 0 : 700 });
+    var wrap = $("#obs-map");
+    if (!wrap || !WORLD) return;
+    if (region === "all") { wrap.style.setProperty("--z", 1); wrap.style.setProperty("--tx", "0%"); wrap.style.setProperty("--ty", "0%"); return; }
+    var pts = REG.streams.filter(function (s) { return s.region === region; }).map(function (s) { return project(s.lon, s.lat); });
+    if (!pts.length) return;
+    var xs = pts.map(function (p) { return p[0]; }), ys = pts.map(function (p) { return p[1]; });
+    var cx = (Math.min.apply(null, xs) + Math.max.apply(null, xs)) / 2, cy = (Math.min.apply(null, ys) + Math.max.apply(null, ys)) / 2;
+    var span = Math.max(Math.max.apply(null, xs) - Math.min.apply(null, xs), (Math.max.apply(null, ys) - Math.min.apply(null, ys)) * 2, 60);
+    var z = Math.max(1, Math.min(5, WORLD.width / (span * 2.2)));
+    wrap.style.setProperty("--z", z);
+    wrap.style.setProperty("--tx", (50 - 100 * cx / WORLD.width) + "%"); wrap.style.setProperty("--ty", (50 - 100 * cy / WORLD.height) + "%");
   }
   function drawRegions() {
     var box = $("#obs-regions"), counts = {};

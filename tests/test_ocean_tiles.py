@@ -29,11 +29,12 @@ def test_temperature_tiles_prefer_crw():
     assert "CRW" in OBS
 
 
-def test_conditions_charts_and_maplibre():
+def test_conditions_charts_and_world_map():
     assert "obs-sst-svg" in OBS and "obs-dhw-svg" in OBS
     assert "MMM+1" in OBS
     assert "DHW 4" in OBS and "DHW 8" in OBS
-    assert "maplibregl" in OBS or "maplibre" in OBS.lower()
+    assert "obs-map-svg" in OBS or "WORLD.width" in OBS
+    assert "project(s.lon, s.lat)" in OBS or "project(s.lon" in OBS
     assert "coralReefWatchSeries" in JS
     assert "openMeteoSst90" in JS
     assert "past_days=90" in JS or "pastDays" in JS

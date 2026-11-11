@@ -48,8 +48,11 @@ OBSERVE = r'''
       <h2 class="vh" id="obs-map-h">Choose a camera</h2>
       <div class="obs-map-stage">
         <div class="obs-mapbox" id="obs-map">
-          <div id="obs-maplibre" class="obs-maplibre" role="img" aria-label="Interactive map of live underwater cameras and ocean data-centre sites"></div>
-          <div id="obs-markers" class="obs-markers obs-markers-a11y" aria-label="Camera and site list"></div>
+          <div class="obs-zoom">
+            <svg id="obs-map-svg" role="img" aria-label="World map of live underwater cameras and ocean data-centre sites"></svg>
+            <div id="obs-markers" class="obs-markers"></div>
+          </div>
+          <div class="obs-map-glow" aria-hidden="true"></div>
           <div class="obs-map-chrome">
             <span class="obs-map-title">Live cameras</span>
             <span class="obs-map-hint" id="obs-status" role="status"></span>
@@ -92,6 +95,20 @@ OBSERVE = r'''
           <h2 id="obs-name"></h2>
           <p class="obs-meta" id="obs-meta"></p>
           <p class="obs-species" id="obs-species"></p>
+          <div class="obs-research" role="group" aria-label="Tools">
+            <button type="button" class="res-card" id="res-detect" data-detect="1">
+              <b>Find animals</b>
+              <span>Boxes on this camera feed</span>
+            </button>
+            <button type="button" class="res-card" data-goto="obs-tab-ocean">
+              <b>Conditions</b>
+              <span>Temperature, current, heat stress</span>
+            </button>
+            <button type="button" class="res-card" data-goto="obs-tab-heat">
+              <b>Heat screen</b>
+              <span>Data-centre screening</span>
+            </button>
+          </div>
           <div class="obs-now-groups" id="obs-now" aria-live="polite"></div>
           <div class="obs-heat-mini callout" id="obs-heat-mini" hidden></div>
           <p class="obs-site-note" id="obs-site-note" hidden></p>
@@ -454,13 +471,17 @@ def patch(html: str) -> str:
         sub(r"</head>", f"{MARK}\n</head>", "head end")
         if 'href="css/learn.css"' not in html:
             html = html.replace('href="css/observe.css">', 'href="css/observe.css">\n<link rel="stylesheet" href="css/learn.css">', 1)
-    if "maplibre-gl.css" not in html:
-        html = html.replace(
-            'href="css/observe.css">',
-            'href="css/observe.css">\n'
-            '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" crossorigin="anonymous">',
-            1,
-        )
+    # Drop a prior MapLibre CDN inject if re-running integrate on a patched file
+    html = re.sub(
+        r'\n?<link rel="stylesheet" href="https://cdn\.jsdelivr\.net/npm/maplibre-gl[^"]*" crossorigin="anonymous">',
+        "",
+        html,
+    )
+    html = re.sub(
+        r'\n?<script src="https://cdn\.jsdelivr\.net/npm/maplibre-gl[^"]*" crossorigin="anonymous"></script>\n?',
+        "\n",
+        html,
+    )
     if 'data-nav="observe"' not in html:
         sub(r'(<nav class="primary" aria-label="Audiences">\s*)', r'\1<a href="#/observe" data-nav="observe" class="nav-live">Live ocean</a>\n      <a href="#/learn" data-nav="learn">Learn</a>\n      ', "primary nav")
     if 'href="#/observe">Live ocean</a>' not in html and 'href="#/observe">Open</a>' not in html:
@@ -479,7 +500,6 @@ def patch(html: str) -> str:
         'from plumes2py import reference_example, run\nres = run(reference_example(), rule="wa_marine")   # PLUMES 2.0 rebuild</pre>\n          '
         r"\1", "use-the-code block")
     scripts = ('<script>window.AG_RELAY = window.AG_RELAY || null; /* e.g. "https://ag-relay.fly.dev" once relay/ is deployed */</script>\n'
-               '<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>\n'
                '<script src="js/plumes2.js"></script>\n<script src="js/ocean-data.js"></script>\n<script src="js/vision.js"></script>\n'
                '<script src="js/observatory.js"></script>\n<script src="js/plumes-lab.js"></script>\n<script src="js/learn.js"></script>\n')
     sub(r"(<script>window\.AGU\.start\(\);</script>)", scripts + r"\1", "start call")
