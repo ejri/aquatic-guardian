@@ -1,7 +1,7 @@
 """Headless browser test of the rebuilt #/learn route.
 Run: python tests/browser/test_learn.py [out_dir]
 Serves site/ on :8766 so it can run beside the main site test."""
-import json, os, sys, threading, functools
+import json, math, os, sys, threading, functools
 from datetime import datetime, timedelta, timezone
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from playwright.sync_api import sync_playwright
@@ -26,16 +26,20 @@ def serve():
 
 now = datetime.now(timezone.utc).replace(minute=0, second=0, microsecond=0)
 hours = [now - timedelta(hours=24) + timedelta(hours=i) for i in range(72)]
+# Match test_site.py ocean stubs so observe → learn does not hit flat/single-day charts.
 MARINE = {"latitude": 16.1, "longitude": -86.9, "timezone": "America/Tegucigalpa",
           "current_units": {"ocean_current_velocity": "km/h"},
           "current": {"time": now.strftime("%Y-%m-%dT%H:%M"), "sea_surface_temperature": 29.4, "wave_height": 0.6,
                       "ocean_current_velocity": 0.9, "ocean_current_direction": 250, "sea_level_height_msl": 0.12},
           "hourly": {"time": [h.strftime("%Y-%m-%dT%H:%M") for h in hours],
-                     "sea_surface_temperature": [29.4] * 72, "sea_level_height_msl": [0.1] * 72,
-                     "ocean_current_velocity": [0.4] * 72, "ocean_current_direction": [250] * 72, "wave_height": [0.6] * 72}}
+                     "sea_surface_temperature": [29.4 + 0.2 * math.sin(i / 4) for i in range(72)],
+                     "sea_level_height_msl": [0.25 * math.cos(2 * math.pi * i / 12.42) for i in range(72)],
+                     "ocean_current_velocity": [0.4 + 0.8 * abs(math.cos(2 * math.pi * i / 12.42)) for i in range(72)],
+                     "ocean_current_direction": [250] * 72, "wave_height": [0.6] * 72}}
 CRW = {"table": {"columnNames": ["time", "latitude", "longitude", "CRW_DHW", "CRW_SST", "CRW_SSTANOMALY", "CRW_BAA_7D_MAX"],
                  "rows": [["2026-10-16T12:00:00Z", 16.075, -86.925, 5.2, 29.6, 1.1, 3]]}}
-COOPS = {"predictions": [{"t": now.strftime("%Y-%m-%d %H:%M"), "v": "0.8"}]}
+COOPS = {"predictions": [{"t": (now + timedelta(hours=i - 6)).strftime("%Y-%m-%d %H:%M"),
+                          "v": str(round(0.8 + 0.7 * math.cos(2 * math.pi * i / 12.42), 3))} for i in range(48)]}
 YT_STUB = """window.YT={Player:function(id,o){var el=document.getElementById(id);var f=document.createElement('iframe');f.title='YouTube video player (stub)';f.src='about:blank';el.replaceWith(f);this.destroy=function(){f.remove();};}};
 Promise.resolve().then(function(){window.onYouTubeIframeAPIReady&&window.onYouTubeIframeAPIReady();});"""
 
@@ -53,6 +57,13 @@ def route(r):
     if "marine-api.open-meteo.com" in u:
         return r.fulfill(status=200, content_type="application/json", body=json.dumps(MARINE), headers={"Access-Control-Allow-Origin": "*"})
     if "coastwatch.pfeg.noaa.gov" in u or "pae-paha.pacioos.hawaii.edu" in u or "coastwatch.noaa.gov" in u:
+        if "CRW_SST[(" in u and "):1:(" in u:
+            rows = []
+            for i in range(90):
+                t = (now - timedelta(days=89 - i)).strftime("%Y-%m-%dT12:00:00Z")
+                rows.append([t, 16.075, -86.925, 29.6 + 0.2 * math.sin(i / 10), max(0, 5.2 - (89 - i) * 0.04), 1.1, 3])
+            series = {"table": {"columnNames": ["time", "latitude", "longitude", "CRW_SST", "CRW_DHW", "CRW_SSTANOMALY", "CRW_BAA_7D_MAX"], "rows": rows}}
+            return r.fulfill(status=200, content_type="application/json", body=json.dumps(series), headers={"Access-Control-Allow-Origin": "*"})
         return r.fulfill(status=200, content_type="application/json", body=json.dumps(CRW), headers={"Access-Control-Allow-Origin": "*"})
     if "tidesandcurrents.noaa.gov" in u:
         return r.fulfill(status=200, content_type="application/json", body=json.dumps(COOPS), headers={"Access-Control-Allow-Origin": "*"})
@@ -140,7 +151,9 @@ def main():
 
         errors.clear()
         page.goto(f"{BASE}#/observe")
-        page.wait_for_timeout(400)
+        # Wait for Conditions charts so a short dwell cannot hide SVG NaN/Infinity.
+        page.wait_for_function("document.querySelector('#obs-dhw-svg path')", timeout=12000)
+        page.wait_for_timeout(200)
         page.goto(f"{BASE}#/learn/m01")
         page.wait_for_function("document.querySelector('#lc-article h1')", timeout=8000)
         check("Images are arrays" in page.inner_text("#lc-article h1"), "route switch opens module 01")

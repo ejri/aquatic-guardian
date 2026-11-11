@@ -39,6 +39,7 @@
     var svg = $("#obs-map-svg");
     if (!svg || !WORLD) return;
     svg.setAttribute("viewBox", "0 0 " + WORLD.width + " " + WORLD.height);
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
     svg.innerHTML =
       '<defs>' +
       '<linearGradient id="obsOceanGrad" x1="0" y1="0" x2="0" y2="1">' +
@@ -457,7 +458,8 @@
         if (rs.dhw[i] == null) continue;
         pts.push([Date.parse(rs.time[i]) / 864e5 - t0, rs.dhw[i]]);
       }
-      var spanD = pts.length ? pts[pts.length - 1][0] : 84, nowD = nowT / 864e5 - t0;
+      // Same floor as SST: a single CRW day leaves x-span 0 and U.chart would emit NaN/Infinity.
+      var spanD = Math.max(1, pts.length ? pts[pts.length - 1][0] : 84), nowD = nowT / 864e5 - t0;
       plotSeries(svg, pts, spanD, nowD, "Days from start", "DHW (°C·weeks)", "#C9A3FF", [
         { y: 4, color: "#F7B24A", dash: "5 4", label: "DHW 4" },
         { y: 8, color: "#FF9470", dash: "5 4", label: "DHW 8" }
@@ -467,18 +469,22 @@
       var ts = m.hourly.time.map(function (x) { return Date.parse(x) / 3600e3; }), t0 = ts[0];
       var sl = t && t.predictions && t.predictions.length ? t.predictions.map(function (q) { return [Date.parse(q.t) / 3600e3 - t0, q.v]; }) : m.hourly.sea_level.map(function (v, i) { return [ts[i] - t0, v]; }).filter(function (p) { return p[1] != null; });
       var cu = m.hourly.current.map(function (v, i) { return [ts[i] - t0, v]; }).filter(function (p) { return p[1] != null; });
-      var nowH = nowT / 3600e3 - t0, span = ts[ts.length - 1] - t0;
+      var nowH = nowT / 3600e3 - t0, span = Math.max(1, ts[ts.length - 1] - t0);
       plotSeries($("#obs-tide-svg"), sl, span, nowH, "Hours from start", "Sea level (m)", "#9ED8E6");
       plotSeries($("#obs-cur-svg"), cu, span, nowH, "Hours from start", "Current (m/s)", "#F7B24A");
     }
   }
   function plotSeries(svg, pts, span, now, xl, yl, color, hlines) {
     if (!svg || !pts.length) return;
+    pts = pts.filter(function (p) { return isFinite(p[0]) && isFinite(p[1]); });
+    if (!pts.length) return;
     var ys = pts.map(function (p) { return p[1]; }), lo = Math.min.apply(null, ys), hi = Math.max.apply(null, ys);
-    (hlines || []).forEach(function (h) { if (h && h.y != null) { lo = Math.min(lo, h.y); hi = Math.max(hi, h.y); } });
+    (hlines || []).forEach(function (h) { if (h && h.y != null && isFinite(h.y)) { lo = Math.min(lo, h.y); hi = Math.max(hi, h.y); } });
     var pad = (hi - lo) * 0.1 || 0.1;
-    U.chart(svg, { x: { min: 0, max: Math.max(span, pts[pts.length - 1][0]), label: xl }, y: { min: lo - pad, max: hi + pad, label: yl },
-      series: [{ pts: pts, color: color, width: 2.2 }], vlines: [{ x: now, color: "#DCEAEE", dash: "4 4", label: "now" }],
+    var xmax = Math.max(span, pts[pts.length - 1][0], 1e-6);
+    var nowX = isFinite(now) ? now : xmax;
+    U.chart(svg, { x: { min: 0, max: xmax, label: xl }, y: { min: lo - pad, max: hi + pad, label: yl },
+      series: [{ pts: pts, color: color, width: 2.2 }], vlines: [{ x: nowX, color: "#DCEAEE", dash: "4 4", label: "now" }],
       hlines: hlines || [] });
   }
 

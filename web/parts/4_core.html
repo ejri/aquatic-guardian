@@ -51,14 +51,23 @@
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     var vb = svg.viewBox.baseVal, W = vb.width, H = vb.height, p = Object.assign({ l: 56, r: o.y2 ? 56 : 16, t: 14, b: 40 }, o.pad || {});
     var iw = W - p.l - p.r, ih = H - p.t - p.b;
+    function axisSpan(ax) {
+      // Flat or single-point series (max === min) must not divide by zero — that
+      // previously wrote NaN/Infinity into SVG path/line/text attributes.
+      var min = +ax.min, max = +ax.max;
+      if (!isFinite(min) || !isFinite(max)) { min = 0; max = 1; }
+      if (max === min) { var pad = ax.log ? Math.max(Math.abs(min) * 0.1, min * 0.1 || 0.1) : (Math.abs(min) * 0.05 || 0.1); min -= pad; max += pad; if (ax.log) { min = Math.max(min, 1e-12); if (max <= min) max = min * 10; } }
+      return { min: min, max: max, log: !!ax.log, ticks: ax.ticks, fmt: ax.fmt, label: ax.label };
+    }
+    o = Object.assign({}, o, { x: axisSpan(o.x), y: axisSpan(o.y), y2: o.y2 ? axisSpan(o.y2) : null });
     function scale(ax, len, flip) {
-      var lo = ax.log ? Math.log10(ax.min) : ax.min, hi = ax.log ? Math.log10(ax.max) : ax.max;
-      return function (v) { var z = ((ax.log ? Math.log10(Math.max(v, 1e-12)) : v) - lo) / (hi - lo); return flip ? p.t + ih * (1 - z) : p.l + iw * z; };
+      var lo = ax.log ? Math.log10(ax.min) : ax.min, hi = ax.log ? Math.log10(ax.max) : ax.max, den = hi - lo || 1;
+      return function (v) { if (!isFinite(v)) return flip ? p.t + ih / 2 : p.l + iw / 2; var z = ((ax.log ? Math.log10(Math.max(v, 1e-12)) : v) - lo) / den; return flip ? p.t + ih * (1 - z) : p.l + iw * z; };
     }
     var X = scale(o.x, iw, false), Y = scale(o.y, ih, true), Y2 = o.y2 ? scale(o.y2, ih, true) : null;
-    function ticks(ax) { if (ax.ticks) return ax.ticks; if (ax.log) { var t = [], e0 = Math.floor(Math.log10(ax.min)), e1 = Math.ceil(Math.log10(ax.max)); for (var e = e0; e <= e1; e++) if (Math.pow(10, e) >= ax.min * 0.999 && Math.pow(10, e) <= ax.max * 1.001) t.push(Math.pow(10, e)); return t; }
-      var n = 5, step = (ax.max - ax.min) / n, mag = Math.pow(10, Math.floor(Math.log10(step))), s = [1, 2, 2.5, 5, 10].map(function (m) { return m * mag; }).find(function (m) { return m >= step; }) || step, out = [];
-      for (var v = Math.ceil(ax.min / s) * s; v <= ax.max + 1e-9; v += s) out.push(+v.toFixed(10)); return out; }
+    function ticks(ax) { if (ax.ticks) return ax.ticks; if (ax.log) { var t = [], e0 = Math.floor(Math.log10(ax.min)), e1 = Math.ceil(Math.log10(ax.max)); for (var e = e0; e <= e1; e++) if (Math.pow(10, e) >= ax.min * 0.999 && Math.pow(10, e) <= ax.max * 1.001) t.push(Math.pow(10, e)); return t.length ? t : [ax.min, ax.max]; }
+      var n = 5, step = (ax.max - ax.min) / n, mag = Math.pow(10, Math.floor(Math.log10(Math.max(step, 1e-12)))), s = [1, 2, 2.5, 5, 10].map(function (m) { return m * mag; }).find(function (m) { return m >= step; }) || step, out = [];
+      for (var v = Math.ceil(ax.min / s) * s; v <= ax.max + 1e-9; v += s) out.push(+v.toFixed(10)); return out.length ? out : [ax.min, ax.max]; }
     var g = node("g", {}, svg);
     ticks(o.x).forEach(function (v) { var x = X(v); node("line", { x1: x, x2: x, y1: p.t, y2: p.t + ih, class: "axis", "stroke-opacity": 0.5 }, g); var t = node("text", { x: x, y: p.t + ih + 16, "text-anchor": "middle" }, g); t.textContent = o.x.fmt ? o.x.fmt(v) : fmt(v); });
     ticks(o.y).forEach(function (v) { var y = Y(v); node("line", { x1: p.l, x2: p.l + iw, y1: y, y2: y, class: "axis", "stroke-opacity": 0.5 }, g); var t = node("text", { x: p.l - 8, y: y + 4, "text-anchor": "end" }, g); t.textContent = o.y.fmt ? o.y.fmt(v) : fmt(v); });
