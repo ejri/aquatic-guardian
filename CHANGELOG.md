@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Live ocean map contrast**: land fill raised above the ocean mid-tone and coast stroke strengthened so continents read on Netlify; dropped the SVG land drop-shadow filter.
 - **Live ocean map pin alignment**: map box keeps the Equal Earth viewBox aspect (`1000/486.72`); removed `min-height` rules that stretched the container so HTML pins no longer drift off the SVG land.
 - **Conditions DHW chart**: single-day Coral Reef Watch series no longer sets x-span to 0 (NaN/Infinity SVG attributes). `U.chart` pads flat axes; learn browser stubs match the site test’s multi-day CRW series.
 - **Live ocean map + Conditions**: Equal Earth SVG world map (`data/world.json`) with camera photo-pins and data-centre sites at lat/lon (region zoom + site toggle). Side research desk restored (Find animals / Conditions / Heat screen). Conditions tab adds ~90-day SST (CRW daily or Open-Meteo), ~12-week DHW with alert bands at 4 and 8, MMM+1 °C line when anomaly is available, 3-day tide/current series, and a current-direction needle. Browser site test waits for `#obs-now .tile`.

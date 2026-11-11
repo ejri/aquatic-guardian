@@ -43,17 +43,15 @@
     svg.innerHTML =
       '<defs>' +
       '<linearGradient id="obsOceanGrad" x1="0" y1="0" x2="0" y2="1">' +
-      '<stop offset="0%" stop-color="#0a4a5c"/><stop offset="55%" stop-color="#053142"/><stop offset="100%" stop-color="#031820"/></linearGradient>' +
+      '<stop offset="0%" stop-color="#032a3a"/><stop offset="55%" stop-color="#021820"/><stop offset="100%" stop-color="#010c12"/></linearGradient>' +
       '<radialGradient id="obsGlow" cx="35%" cy="30%" r="65%">' +
-      '<stop offset="0%" stop-color="rgba(90,180,200,0.22)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient>' +
-      '<filter id="obsLandSoft" x="-2%" y="-2%" width="104%" height="104%">' +
-      '<feDropShadow dx="0" dy="0.6" stdDeviation="0.8" flood-color="#000" flood-opacity="0.35"/></filter>' +
+      '<stop offset="0%" stop-color="rgba(70,160,180,0.18)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient>' +
       '</defs>' +
       '<rect width="' + WORLD.width + '" height="' + WORLD.height + '" fill="url(#obsOceanGrad)"/>' +
       '<rect width="' + WORLD.width + '" height="' + WORLD.height + '" fill="url(#obsGlow)"/>' +
       '<path class="m-ocean" d="' + WORLD.outline + '" fill="url(#obsOceanGrad)"/>' +
       '<path class="m-grat" d="' + WORLD.graticule + '"/>' +
-      '<path class="m-land" d="' + WORLD.land + '" filter="url(#obsLandSoft)"/>';
+      '<path class="m-land" d="' + WORLD.land + '"/>';
     var layer = $("#obs-markers"); if (!layer) return;
     layer.innerHTML = "";
     REG.streams.forEach(function (s) {
