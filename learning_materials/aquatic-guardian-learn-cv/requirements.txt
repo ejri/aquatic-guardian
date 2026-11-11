@@ -1,0 +1,13 @@
+# Pinned for Colab CPU / CI (nbmake). Update deliberately; do not float.
+numpy==1.26.4
+matplotlib==3.8.4
+pillow==10.3.0
+scikit-learn==1.4.2
+scipy==1.13.0
+torch==2.2.2
+torchvision==0.17.2
+onnxruntime==1.17.3
+opencv-python-headless==4.9.0.80
+nbmake==1.5.3
+papermill==2.5.0
+ipykernel==6.29.4

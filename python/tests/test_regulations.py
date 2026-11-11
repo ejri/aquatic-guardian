@@ -22,4 +22,4 @@ def test_jurisdiction_guess(lat, lon, j):
 
 def test_placeholder_rule_never_claims_compliance():
     res = run(build(DataCentreDesign(), sst_c=10, salinity=30, current_ms=0.2))
-    assert evaluate("custom", res, custom_increment=5.0)["verdict"] == "cannot show compliance"
+    assert evaluate("custom", res, custom_increment=5.0)["verdict"] == "no limit set for this location"

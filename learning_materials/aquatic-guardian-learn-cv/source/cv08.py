@@ -37,7 +37,7 @@ def observe(P, p_detect=0.95, sigma=1.5, fp_per_frame=0.3, turbid_x=None, p_turb
     return frames
 print("Simulator ready.")'''
 cells = [
-M("# Module 08 — Tracking over time\n\n" + HEADER.format(num="08", time="about 2.5 hours",
+M("# Module 08 — Tracking over time\n\n## Goal\nFollow individuals across frames with the same ByteTrack two-stage association and OC-SORT observation re-seed used on Live ocean (`site/js/vision.js`, `relay/vision.py`).\n\n## What you need\nThis notebook's school simulator.\n\n## Steps\nKalman predict → high-score match → low-score second pass → confirm after 3 hits → report ID switches.\n\n## Result\nCounts that do not invent new IDs every few frames.\n\n## Check yourself\nID-switch and MaxN cells below.\n\n" + HEADER.format(num="08", time="about 2.5 hours",
   skip="you have implemented a Kalman filter and a SORT-style tracker, and you report ID switches and track purity.") + """
 ### By the end you can
 1. Explain **tracking-by-detection**: detect in each frame, then link detections into tracks.

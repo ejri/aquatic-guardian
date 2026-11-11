@@ -1,40 +1,43 @@
-.venv/
-__pycache__/
-*.py[cod]
-*.egg-info/
-.pytest_cache/
-build/
-dist/
-node_modules/
-# Briefs are committed as Markdown only under briefs/; PDF and DOCX are local pandoc output.
-briefs/*.pdf
-briefs/*.docx
-# Generated copies under the publish tree (canonical briefs live in briefs/)
-site/briefs/
-.DS_Store
-.ipynb_checkpoints/
-benchmarks/visual_plumes/decks/*
+
 !benchmarks/visual_plumes/decks/.gitkeep
-
-# Generated notebook outputs (tests rewrite handoffs; CSVs are teaching artefacts)
-notebooks/_handoffs/*
 !notebooks/_handoffs/.gitkeep
-
-# Local EPA PLUMES 2.0 download (Windows binary + manuals; not committed)
-plumes2/PLUMES2.0-main/
-plumes2/PLUMES2.0_12_22_2025/
-plumes2/*.zip
-plumes2/*.pdf
-plumes2/*.exe
-epa_ssmc-plumes2.0_usermanual.pdf
-
 # Accidental curl dump and a browser "Save Page As" of the Learn tab
--q/
-learning_materials/Learn computer vision · Aquatic Guardian_files/
-
+# Agent build prompt packs (not for the public tree)
+# Briefs are committed as Markdown only under briefs/; PDF and DOCX are local pandoc output.
+# Generated copies under the publish tree (canonical briefs live in briefs/)
+# Generated notebook outputs (tests rewrite handoffs; CSVs are teaching artefacts)
+# Local EPA PLUMES 2.0 download (Windows binary + manuals; not committed)
 # Local editor / OS noise
+*.egg-info/
+*.py[cod]
 *.swp
 *~
-# Agent build prompt packs (not for the public tree)
-cursor/
+-q/
+.DS_Store
+.cache/
+.ipynb_checkpoints/
+.pytest_cache/
+.venv/
 Cursor_prompts.md
+__pycache__/
+benchmarks/visual_plumes/decks/*
+briefs/*.docx
+briefs/*.pdf
+build/
+cursor/
+dist/
+epa_ssmc-plumes2.0_usermanual.pdf
+learning_materials/Learn computer vision · Aquatic Guardian_files/
+node_modules/
+notebooks/_handoffs/*
+plumes2/*.exe
+plumes2/*.pdf
+plumes2/*.zip
+plumes2/PLUMES2.0-main/
+plumes2/PLUMES2.0_12_22_2025/
+site/briefs/
+
+# RF-DETR fine-tune downloads / checkpoints
+models/train/data/
+models/train/runs/
+relay/.env

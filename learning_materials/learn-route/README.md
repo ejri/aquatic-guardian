@@ -45,7 +45,7 @@ components are reused on purpose, never restyled.
   results by condition (05), model comparison (06), flat camera window (07), Kalman tracking (08),
   seen versus there (09). All synthetic and computed in the page; no network requests.
 - **Teach with this.** A one-hour public session plan, a printable "Count, then detect" worksheet that uses the
-  Live ocean cameras and their Detect animals button, and a five-week course outline.
+  Live ocean cameras and their Find animals button, and a five-week course outline.
 - **Capstones, plain-language glossary with a filter, and an FAQ.**
 
 ## Editing content

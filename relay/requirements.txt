@@ -4,6 +4,10 @@ httpx==0.28.1
 numpy>=1.26
 opencv-python-headless==4.10.0.84
 pydantic>=2.7
+# BioCLIP 2 live naming (set AG_BIOCLIP=1):
+open_clip_torch>=2.24.0
+torch>=2.2
+Pillow>=10.0
 # optional, only for streams whose operators granted permission:
 # streamlink==6.11.0
 # ultralytics==8.3.40   # AGPL-3.0: publish relay source if you serve it

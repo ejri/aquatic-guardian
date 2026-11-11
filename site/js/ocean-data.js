@@ -40,12 +40,15 @@
   }
   function r3(x) { return Math.round(x * 1000) / 1000; }
 
-  /* ---- Open-Meteo Marine ---- */
-  function openMeteo(lat, lon) {
+  /* ---- Open-Meteo Marine ----
+   * Short window (past 1 + forecast 2) for tide/current tiles; long window
+   * (past 90) for Conditions SST series. Two cache keys. */
+  function openMeteoWindow(lat, lon, pastDays, forecastDays, keyPrefix) {
     var vars = "sea_surface_temperature,wave_height,ocean_current_velocity,ocean_current_direction,sea_level_height_msl";
     var url = "https://marine-api.open-meteo.com/v1/marine?latitude=" + r3(lat) + "&longitude=" + r3(lon) +
-      "&current=" + vars + "&hourly=" + vars + "&past_days=1&forecast_days=2&timezone=auto&cell_selection=sea";
-    return getJSON(url, "om:" + r3(lat) + "," + r3(lon)).then(function (d) {
+      "&current=" + vars + "&hourly=" + vars + "&past_days=" + pastDays + "&forecast_days=" + forecastDays +
+      "&timezone=auto&cell_selection=sea";
+    return getJSON(url, keyPrefix + ":" + r3(lat) + "," + r3(lon)).then(function (d) {
       var cu = (d.current_units && d.current_units.ocean_current_velocity) || "km/h";
       var k = /km/.test(cu) ? 1 / 3.6 : (/kn/.test(cu) ? 0.514444 : 1);
       var h = d.hourly || {}, c = d.current || {};
@@ -64,6 +67,8 @@
       };
     });
   }
+  function openMeteo(lat, lon) { return openMeteoWindow(lat, lon, 1, 2, "om"); }
+  function openMeteoSst90(lat, lon) { return openMeteoWindow(lat, lon, 90, 1, "om90"); }
 
   /* ---- NOAA Coral Reef Watch (5 km daily) via ERDDAP ----
    * Prefer PacIOOS dhw_5km: coastwatch.pfeg NOAA_DHW currently 302s to a broken
@@ -107,6 +112,51 @@
     }
     return tryHost();
   }
+  function crwIsoDay(d) {
+    return d.getUTCFullYear() + "-" + String(d.getUTCMonth() + 1).padStart(2, "0") + "-" + String(d.getUTCDate()).padStart(2, "0") + "T12:00:00Z";
+  }
+  function coralReefWatchSeries(lat, lon, days) {
+    days = days || 90;
+    var end = new Date(); end.setUTCHours(12, 0, 0, 0);
+    // CRW product lags ~1 day; end yesterday to avoid empty last bin
+    end.setUTCDate(end.getUTCDate() - 1);
+    var start = new Date(end.getTime() - (days - 1) * 864e5);
+    var t0 = crwIsoDay(start), t1 = crwIsoDay(end);
+    function once(host, plat, plon) {
+      var q = ["CRW_SST", "CRW_DHW", "CRW_SSTANOMALY"].map(function (v) {
+        return v + "[(" + t0 + "):1:(" + t1 + ")][(" + plat.toFixed(3) + ")][(" + plon.toFixed(3) + ")]";
+      }).join(",");
+      return getJSON(host + q, "crw-s:" + host.split("/")[2] + ":" + plat.toFixed(2) + "," + plon.toFixed(2) + ":" + days).then(function (d) {
+        var t = d.table, ix = function (n) { return t.columnNames.indexOf(n); };
+        var rows = t.rows || [];
+        if (!rows.length || rows.every(function (r) { return r[ix("CRW_SST")] == null; })) throw new Error("land or ice pixel");
+        return {
+          source: "NOAA Coral Reef Watch 5 km", lat: rows[0][ix("latitude")], lon: rows[0][ix("longitude")],
+          time: rows.map(function (r) { return r[ix("time")]; }),
+          sst: rows.map(function (r) { return r[ix("CRW_SST")]; }),
+          dhw: rows.map(function (r) { return r[ix("CRW_DHW")]; }),
+          anomaly: rows.map(function (r) { return r[ix("CRW_SSTANOMALY")]; })
+        };
+      });
+    }
+    var offs = [[0, 0], [0.05, 0], [-0.05, 0], [0, 0.05], [0, -0.05], [0.1, 0.1], [-0.1, -0.1]];
+    var hi = 0;
+    function tryHost(err) {
+      if (hi >= CRW_HOSTS.length) return Promise.reject(err || new Error("Coral Reef Watch series unavailable"));
+      var host = CRW_HOSTS[hi++], i = 0;
+      function next(e0) {
+        if (i >= offs.length) return tryHost(e0 || new Error("no ocean pixel within 0.1 deg"));
+        var o = offs[i++];
+        return once(host, lat + o[0], lon + o[1]).catch(function (e) {
+          if (/land or ice/i.test(e.message || "")) return next(e);
+          if (/Failed to fetch|NetworkError|Load failed|abort|HTTP 50|HTTP 404|Not Found/i.test(e.message || "")) return tryHost(e);
+          return next(e);
+        });
+      }
+      return next(err);
+    }
+    return tryHost();
+  }
 
   /* ---- NOAA CO-OPS ---- */
   function coops(station) {
@@ -137,7 +187,9 @@
   function oceanNow(stream) {
     var tasks = {
       marine: openMeteo(stream.lat, stream.lon),
+      marine90: openMeteoSst90(stream.lat, stream.lon),
       reef: coralReefWatch(stream.lat, stream.lon),
+      reefSeries: coralReefWatchSeries(stream.lat, stream.lon, 90),
       tide: stream.coops ? coops(stream.coops) : (stream.iwls_code ? iwls(stream.iwls_code) : Promise.reject(new Error("no tide station")))
     };
     var keys = Object.keys(tasks);
@@ -145,5 +197,9 @@
       .then(function (res) { var o = { errors: {} }; keys.forEach(function (k, i) { if (res[i].ok) o[k] = res[i].v; else o.errors[k] = res[i].e; }); return o; });
   }
 
-  root.OceanData = { openMeteo: openMeteo, coralReefWatch: coralReefWatch, coops: coops, iwls: iwls, oceanNow: oceanNow, BAA: BAA };
+  root.OceanData = {
+    openMeteo: openMeteo, openMeteoSst90: openMeteoSst90,
+    coralReefWatch: coralReefWatch, coralReefWatchSeries: coralReefWatchSeries,
+    coops: coops, iwls: iwls, oceanNow: oceanNow, BAA: BAA
+  };
 })(typeof self !== "undefined" ? self : this);

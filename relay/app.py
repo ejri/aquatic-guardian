@@ -44,6 +44,12 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(_app):
+    if os.environ.get("AG_BIOCLIP", "").strip() == "1":
+        try:
+            from .classify import warmup_bioclip
+            warmup_bioclip()
+        except Exception:
+            pass
     await start_workers()
     yield
 
@@ -246,6 +252,49 @@ async def start_workers():
 def streams():
     return {"permitted": [{"id": s["id"], "permission": s["permission"]} for s in load_permitted()],
             "running": sorted(HUB.running)}
+
+
+# -------------------------------------------------------- classify crops --
+class ClassifyRequest(BaseModel):
+    """Track crops from the browser detector (not full video frames)."""
+    crops: List[Dict] = Field(default_factory=list)
+    species_list: Optional[List[str]] = None
+    threshold: float = 0.7
+
+
+@app.post("/api/vision/deep-sea")
+def vision_deep_sea(model: str = Query("megalodon")):
+    """Run a deep/benthic detector when AG_DEEP_SEA_WEIGHTS is set."""
+    from .deep_sea import detect_frame, sam_audit_stub
+    out = detect_frame(b"", model=model)
+    out["sam_audit"] = sam_audit_stub()
+    return out
+
+
+@app.post("/api/vision/classify")
+def vision_classify(req: ClassifyRequest):
+    """Name tracked animals (BioCLIP 2 when enabled; stub otherwise).
+
+    Expects small JPEG/PNG crops already extracted from confirmed tracks.
+    Returns hierarchical labels with 12-group fallback.
+    """
+    import base64
+    from .classify import classify_tracks, DISPLAY_GROUPS
+
+    prepared = []
+    for c in req.crops[:12]:
+        raw = c.get("image_bytes") or c.get("bytes") or b""
+        if isinstance(raw, str):
+            try:
+                raw = base64.b64decode(raw.split(",")[-1])
+            except Exception:
+                raw = b""
+        prepared.append({"track_id": c.get("track_id"), "image_bytes": raw})
+    return {
+        "results": classify_tracks(prepared, species_list=req.species_list, threshold=req.threshold),
+        "groups": DISPLAY_GROUPS,
+        "backend": "stub",
+    }
 
 
 @app.websocket("/ws/vision/{sid}")

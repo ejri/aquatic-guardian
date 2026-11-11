@@ -71,6 +71,9 @@ class KF1:
         self.P = [[(1 - k0) * P[0][0], (1 - k0) * P[0][1]], [P[1][0] - k1 * P[0][0], P[1][1] - k1 * P[0][1]]]
 
 
+TRACK_CONFIRM_HITS = 3  # ByteTrack / Live ocean: confirmed after 3 hits
+
+
 @dataclass
 class Track:
     id: int
@@ -83,9 +86,16 @@ class Track:
     cls: str = "moving object"
     score: float = 0.0
     v_prev: List[float] = field(default_factory=lambda: [0.0, 0.0])
+    last_obs: Optional[List[float]] = None
+    prev_obs: Optional[List[float]] = None
 
 
 class Tracker:
+    """ByteTrack-style two-stage association + OC-SORT observation re-seed.
+
+    Mirrors site/js/vision.js Tracker so browser and relay share IDs/counts.
+    """
+
     def __init__(self):
         self.tracks: List[Track] = []
         self.next_id = 1
@@ -93,6 +103,11 @@ class Tracker:
     def step(self, dets: List[Dict], dt: float) -> List[Track]:
         q, r = 400.0, 4.0
         for t in self.tracks:
+            if t.miss >= 1 and t.last_obs and t.prev_obs:
+                vx = (t.last_obs[0] - t.prev_obs[0]) / max(dt, 1e-3)
+                vy = (t.last_obs[1] - t.prev_obs[1]) / max(dt, 1e-3)
+                t.kx.x[1] = 0.5 * t.kx.x[1] + 0.5 * vx
+                t.ky.x[1] = 0.5 * t.ky.x[1] + 0.5 * vy
             t.kx.predict(dt, q)
             t.ky.predict(dt, q)
             t.miss += 1
@@ -118,8 +133,10 @@ class Tracker:
             return m, ut, ud
 
         def upd(t: Track, d: Dict):
-            t.kx.update(d["x"] + d["w"] / 2, r)
-            t.ky.update(d["y"] + d["h"] / 2, r)
+            cx, cy = d["x"] + d["w"] / 2, d["y"] + d["h"] / 2
+            t.prev_obs, t.last_obs = t.last_obs, [cx, cy]
+            t.kx.update(cx, r)
+            t.ky.update(cy, r)
             t.w = 0.7 * t.w + 0.3 * d["w"]
             t.h = 0.7 * t.h + 0.3 * d["h"]
             t.hits += 1
@@ -135,11 +152,15 @@ class Tracker:
             upd(rest[ti], lo[di])
         for i, d in enumerate(hi):
             if i not in ud:
-                self.tracks.append(Track(self.next_id, KF1(d["x"] + d["w"] / 2), KF1(d["y"] + d["h"] / 2), d["w"], d["h"],
-                                         cls=d.get("cls", "moving object"), score=d["score"]))
+                cx, cy = d["x"] + d["w"] / 2, d["y"] + d["h"] / 2
+                self.tracks.append(Track(
+                    self.next_id, KF1(cx), KF1(cy), d["w"], d["h"],
+                    cls=d.get("cls", "moving object"), score=d["score"],
+                    last_obs=[cx, cy],
+                ))
                 self.next_id += 1
         self.tracks = [t for t in self.tracks if t.miss <= 8]
-        return [t for t in self.tracks if t.hits >= 2 and t.miss <= 2]
+        return [t for t in self.tracks if t.hits >= TRACK_CONFIRM_HITS and t.miss <= 2]
 
 
 class Engine:

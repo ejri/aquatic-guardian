@@ -470,9 +470,10 @@
     wa_marine: { id: "wa_marine", label: "Washington marine waters", source: "WAC 173-201A-210(1)(c)", status: "rule", verify: false },
     ca_new_coastal: { id: "ca_new_coastal", label: "California coastal waters, new discharge", source: "California Thermal Plan (SWRCB 1972, am. 1975) Sec. 3.B.(3)-(4)", status: "rule", verify: false },
     ca_enclosed_bay: { id: "ca_enclosed_bay", label: "California enclosed bay (e.g. San Francisco Bay), new discharge", source: "California Thermal Plan, enclosed bays, new discharges", status: "rule", verify: false },
-    or_marine: { id: "or_marine", label: "Oregon ocean and bay waters", source: "OAR 340-041-0028(7)", status: "rule", verify: true, verify_note: "Transcribed from a secondary host (oregon.public.law); confirm against the Oregon Secretary of State rule text before relying on it." },
-    custom: { id: "custom", label: "User-supplied increment", source: "Permit or standard entered by the user", status: "placeholder", verify: true, verify_note: "No jurisdiction-specific rule is applied; the result is arithmetic only." }
+    or_marine: { id: "or_marine", label: "Oregon ocean and bay waters", source: "OAR 340-041-0028(7)", status: "rule", verify: false, verify_note: "Text confirmed 2026-11-11 against Cornell LII Or. Admin. Code § 340-041-0028(7) and Oregon DEQ Temperature IMD; 0.3 C above natural (Columbia above RM 7 excluded)." },
+    custom: { id: "custom", label: "No limit set for this location", source: "Enter a permit or standard increment to compare", status: "placeholder", verify: true, verify_note: "No jurisdiction-specific rule is applied; enter an increment to compare, or leave blank to report the rise only." }
   };
+  /* Named rules where transcribed: WA, CA, OR. Everywhere else: no rule until the user enters one. */
   var JUR_RULE = { "us-wa": "wa_marine", "us-ca": "ca_new_coastal", "us-ca-bay": "ca_enclosed_bay", "us-or": "or_marine", "us-other": "custom", "ca-bc": "custom", "eu": "custom", "other": "custom" };
   function waAllowed(tbg, cat) {
     var crit = WA_CAT[cat || "excellent"];
@@ -505,8 +506,10 @@
     else if (ruleId === "or_marine") add("Warming above natural at mixing-zone edge", th.dt_chronic_c, 0.3, "chronic mixing-zone boundary");
     else add("Increase at chronic mixing-zone edge", th.dt_chronic_c, opt.custom_increment == null ? null : opt.custom_increment, "chronic mixing-zone boundary", "user-supplied");
     var passes = checks.map(function (c) { return c.pass; }).filter(function (p) { return p !== null; });
-    var verdict = (rule.status === "placeholder" || (rule.verify && !passes.length)) ? "cannot show compliance" : (passes.length && passes.every(Boolean) ? "within screening limits" : "exceeds screening limit");
-    if (rule.status === "placeholder") verdict = "cannot show compliance";
+    var verdict = (rule.status === "placeholder" || (rule.verify && !passes.length))
+      ? "no limit set for this location"
+      : (passes.length && passes.every(Boolean) ? "within the limit" : "over the limit");
+    if (rule.status === "placeholder") verdict = "no limit set for this location";
     return { rule: rule, checks: checks, verdict: verdict };
   }
 

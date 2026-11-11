@@ -98,14 +98,14 @@ def custom_increment(allowed_increment_k: float, label: str = "permit-specific i
 def or_marine_increment() -> dict:
     """OAR 340-041-0028(7): ocean and bay waters, 0.3 °C above natural.
 
-    Transcribed from a secondary host (oregon.public.law); confirm against the
-    Oregon Secretary of State rule text before relying on it (verify=True on
-    the jurisdiction row in data/criteria.json).
+    Text confirmed 2026-11-11 against Cornell LII Or. Admin. Code § 340-041-0028(7)
+    and Oregon DEQ Temperature IMD / NPDES temperature policy (Columbia River
+    above river mile 7 excluded). verify=False on the jurisdiction row.
     """
     return {
         "criterion_c": None,
         "allowed_increment_k": 0.3,
-        "basis": "OAR 340-041-0028(7): 0.3 C above natural (verify)",
+        "basis": "OAR 340-041-0028(7): 0.3 C above natural",
     }
 
 

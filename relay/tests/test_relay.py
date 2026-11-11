@@ -49,3 +49,41 @@ def test_server_vision_tracks_synthetic_school():
             cv2.ellipse(img, (int(f[0]), int(f[1])), (16, 7), 0, 0, 360, (138, 211, 232), -1)
         m = eng.process(img, now=t / 8)
     assert 5 <= m["count"] <= 9 and m["polarization"] > 0.8
+
+def test_classify_stub_returns_group_ladder():
+    from relay.classify import hierarchical_label, map_class, load_calibration
+    assert map_class("small_fish") == "Fish"
+    assert map_class("urchin") == "Sea star/urchin/cucumber"
+    cal = load_calibration()
+    assert cal["threshold"] == 0.7
+    assert cal.get("status") == "placeholder_pending_field_crops"
+    hi = hierarchical_label({"Fish": 0.4, "Scaridae": 0.85})
+    assert hi["level"] in ("taxon", "species", "group") and hi["score"] >= 0.7
+    low = hierarchical_label({"Fish": 0.4})
+    assert "unidentified" in low["label"]
+    r = client.post("/api/vision/classify", json={"crops": [{"track_id": 1}]}).json()
+    assert r["results"][0]["group"] in r["groups"]
+
+
+def test_bioclip_live_when_enabled():
+    """When AG_BIOCLIP=1 and open_clip can load weights, backend is bioclip-2."""
+    import io
+    import os
+    import pytest
+    if os.environ.get("AG_BIOCLIP", "").strip() != "1":
+        pytest.skip("set AG_BIOCLIP=1 to exercise live BioCLIP")
+    open_clip = pytest.importorskip("open_clip")
+    from PIL import Image
+    from relay.classify import classify_crop, warmup_bioclip
+    assert warmup_bioclip() is True
+    buf = io.BytesIO()
+    Image.new("RGB", (64, 64), (10, 90, 120)).save(buf, format="JPEG")
+    out = classify_crop(buf.getvalue())
+    assert out["backend"] == "bioclip-2"
+    from relay.classify import DISPLAY_GROUPS
+    assert out["group"] in DISPLAY_GROUPS
+
+
+def test_deep_sea_endpoint_reports_unavailable_without_weights():
+    r = client.post("/api/vision/deep-sea").json()
+    assert r["ok"] is False and "candidates" in r

@@ -2,15 +2,24 @@ from nbcommon import *
 cells = [
 M("# Module 07 — Detection, measurement and calibration\n\n" + HEADER.format(num="07", time="about 2.5 hours",
   skip="you can compute IoU, NMS and average precision, and you know how a flat underwater port biases size estimates.") + """
-### By the end you can
-1. Represent boxes, compute **IoU**, and remove duplicates with **non-maximum suppression**.
+## Goal
+Learn boxes, IoU, AP, and size-from-pixels — matching Live ocean's RF-DETR Nano path and 12 display groups.
+
+## What you need
+Python, this notebook's synthetic frames. Optional: `site/models/rfdetr-nano-640.onnx` (Apache-2.0).
+
+## Steps
+1. Represent boxes, compute **IoU**, and remove duplicates with **non-maximum suppression** (YOLO); RF-DETR is NMS-free.
 2. Evaluate a detector with a **precision–recall curve** and **average precision (AP)**.
 3. Convert pixels to centimetres, and explain why the scale depends on distance.
 4. Quantify the size bias from a **flat underwater camera port** (refraction), and correct it to first order.
-5. Propagate length error into mass error with $W = aL^b$, and spot a circular welfare metric.
+5. Map raw classes onto the **12 plain groups** used on Live ocean (Fish, Shark, Ray, …).
 
-This module covers **Mentee 2, Tasks 2 and 6–9**, and the measurement side of the project's open item on
-flat-port refraction correction.
+## Result
+You can read a detector card and know when a published AP does not transfer to your camera.
+
+## Check yourself
+Asserts in the cells below; Peak count on Live ocean after 60 s is the survey-style MaxN.
 """),
 C(SETUP, hidden=True),
 C('''from scipy import ndimage

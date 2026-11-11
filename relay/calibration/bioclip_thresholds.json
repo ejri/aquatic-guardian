@@ -1,0 +1,20 @@
+{
+  "as_of": "2026-11-11",
+  "model": "imageomics/bioclip-2",
+  "license": "MIT",
+  "method": "Hierarchical softmax ladder. Report the deepest taxonomic string whose calibrated score passes the threshold; otherwise step up to genus → family → display group → 'Animal, unidentified'.",
+  "threshold": 0.7,
+  "confidence_words": { "sure": 0.8, "likely": 0.5 },
+  "display_groups": [
+    "Fish", "Shark", "Ray", "Sea turtle", "Marine mammal", "Eel",
+    "Octopus/squid/cuttlefish", "Crab/lobster/shrimp", "Sea star/urchin/cucumber",
+    "Jellyfish", "Coral/sponge/sea fan", "Other animal"
+  ],
+  "notes": [
+    "Threshold 0.7 is the audit default. Field-crop calibration (~200 labelled crops/camera) is skipped for this release.",
+    "Synthetic ladder tests check hierarchy behaviour only — not field accuracy.",
+    "Set AG_BIOCLIP=1 (relay/.env.example) with open_clip_torch installed; BioCLIP 2 weights download from Hugging Face on first warmup."
+  ],
+  "status": "placeholder_pending_field_crops",
+  "status_note": "Field-crop collection skipped by project decision (2026-11-11). Do not treat 0.7 as field-calibrated; screening / education use only."
+}

@@ -126,9 +126,21 @@
       var r = E.screen({ t_ambient_c: tA }), al = r.temperature_rule.allowed_increment_k, ri = r.near_field.delta_t_near_field_k, left = al - ri;
       $("#m-allow").textContent = fmt(al, 2); $("#m-rise").textContent = fmt(ri, 2); $("#m-left").textContent = fmt(left, 2);
       $("#m-left-box").className = "ro " + (left < 0.05 ? "bad" : "good"); $("#m-do").textContent = fmt(r.water_quality.do_sat_drop_frac * 100, 0) + "%";
+      // WAC 173-201A-210: allowed = min(12/(T-2), criterion−T) below the criterion; 0.3 °C at/above natural exceedance.
+      var allowed = mg.map(function (m) {
+        var rule = E.temperatureRule("wa_marine", m.t_c, "excellent", 1);
+        return [m.t_c, rule.allowed_increment_k];
+      });
+      var headroom = allowed.map(function (p) { return [p[0], Math.max(0, p[1] - (mg.filter(function (m) { return m.t_c === p[0]; })[0] || { near_field_k: 0 }).near_field_k)]; });
       U.chart($("#margin-chart"), { x: { min: 6, max: 18, label: "Ambient water temperature (°C)" }, y: { min: 0, max: 3.2, label: "Temperature increment (°C)" },
-        series: [{ pts: mg.map(function (m) { return [m.t_c, m.allowed_k]; }), color: "#9ED8E6", width: 3, fill: true, fillOpacity: 0.08 }, { pts: mg.map(function (m) { return [m.t_c, m.near_field_k]; }), color: "#F7B24A", width: 3 }],
-        vlines: [{ x: tA, color: "#fff", dash: "3 3" }, { x: 16, color: "#eb7958", dash: "6 4", label: "16 °C criterion", dy: 0 }], points: [{ x: tA, y: al, color: "#9ED8E6" }, { x: tA, y: ri, color: "#F7B24A" }] });
+        series: [
+          { pts: allowed, color: "#9ED8E6", width: 3, fill: true, fillOpacity: 0.08 },
+          { pts: mg.map(function (m) { return [m.t_c, m.near_field_k]; }), color: "#F7B24A", width: 3 }
+        ],
+        hlines: [{ y: 0.3, color: "#C79BE0", dash: "4 4", label: "0.3 °C natural-exceedance cap" }],
+        vlines: [{ x: tA, color: "#fff", dash: "3 3" }, { x: 16, color: "#eb7958", dash: "6 4", label: "16 °C criterion", dy: 0 }],
+        points: [{ x: tA, y: al, color: "#9ED8E6" }, { x: tA, y: ri, color: "#F7B24A" }] });
+      void headroom;
     }
     $("#m-t").addEventListener("input", margin); margin();
   };

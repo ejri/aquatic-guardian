@@ -46,20 +46,27 @@ RULES: Dict[str, Rule] = {
         notes="New thermal waste discharges with a maximum temperature more than 4 F (2.22 C) "
               "above natural are prohibited."),
     "or_marine": Rule(
-        "or_marine", "Oregon ocean and bay waters", "OAR 340-041-0028(7)", "rule", verify=True,
-        verify_note="Transcribed from a secondary host (oregon.public.law); confirm against the "
-                    "Oregon Secretary of State rule text before relying on it.",
-        notes="Ocean and bay waters may not be warmed by more than 0.3 C above natural unless a "
-              "greater increase would not reasonably be expected to adversely affect fish or other "
-              "aquatic life."),
+        "or_marine", "Oregon ocean and bay waters", "OAR 340-041-0028(7)", "rule", verify=False,
+        verify_note="",
+        notes="Ocean and bay waters may not be warmed by more than 0.3 C (0.5 F) above the natural "
+              "condition unless a greater increase would not reasonably be expected to adversely "
+              "affect fish or other aquatic life. Except the Columbia River above river mile 7. "
+              "Text confirmed 2026-11-11 against Cornell LII transcription of Or. Admin. Code "
+              "§ 340-041-0028 and Oregon DEQ Temperature IMD / NPDES temperature policy. "
+              "DEQ notes the oceans-and-bays narrative is used as state law for NPDES even where "
+              "EPA CWA approval status differs from inland numeric criteria."),
     "custom": Rule(
-        "custom", "User-supplied increment", "Permit or standard entered by the user", "placeholder",
-        verify=True, verify_note="No jurisdiction-specific rule is applied; the result is arithmetic only.",
-        notes="Used for British Columbia (permit-specific under the Environmental Management Act), "
-              "EU member states, and anywhere not transcribed."),
+        "custom", "No limit set for this location", "Enter a permit or standard increment to compare",
+        "placeholder",
+        verify=True,
+        verify_note="No jurisdiction-specific rule is applied; enter an increment to compare, or leave blank to report the rise only.",
+        notes="Default outside Washington, California and Oregon. Used for British Columbia "
+              "(permit-specific under the Environmental Management Act), EU member states, and "
+              "anywhere not transcribed."),
 }
 
-# Jurisdiction ids match the existing site's data/criteria.json
+# Jurisdiction ids match the existing site's data/criteria.json.
+# Named rules where transcribed and checked: WA, CA, OR.
 JURISDICTION_RULE = {
     "us-wa": "wa_marine", "us-ca": "ca_new_coastal", "us-ca-bay": "ca_enclosed_bay",
     "us-or": "or_marine", "us-other": "custom", "ca-bc": "custom", "eu": "custom", "other": "custom",
@@ -135,8 +142,8 @@ def evaluate(rule_id: str, result: Dict, *, wa_category: str = "excellent",
         add("Increase at chronic mixing-zone edge", th["dt_chronic_c"], custom_increment,
             "chronic mixing-zone boundary", "user-supplied")
     passes = [c["pass"] for c in checks if c["pass"] is not None]
-    verdict = ("cannot show compliance" if rule.status == "placeholder" or rule.verify and not passes
-               else ("within screening limits" if passes and all(passes) else "exceeds screening limit"))
+    verdict = ("no limit set for this location" if rule.status == "placeholder" or rule.verify and not passes
+               else ("within the limit" if passes and all(passes) else "over the limit"))
     if rule.status == "placeholder":
-        verdict = "cannot show compliance"
+        verdict = "no limit set for this location"
     return {"rule": rule.__dict__, "checks": checks, "verdict": verdict}

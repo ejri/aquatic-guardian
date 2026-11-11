@@ -1644,7 +1644,7 @@
     "note": "Merged plumes cannot out-dilute isolated ones (Aquatic Guardian correction 7)."
    },
    "caveats": [],
-   "verdict": "within screening limits"
+   "verdict": "within the limit"
   }
  },
  {
@@ -1917,7 +1917,7 @@
     "Port densimetric Froude number is 0.51 (< 1): ambient water may intrude into the ports; PLUMES2.0 assumes Fr > 1.",
     "Plume contacted the seabed: boundary interaction is outside UM3's assumptions; use CORMIX or a field dye study."
    ],
-   "verdict": "within screening limits"
+   "verdict": "within the limit"
   }
  },
  {
@@ -2231,7 +2231,7 @@
    },
    "merging": null,
    "caveats": [],
-   "verdict": "within screening limits"
+   "verdict": "within the limit"
   }
  },
  {
@@ -2830,7 +2830,7 @@
    "caveats": [
     "Current below 0.03 m/s: near slack water, re-entrainment of earlier effluent is likely and the steady-state assumption is weak (PLUMES2.0 manual \u00a75). Treat dilution as an upper bound."
    ],
-   "verdict": "cannot show compliance"
+   "verdict": "no limit set for this location"
   }
  }
 ]

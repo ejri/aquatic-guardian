@@ -25,10 +25,10 @@
   <section class="hero deep" aria-label="Introduction">
     <canvas id="hero-canvas" width="960" height="540" aria-hidden="true"></canvas>
     <div class="hero-live" aria-live="off">
-      <span class="chip" id="hero-tide">Tide: flooding</span>
+      <span class="chip" id="hero-tide" aria-live="off">Tide flooding</span>
       <span class="chip" id="hero-heat">27.6 MW into the surface layer</span>
       <canvas class="cbar" id="hero-cbar" width="180" height="8" aria-hidden="true"></canvas>
-      <span class="cbar-l"><span>0</span><span>warming above ambient</span><span id="hero-cmax">0.1 °C</span></span>
+      <span class="cbar-l"><span>0</span> <span>warming above ambient</span> <span id="hero-cmax">0.1 °C</span></span>
     </div>
     <div class="wrap">
       <h1>AI's heat has to go <em>somewhere.</em></h1>
@@ -86,9 +86,9 @@
     <div class="wrap">
       <h2 class="section" id="nums-h">The water side of AI, in five numbers</h2>
       <div class="numbers" style="margin-top:2rem">
-        <div class="stat"><b>~950 TWh</b><span>Projected data-centre electricity use in 2030, double 2025 (IEA, April 2026). Nearly all of it ends up as heat.</span></div>
+        <div class="stat"><b>945 TWh</b><span>Projected data-centre electricity use in 2030, more than double 2024's 415 TWh (IEA Energy and AI, April 2026). Nearly all of it ends up as heat.</span></div>
         <div class="stat"><b>24 L/s</b><span>Seawater needed per megawatt to carry that heat away at a 10 °C rise.</span></div>
-        <div class="stat"><b>~4 MW</b><span>Roughly where a once-through facility crosses the 2 MGD US cooling-intake threshold.</span></div>
+        <div class="stat"><b>~4 MW</b><span>Roughly where a once-through facility crosses the 2 MGD US cooling-intake threshold (at a 10 °C rise).</span></div>
         <div class="stat"><b>24 MW</b><span>HiCloud's underwater data centre off Shanghai, commercial since May 2026.</span></div>
         <div class="stat"><b>None</b><span>Data-centre reporting rules in the US, EU or BC that yet count the animals drawn into intakes (September 2026).</span></div>
       </div>
@@ -116,20 +116,20 @@
             <rect x="32" y="152" width="248" height="116" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/>
             <text x="52" y="190" fill="#F7B24A" font-family="var(--display)" font-weight="800" font-size="22">Thermal-Tidal</text>
             <text x="52" y="216" fill="#8AA7B0" font-family="var(--sans)" font-size="13">plumes, tides, mixing zones</text>
-            <text x="52" y="238" fill="#8AA7B0" font-family="var(--sans)" font-size="13">Workstream D</text>
+            <text x="52" y="238" fill="#8AA7B0" font-family="var(--sans)" font-size="13">heat model</text>
           </g>
           <g class="node" data-go="lab/monitoring" tabindex="0" role="link" aria-label="Aquatic Monitoring results">
             <rect x="520" y="24" width="248" height="116" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/>
             <text x="540" y="62" fill="#9ED8E6" font-family="var(--display)" font-weight="800" font-size="22">Aquatic Monitoring</text>
-            <text x="540" y="88" fill="#8AA7B0" font-family="var(--sans)" font-size="13">detection-corrected</text>
-            <text x="540" y="106" fill="#8AA7B0" font-family="var(--sans)" font-size="13">occupancy</text>
-            <text x="540" y="128" fill="#8AA7B0" font-family="var(--sans)" font-size="13">Workstream A</text>
+            <text x="540" y="88" fill="#8AA7B0" font-family="var(--sans)" font-size="13">finds animals on camera</text>
+            <text x="540" y="106" fill="#8AA7B0" font-family="var(--sans)" font-size="13">and corrects occupancy</text>
+            <text x="540" y="128" fill="#8AA7B0" font-family="var(--sans)" font-size="13">camera tools</text>
           </g>
           <g class="node" data-go="lab/aquaculture" tabindex="0" role="link" aria-label="Aquaculture Vision results">
             <rect x="520" y="280" width="248" height="116" rx="12" fill="#0E2C38" stroke="#1A3a46" stroke-width="2"/>
             <text x="540" y="318" fill="#9ED8E6" font-family="var(--display)" font-weight="800" font-size="22">Aquaculture Vision</text>
             <text x="540" y="344" fill="#8AA7B0" font-family="var(--sans)" font-size="13">tracking and bioenergetics</text>
-            <text x="540" y="366" fill="#8AA7B0" font-family="var(--sans)" font-size="13">Workstream B</text>
+            <text x="540" y="366" fill="#8AA7B0" font-family="var(--sans)" font-size="13">safe loop temperature</text>
           </g>
           <g class="edge">
             <rect x="292" y="48" width="176" height="24" rx="6" fill="#03121A"/>
@@ -265,7 +265,7 @@
     <div class="wrap">
       <h2 class="section">What you can do</h2>
       <div class="actions3" style="margin-top:1.5rem">
-        <div class="act"><span class="countdown" id="pub-countdown">76 days</span><h3>Comment on the EU's new data-centre rules</h3><p class="small">The consultation on binding minimum standards closes on 14 December 2026. Anyone can respond. Ask for heat discharged to water and animals at intakes to be counted.</p><a class="btn acc sm" href="#/officials/eu">Read the draft response</a></div>
+        <div class="act"><span class="countdown" id="pub-countdown" hidden>…</span><h3>Comment on the EU's new data-centre rules</h3><p class="small">The consultation on binding minimum standards closes on 14 December 2026. Anyone can respond. Ask for heat discharged to water and animals at intakes to be counted.</p><a class="btn acc sm" href="#/officials/eu">Read the draft response</a></div>
         <div class="act" style="grid-column:span 1">
           <h3>Write to your representative</h3>
           <label for="letter-j" class="small">Where you live</label>
@@ -664,9 +664,12 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
   </section>
   <section class="block" id="ind-trade">
     <div class="wrap grid2 wide-right">
-      <div><h2 class="section">The temperature-rise trade-off</h2><p class="lede">A bigger rise across the heat exchanger means less water pumped and a smaller intake, but hotter discharge and less oxygen in it. The chart shows both for your facility.</p><p class="small muted">Uses the compare inputs above, once-through cooling, 10 ports at 4 m spacing in 20 m of water.</p></div>
-      <div class="light"><svg class="chart" id="trade-chart" viewBox="0 0 640 300" style="width:100%;height:auto" role="img" aria-label="Flow and surface rise versus discharge temperature rise"></svg>
-        <div class="legend" style="color:var(--muted)"><span><i style="background:var(--accent)"></i>cooling flow (m³/s, left)</span><span><i style="background:var(--gold)"></i>screening surface rise (°C, right)</span><span><i style="background:var(--warn)"></i>allowed increment</span></div></div>
+      <div><h2 class="section">The temperature-rise trade-off</h2><p class="lede">A bigger rise across the heat exchanger means less water pumped and a smaller intake, but hotter discharge and less oxygen in it. Two panels share the same ΔT axis so the lines are not compared on one dual scale.</p><p class="small muted">Uses the compare inputs above, once-through cooling, 10 ports at 4 m spacing in 20 m of water.</p></div>
+      <div class="light">
+        <svg class="chart" id="trade-chart-flow" viewBox="0 0 640 200" style="width:100%;height:auto" role="img" aria-label="Cooling flow versus discharge temperature rise"></svg>
+        <svg class="chart" id="trade-chart-rise" viewBox="0 0 640 200" style="width:100%;height:auto;margin-top:.5rem" role="img" aria-label="Screening surface rise versus discharge temperature rise"></svg>
+        <div class="legend" style="color:var(--muted)"><span><i style="background:var(--accent)"></i>cooling flow (m³/s)</span><span><i style="background:var(--gold)"></i>screening surface rise (°C)</span><span><i style="background:var(--warn)"></i>allowed increment</span></div>
+      </div>
     </div>
   </section>
   <section class="block" id="ind-tool">
@@ -739,7 +742,7 @@ rec = ag.handoff.make("thermal_tidal", "august-p10", assumptions, placeholders, 
         <pre class="json" style="white-space:pre-wrap">US EPA. 2024. PLUMES2.0 – Dilution Model: Model Theory and User Manual. EPA 600/B-24/339. Office of Research and Development. https://www.epa.gov/hydrowq/PLUMES2</pre>
         <p class="small muted">Primary page: <a href="https://www.epa.gov/hydrowq/PLUMES2" rel="noopener">epa.gov/hydrowq/PLUMES2</a>. Report number EPA 600/B-24/339.</p>
       </div>
-      <p class="small muted">Live camera operators (explore.org, Monterey Bay Aquarium, Ocean Networks Canada, Coral Morphologic and others) own their feeds; credit them when you show or analyse their streams. Ocean data: Open-Meteo (CC BY 4.0), NOAA Coral Reef Watch and CO-OPS (US public domain), DFO IWLS (Open Government Licence – Canada). Detection models bundled here: Brackish YOLOv8n (<a href="https://huggingface.co/dronefreak/brackish-yolov8n" rel="noopener">dronefreak/brackish-yolov8n</a>), NOAA MOUSS fish YOLOv8n (<a href="https://huggingface.co/akridge/yolo8-fish-detector-grayscale" rel="noopener">akridge/yolo8-fish-detector-grayscale</a>), NOAA sea urchin YOLO11n (<a href="https://huggingface.co/akridge/yolo11n-sea-urchin-detector" rel="noopener">akridge/yolo11n-sea-urchin-detector</a>); see <code>site/models/models.json</code> for further candidates (Marine Detect YOLOv8l, FathomNet/MBARI, Hakai kelp aerial segmentation).</p>
+      <p class="small muted">Live camera operators (explore.org, Monterey Bay Aquarium, Ocean Networks Canada, Coral Morphologic and others) own their feeds; credit them when you show or analyse their streams. Ocean data: Open-Meteo (CC BY 4.0), NOAA Coral Reef Watch and CO-OPS (US public domain), DFO IWLS (Open Government Licence – Canada). Detection: the Live ocean default path targets RF-DETR Nano (Apache-2.0) for finding animals in the browser, with BioCLIP 2 (MIT) naming tracks on the optional relay. Legacy bundled weights Brackish YOLOv8n, NOAA MOUSS fish YOLOv8n and NOAA sea urchin YOLO11n use Ultralytics training stacks and are <b>AGPL-3.0</b> — see <code>site/models/ATTRIBUTION.md</code>. Notebooks in the Learn course: GPL-3.0. NOAA photos: public domain.</p>
     </div>
   </section>
 </div>

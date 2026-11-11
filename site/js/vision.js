@@ -6,11 +6,38 @@
  *   3. fromFile(file): a local clip.
  *   4. connectRelay(id): server-side detections for permitted streams.
  *
- * Pipeline: work canvas -> ONNX YOLOv8 (or motion) -> tracker -> metrics.
+ * Pipeline: work canvas -> ONNX (RF-DETR / YOLO) or motion -> tracker -> metrics.
+ * Class labels map to 12 plain display groups for visitors.
  */
 (function (root) {
   "use strict";
   var ORT_URL = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.min.js";
+  var GROUP_COLORS = {
+    "Fish": "#56B4E9", "Shark": "#0072B2", "Ray": "#E69F00", "Sea turtle": "#009E73",
+    "Marine mammal": "#CC79A7", "Eel": "#D55E00", "Octopus/squid/cuttlefish": "#F0E442",
+    "Crab/lobster/shrimp": "#882255", "Sea star/urchin/cucumber": "#44AA99",
+    "Jellyfish": "#AA4499", "Coral/sponge/sea fan": "#999933", "Other animal": "#DDDDDD"
+  };
+  function mapClass(raw) {
+    var s = String(raw || "").toLowerCase().replace(/_/g, " ").trim();
+    if (!s || s === "moving object" || s === "animal" || s === "object") return "Other animal";
+    if (/shark/.test(s)) return "Shark";
+    if (/ray|skate/.test(s)) return "Ray";
+    if (/turtle/.test(s)) return "Sea turtle";
+    if (/whale|dolphin|seal|otter|mammal/.test(s)) return "Marine mammal";
+    if (/eel/.test(s)) return "Eel";
+    if (/octopus|squid|cuttle|cephalopod/.test(s)) return "Octopus/squid/cuttlefish";
+    if (/crab|lobster|shrimp|prawn|decapod/.test(s)) return "Crab/lobster/shrimp";
+    if (/star|urchin|cucumber|echinoderm/.test(s)) return "Sea star/urchin/cucumber";
+    if (/jelly/.test(s)) return "Jellyfish";
+    if (/coral|sponge|fan/.test(s)) return "Coral/sponge/sea fan";
+    if (/fish|salmon|trout|bass|cod|grouper|snapper|parrot/.test(s)) return "Fish";
+    return "Other animal";
+  }
+  function confidenceWord(score) {
+    if (score == null || score < 0.5) return null;
+    return score >= 0.8 ? "sure" : "likely";
+  }
 
   /* ------------------------------------------------ sources ---- */
   function near(a, b, tol) { return Math.abs(a - b) <= (tol || 8); }
@@ -137,7 +164,10 @@
   }
 
   /* ---------------------------------------------- tracker ---- */
-  // Constant-velocity Kalman filter per axis (position, velocity); size smoothed.
+  // ByteTrack-style two-stage association (high then low score) with
+  // observation-centric Kalman (OC-SORT idea: re-anchor on the last
+  // observation when a track was briefly lost). Same algorithm in relay/vision.py.
+  var TRACK_CONFIRM_HITS = 3;
   function KF1(p0) { this.x = [p0, 0]; this.P = [[25, 0], [0, 100]]; }
   KF1.prototype.predict = function (dt, q) {
     var x = this.x, P = this.P;
@@ -154,7 +184,16 @@
   function Tracker() { this.tracks = []; this.nextId = 1; }
   Tracker.prototype.step = function (dets, dt) {
     var T = this.tracks, q = 400, r = 4;
-    T.forEach(function (t) { t.kx.predict(dt, q); t.ky.predict(dt, q); t.age++; t.miss++; });
+    T.forEach(function (t) {
+      // OC-SORT: if the track missed last frame, re-seed velocity from last observation delta.
+      if (t.miss >= 1 && t.lastObs && t.prevObs) {
+        var vx = (t.lastObs[0] - t.prevObs[0]) / Math.max(dt, 1e-3);
+        var vy = (t.lastObs[1] - t.prevObs[1]) / Math.max(dt, 1e-3);
+        t.kx.x[1] = 0.5 * t.kx.x[1] + 0.5 * vx;
+        t.ky.x[1] = 0.5 * t.ky.x[1] + 0.5 * vy;
+      }
+      t.kx.predict(dt, q); t.ky.predict(dt, q); t.age++; t.miss++;
+    });
     var hi = dets.filter(function (d) { return d.score >= 0.4; }), lo = dets.filter(function (d) { return d.score < 0.4; });
     function associate(pool, tracks) {
       var pairs = [];
@@ -177,17 +216,21 @@
     var b = associate(lo, rest);
     b.matches.forEach(function (p) { upd(rest[p[1]], lo[p[2]]); });
     function upd(t, d) {
-      t.kx.update(d.x + d.w / 2, r); t.ky.update(d.y + d.h / 2, r);
+      var cx = d.x + d.w / 2, cy = d.y + d.h / 2;
+      t.prevObs = t.lastObs; t.lastObs = [cx, cy];
+      t.kx.update(cx, r); t.ky.update(cy, r);
       t.w = 0.7 * t.w + 0.3 * d.w; t.h = 0.7 * t.h + 0.3 * d.h; t.hits++; t.miss = 0; t.cls = d.cls; t.score = d.score;
+      t.confirmed = t.hits >= TRACK_CONFIRM_HITS;
       t.trail.push([t.kx.x[0], t.ky.x[0]]); if (t.trail.length > 20) t.trail.shift();
     }
     var self = this;
     hi.forEach(function (d, i) {
       if (a.usedD[i]) return;
-      self.tracks.push({ id: self.nextId++, kx: new KF1(d.x + d.w / 2), ky: new KF1(d.y + d.h / 2), w: d.w, h: d.h, hits: 1, miss: 0, age: 0, cls: d.cls, score: d.score, trail: [], vPrev: [0, 0] });
+      var cx = d.x + d.w / 2, cy = d.y + d.h / 2;
+      self.tracks.push({ id: self.nextId++, kx: new KF1(cx), ky: new KF1(cy), w: d.w, h: d.h, hits: 1, miss: 0, age: 0, cls: d.cls, score: d.score, trail: [], vPrev: [0, 0], lastObs: [cx, cy], prevObs: null, confirmed: false });
     });
     this.tracks = this.tracks.filter(function (t) { return t.miss <= 8; });
-    return this.tracks.filter(function (t) { return t.hits >= 2 && t.miss <= 2; });
+    return this.tracks.filter(function (t) { return t.hits >= TRACK_CONFIRM_HITS && t.miss <= 2; });
   };
 
   /* ------------------------------------------ ONNX detector ---- */
@@ -203,13 +246,19 @@
   function OnnxDetector(session, size, labels, opts) {
     this.s = session; this.size = size; this.labels = labels || [];
     this.preprocess = (opts && opts.preprocess) || "rgb";
+    this.architecture = (opts && opts.architecture) || "yolo";
     this.canvas = document.createElement("canvas"); this.canvas.width = this.canvas.height = size;
   }
   OnnxDetector.load = function (source, size, labels, opts) {
     return loadOrt().then(function (ort) {
       var buf = source instanceof Blob ? source.arrayBuffer() : fetch(source).then(function (r) { if (!r.ok) throw new Error("Model download failed: HTTP " + r.status); return r.arrayBuffer(); });
       return buf.then(function (b) { return ort.InferenceSession.create(b, { executionProviders: ["webgpu", "wasm"] }); })
-        .then(function (sess) { return new OnnxDetector(sess, size || 320, labels, opts); });
+        .then(function (sess) {
+          var arch = (opts && opts.architecture) || "yolo";
+          // RF-DETR exports named dets/labels; detect automatically if catalogue omitted architecture.
+          if (sess.outputNames.indexOf("dets") >= 0 && sess.outputNames.indexOf("labels") >= 0) arch = "rfdetr";
+          return new OnnxDetector(sess, size || 320, labels, Object.assign({}, opts || {}, { architecture: arch }));
+        });
     });
   };
   OnnxDetector.prototype.detect = function (srcCanvas, conf) {
@@ -229,19 +278,45 @@
     var ort = root.ort, feeds = {}, self = this;
     feeds[this.s.inputNames[0]] = new ort.Tensor("float32", input, [1, 3, S, S]);
     return this.s.run(feeds).then(function (out) {
-      var o = out[self.s.outputNames[0]], d = o.data, C = o.dims[1], N = o.dims[2], dets = [];
-      for (var j = 0; j < N; j++) {
-        var best = 0, bc = 0;
-        for (var c = 4; c < C; c++) { var v = d[c * N + j]; if (v > best) { best = v; bc = c - 4; } }
-        if (best < (conf || 0.25)) continue;
-        var cx = d[j], cy = d[N + j], w = d[2 * N + j], h = d[3 * N + j];
-        dets.push({ x: (cx - w / 2 - ox) / sc, y: (cy - h / 2 - oy) / sc, w: w / sc, h: h / sc, score: best, cls: self.labels[bc] || ("class " + bc) });
-      }
-      dets.sort(function (a, b) { return b.score - a.score; });
-      var keep = [];
-      dets.forEach(function (q) { if (keep.every(function (k) { return iou(k, q) < 0.45; })) keep.push(q); });
-      return keep;
+      if (self.architecture === "rfdetr") return self._decodeRfdetr(out, conf || 0.3, sc, ox, oy, S);
+      return self._decodeYolo(out, conf || 0.25, sc, ox, oy);
     });
+  };
+  OnnxDetector.prototype._decodeYolo = function (out, conf, sc, ox, oy) {
+    var o = out[this.s.outputNames[0]], d = o.data, C = o.dims[1], N = o.dims[2], dets = [];
+    for (var j = 0; j < N; j++) {
+      var best = 0, bc = 0;
+      for (var c = 4; c < C; c++) { var v = d[c * N + j]; if (v > best) { best = v; bc = c - 4; } }
+      if (best < conf) continue;
+      var cx = d[j], cy = d[N + j], w = d[2 * N + j], h = d[3 * N + j];
+      dets.push({ x: (cx - w / 2 - ox) / sc, y: (cy - h / 2 - oy) / sc, w: w / sc, h: h / sc, score: best, cls: this.labels[bc] || ("class " + bc) });
+    }
+    dets.sort(function (a, b) { return b.score - a.score; });
+    var keep = [];
+    dets.forEach(function (q) { if (keep.every(function (k) { return iou(k, q) < 0.45; })) keep.push(q); });
+    return keep;
+  };
+  OnnxDetector.prototype._decodeRfdetr = function (out, conf, sc, ox, oy, S) {
+    // RF-DETR: dets [1,300,4] cxcywh in 0–1 of the letterboxed square; labels [1,300,C] logits.
+    var boxes = out.dets || out[this.s.outputNames[this.s.outputNames.indexOf("dets") >= 0 ? this.s.outputNames.indexOf("dets") : 0]];
+    var labs = out.labels || out[this.s.outputNames[this.s.outputNames.indexOf("labels") >= 0 ? this.s.outputNames.indexOf("labels") : 1]];
+    var bd = boxes.data, ld = labs.data, N = boxes.dims[1], C = labs.dims[2] || 1, dets = [];
+    function sigmoid(z) { return 1 / (1 + Math.exp(-Math.max(-40, Math.min(40, z)))); }
+    for (var j = 0; j < N; j++) {
+      var best = 0, bc = 0;
+      for (var c = 0; c < C; c++) {
+        var v = sigmoid(ld[j * C + c]);
+        if (v > best) { best = v; bc = c; }
+      }
+      if (best < conf) continue;
+      var cx = bd[j * 4] * S, cy = bd[j * 4 + 1] * S, w = bd[j * 4 + 2] * S, h = bd[j * 4 + 3] * S;
+      dets.push({
+        x: (cx - w / 2 - ox) / sc, y: (cy - h / 2 - oy) / sc, w: w / sc, h: h / sc,
+        score: best, cls: this.labels[bc] || this.labels[0] || "fish"
+      });
+    }
+    dets.sort(function (a, b) { return b.score - a.score; });
+    return dets; // RF-DETR is NMS-free; keep all above threshold
   };
 
   /* ------------------------------------------------ engine ---- */
@@ -314,7 +389,8 @@
     var detP = this.detector ? this.detector.detect(this.work, this.o.conf) : Promise.resolve(warm ? [] : components(mask, W, H, this.o.minArea));
     return detP.then(function (dets) {
       var tracks = self.tracker.step(dets, dt);
-      var m = self.metrics(tracks, W, H, fg / n, vis, dt);
+      var confirmed = tracks.filter(function (t) { return t.confirmed !== false; });
+      var m = self.metrics(confirmed.length ? confirmed : tracks, W, H, fg / n, vis, dt);
       m.detections = dets.length; m.tracks = tracks; m.source = self.detector ? "ONNX detector" : "motion (background subtraction)";
       m.frame = { w: W, h: H, crop: cr, scale: scale }; m.fps = 1 / dt; m.t = Date.now();
       self.draw(tracks, W, H);
@@ -338,8 +414,12 @@
     if (N >= 2) { var tot = 0; pts.forEach(function (p, i) { var best = Infinity; pts.forEach(function (q, j) { if (i !== j) best = Math.min(best, Math.hypot(p[0] - q[0], p[1] - q[1])); }); tot += best; }); nnd = tot / N / diag; }
     var pol = moving ? Math.hypot(ux, uy) / moving : null;
     var nul = moving ? Math.sqrt(Math.PI) / (2 * Math.sqrt(moving)) : null;   // random-heading baseline (verification K-1)
+    var groups = {};
+    tracks.forEach(function (t) {
+      var g = mapClass(t.cls); groups[g] = (groups[g] || 0) + 1; t.group = g;
+    });
     return {
-      count: N, moving: moving,
+      count: N, moving: moving, groups: groups,
       speed_bl_s: sp.length ? sp.reduce(function (a, b) { return a + b; }, 0) / sp.length : null,
       polarization: pol, polarization_null: nul, polarization_excess: pol === null ? null : pol - nul,
       nnd: nnd, dispersion: N >= 3 ? hull(pts) / (W * H) : null, vertical: N ? cy / N : null,
@@ -359,11 +439,14 @@
     }
     x.lineWidth = 2 * dpr; x.font = (11 * dpr) + "px system-ui, sans-serif";
     tracks.forEach(function (t) {
-      var hue = (t.id * 67) % 360, col = "hsl(" + hue + " 90% 65%)";
+      var word = confidenceWord(t.score);
+      if (t.score != null && t.score < 0.5 && t.cls && t.cls !== "moving object") return;
+      var group = t.group || mapClass(t.cls);
+      var col = GROUP_COLORS[group] || "#DDDDDD";
       x.strokeStyle = col; x.fillStyle = col;
       x.strokeRect((t.kx.x[0] - t.w / 2) * sx, (t.ky.x[0] - t.h / 2) * sy, t.w * sx, t.h * sy);
-      x.beginPath(); t.trail.forEach(function (p, i) { if (i) x.lineTo(p[0] * sx, p[1] * sy); else x.moveTo(p[0] * sx, p[1] * sy); }); x.stroke();
-      x.fillText("#" + t.id + (t.cls ? " " + t.cls : ""), (t.kx.x[0] - t.w / 2) * sx, (t.ky.x[0] - t.h / 2) * sy - 3 * dpr);
+      var label = group + (word ? " · " + word : "");
+      x.fillText(label, (t.kx.x[0] - t.w / 2) * sx, (t.ky.x[0] - t.h / 2) * sy - 3 * dpr);
     });
   };
 
@@ -407,6 +490,6 @@
   }
 
   root.Vision = { captureTab: captureTab, fromFile: fromFile, fromVideo: fromVideo, Engine: Engine, OnnxDetector: OnnxDetector, connectRelay: connectRelay,
-    cropFromElement: cropFromElement,
+    cropFromElement: cropFromElement, mapClass: mapClass, GROUP_COLORS: GROUP_COLORS,
     _internals: { components: components, iou: iou, hull: hull, Tracker: Tracker, KF1: KF1, erode: erode, dilate: dilate, captureLayout: captureLayout, cropFromElement: cropFromElement } };
 })(typeof self !== "undefined" ? self : this);

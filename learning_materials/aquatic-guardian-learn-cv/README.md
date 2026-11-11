@@ -4,6 +4,22 @@ A standalone teaching tab for the Aquatic Guardian website: nine modules that ta
 defensible claims about aquatic wildlife, each with a Google Colab notebook, plus capstones that map onto the
 project notebooks.
 
+**Pinned deps:** [`requirements.txt`](requirements.txt). CI: `.github/workflows/learn-notebooks.yml` (nbmake on CPU).
+
+| Module | Open in Colab |
+|---|---|
+| CV01 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ejri/aquatic-guardian-learning-modules/blob/main/notebooks/CV01_images_are_arrays.ipynb) |
+| CV02 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ejri/aquatic-guardian-learning-modules/blob/main/notebooks/CV02_how_water_changes_images.ipynb) |
+| CV03 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ejri/aquatic-guardian-learning-modules/blob/main/notebooks/CV03_classical_image_processing.ipynb) |
+| CV04 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ejri/aquatic-guardian-learning-modules/blob/main/notebooks/CV04_learning_to_classify.ipynb) |
+| CV05 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ejri/aquatic-guardian-learning-modules/blob/main/notebooks/CV05_robustness_and_reporting.ipynb) |
+| CV06 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ejri/aquatic-guardian-learning-modules/blob/main/notebooks/CV06_neural_networks_and_cnns.ipynb) |
+| CV07 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ejri/aquatic-guardian-learning-modules/blob/main/notebooks/CV07_detection_measurement_calibration.ipynb) |
+| CV08 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ejri/aquatic-guardian-learning-modules/blob/main/notebooks/CV08_tracking_over_time.ipynb) |
+| CV09 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ejri/aquatic-guardian-learning-modules/blob/main/notebooks/CV09_from_pixels_to_claims.ipynb) |
+
+Licences: notebooks GPL-3.0; NOAA photos public domain; see `images/ATTRIBUTION.md`.
+
 ## What's in this folder
 
 | Path | What it is |

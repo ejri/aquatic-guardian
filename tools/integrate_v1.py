@@ -20,13 +20,14 @@ FONTS = ("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600
          "&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap")
 
 VISION_DETAILS = r'''          <details>
-            <summary>Detection model</summary>
-            <p class="small">Bundled nano detectors via ONNX Runtime Web (Brackish six-class, NOAA MOUSS fish, NOAA urchin). Motion detection is the fallback. Larger Marine Detect / FathomNet weights stay on the candidate list.</p>
-            <label class="field">Bundled model<select id="vis-model-pick"><option value="brackish-yolov8n">Brackish underwater (YOLOv8n, fast)</option><option value="noaa-mouss-fish-yolov8n">NOAA MOUSS fish (YOLOv8n, grayscale)</option><option value="noaa-urchin-yolo11n">NOAA sea urchin (YOLO11n, fast)</option><option value="motion">Motion only</option></select></label>
+            <summary>Options</summary>
+            <p class="small">Finds animals with a class-agnostic detector in the browser (RF-DETR Nano when available; otherwise motion). Labels map to 12 plain groups. Optional relay naming uses BioCLIP 2. Legacy Ultralytics YOLO weights are AGPL-3.0 — see site/models/ATTRIBUTION.md.</p>
+            <label class="field"><input type="checkbox" id="vis-name-species" checked> Name species (sends small image crops to our server)</label>
+            <label class="field">Detector<select id="vis-model-pick"><option value="rfdetr-nano">RF-DETR Nano (Apache-2.0, fish/animal)</option><option value="motion">Motion only (low-power)</option><option value="brackish-yolov8n">Legacy: Brackish YOLOv8n (AGPL-3.0)</option><option value="noaa-mouss-fish-yolov8n">Legacy: NOAA MOUSS fish (AGPL-3.0)</option><option value="noaa-urchin-yolo11n">Legacy: NOAA sea urchin (AGPL-3.0)</option></select></label>
             <label class="field">Or upload .onnx<input type="file" id="vis-model" accept=".onnx"></label>
             <label class="field">Input size<select id="vis-model-size"><option value="320" selected>320 px (fast)</option><option value="640">640 px (accurate)</option></select></label>
-            <label class="field">Class names, comma separated<input type="text" id="vis-model-labels" value="crab, fish, jellyfish, shrimp, small_fish, starfish"></label>
-            <p class="small muted" id="vis-model-status">Loading bundled detector…</p>
+            <label class="field">Class names, comma separated<input type="text" id="vis-model-labels" value="animal"></label>
+            <p class="small muted" id="vis-model-status">Loading detector…</p>
             <div id="vis-model-candidates"></div>
           </details>'''
 
@@ -47,11 +48,8 @@ OBSERVE = r'''
       <h2 class="vh" id="obs-map-h">Choose a camera</h2>
       <div class="obs-map-stage">
         <div class="obs-mapbox" id="obs-map">
-          <div class="obs-zoom">
-            <svg id="obs-map-svg" role="img" aria-label="World map of live underwater cameras and ocean data-centre sites"></svg>
-            <div id="obs-markers" class="obs-markers"></div>
-          </div>
-          <div class="obs-map-glow" aria-hidden="true"></div>
+          <div id="obs-maplibre" class="obs-maplibre" role="img" aria-label="Interactive map of live underwater cameras and ocean data-centre sites"></div>
+          <div id="obs-markers" class="obs-markers obs-markers-a11y" aria-label="Camera and site list"></div>
           <div class="obs-map-chrome">
             <span class="obs-map-title">Live cameras</span>
             <span class="obs-map-hint" id="obs-status" role="status"></span>
@@ -82,9 +80,10 @@ OBSERVE = r'''
             <canvas id="vis-overlay" class="vis-overlay" aria-hidden="true"></canvas>
           </div>
           <div class="obs-detect-bar">
-            <button type="button" class="btn glow sm" id="vis-run">Detect animals</button>
-            <button type="button" class="btn line sm" id="vis-stop" disabled>Stop</button>
-            <p id="vis-msg" class="small muted" role="status">Detection runs on this device. Choose a model under Detection model; the default is Brackish YOLOv8n.</p>
+            <button type="button" class="btn glow sm" id="vis-run">Find animals</button>
+            <button type="button" class="btn line sm" id="vis-stop" disabled hidden>Stop</button>
+            <label class="vis-file-link">Use a video file<input type="file" id="vis-file" accept="video/*"></label>
+            <p id="vis-msg" class="small muted" role="status">Finds and follows animals in the video. Boxes appear on the video.</p>
           </div>
           <p class="obs-credit" id="obs-credit"></p>
         </div>
@@ -93,53 +92,37 @@ OBSERVE = r'''
           <h2 id="obs-name"></h2>
           <p class="obs-meta" id="obs-meta"></p>
           <p class="obs-species" id="obs-species"></p>
-          <div class="obs-research" role="group" aria-label="Tools">
-            <button type="button" class="res-card" id="res-detect" data-detect="1">
-              <b>Detect</b>
-              <span>Classify animals in this feed</span>
-            </button>
-            <button type="button" class="res-card" data-goto="obs-tab-ocean">
-              <b>Ocean</b>
-              <span>Temperature, current, heat stress</span>
-            </button>
-            <button type="button" class="res-card" data-goto="obs-tab-heat">
-              <b>Heat</b>
-              <span>Data-centre screening</span>
-            </button>
-          </div>
-          <div class="readouts" id="obs-now" aria-live="polite"></div>
-          <div class="obs-heat-mini" id="obs-heat-mini" hidden></div>
+          <div class="obs-now-groups" id="obs-now" aria-live="polite"></div>
+          <div class="obs-heat-mini callout" id="obs-heat-mini" hidden></div>
           <p class="obs-site-note" id="obs-site-note" hidden></p>
         </aside>
       </div>
 
       <div class="obs-tabs" id="obs-tabs">
         <div role="tablist" aria-label="Research at this place">
-          <button type="button" role="tab" id="obs-tab-vision" aria-controls="obs-p-vision" aria-selected="true">Detect</button>
-          <button type="button" role="tab" id="obs-tab-ocean" aria-controls="obs-p-ocean" aria-selected="false" tabindex="-1">Ocean</button>
-          <button type="button" role="tab" id="obs-tab-heat" aria-controls="obs-p-heat" aria-selected="false" tabindex="-1">Heat</button>
+          <button type="button" role="tab" id="obs-tab-vision" aria-controls="obs-p-vision" aria-selected="true">Animals</button>
+          <button type="button" role="tab" id="obs-tab-ocean" aria-controls="obs-p-ocean" aria-selected="false" tabindex="-1">Conditions</button>
+          <button type="button" role="tab" id="obs-tab-heat" aria-controls="obs-p-heat" aria-selected="false" tabindex="-1">Heat screen</button>
           <button type="button" role="tab" id="obs-tab-animals" aria-controls="obs-p-animals" aria-selected="false" tabindex="-1">Species</button>
           <button type="button" role="tab" id="obs-tab-rules" aria-controls="obs-p-rules" aria-selected="false" tabindex="-1">Rules</button>
         </div>
 
         <div role="tabpanel" id="obs-p-vision" aria-labelledby="obs-tab-vision" tabindex="0">
-          <p class="obs-lede">Object detection and tracking on the live feed (bundled nano YOLO). Boxes draw on the video above. Metrics below use this camera's own baseline.</p>
-          <div class="vis-actions">
-            <button type="button" class="btn glow sm" id="vis-tab">Detect on this stream</button>
-            <button type="button" class="btn line sm" id="vis-other">Share another tab</button>
-            <label class="btn line sm">Video file<input type="file" id="vis-file" accept="video/*"></label>
-            <button type="button" class="btn line sm" id="vis-relay">Server analysis</button>
-          </div>
+          <p class="obs-lede">Finds and follows animals in the video. Boxes appear on the video above.</p>
           <div id="obs-vis-out" hidden>
             <div class="vis-grid">
-              <div><div class="readouts" id="vis-ro"></div><ul class="obs-flags" id="vis-flags" aria-live="polite"></ul><p class="small muted" id="vis-src"></p></div>
-              <div><svg id="vis-chart" viewBox="0 0 640 200" role="img" aria-label="Animals tracked and movement over time"></svg><p class="small muted">Tracked count (gold) and movement (blue).</p></div>
+              <div><div class="readouts" id="vis-ro"></div><ul class="obs-flags" id="vis-flags" aria-live="polite"></ul><p class="small muted" id="vis-src"></p><p class="vis-summary" id="vis-summary"></p></div>
+              <div><svg id="vis-chart" viewBox="0 0 640 200" role="img" aria-label="Animals in view over time"></svg><p class="small muted">Animals in view (last minutes).</p></div>
+            </div>
+            <p class="small"><a href="#vis-how-sure" id="vis-how-sure-link">How sure is this?</a></p>
+            <div id="vis-how-sure" class="small muted" hidden>
+              <p>The detector finds animals it can resolve on this camera. It misses animals that are tiny, murky, or night-dark. A count is not a population estimate.</p>
             </div>
           </div>
 ''' + VISION_DETAILS + r'''
           <details>
             <summary>Limits</summary>
-            <p class="small">Behaviour indicators, not welfare scores. Low visibility (&lt;25/100) makes counts unreliable. When the page can pull a same-origin HLS copy of the stream, detection reads that video. Otherwise Chrome asks you to share this tab and crops to the camera box, not the rest of the page. Each bundled model was trained on a different habitat — treat labels as screening only.</p>
+            <p class="small">Behaviour indicators, not welfare scores. Low visibility (&lt;25/100) makes counts unreliable. If the feed is a YouTube embed, your browser will ask to share this tab so the detector can see the video — choose <b>This tab</b>. Screening only.</p>
           </details>
         </div>
 
@@ -148,12 +131,12 @@ OBSERVE = r'''
         </div>
 
         <div role="tabpanel" id="obs-p-heat" aria-labelledby="obs-tab-heat" tabindex="0" hidden>
-          <p class="obs-lede">A seawater-cooled data centre at this camera, using today's water. Warming at the mixing-zone edge is checked against the local rule. Screening only — not a permit.</p>
+          <p class="obs-lede">If a seawater-cooled data centre were built at this camera, using today's water. Warming at the mixing-zone edge is checked against a named rule only where one applies. Screening only — not a permit.</p>
           <div class="sc-grid">
             <div class="sc-ctrl">
               <div class="ctl"><label for="sc-it-mw">IT load <output id="sc-it-mw-o"></output></label><input type="range" id="sc-it-mw" min="0.5" max="200" step="0.5" value="24" data-u="MW"></div>
               <div class="ctl"><label for="sc-delta-t-k">Cooling-water rise <output id="sc-delta-t-k-o"></output></label><input type="range" id="sc-delta-t-k" min="1" max="15" step="0.5" value="8" data-u="°C"></div>
-              <div class="ctl"><label for="sc-rule">Screening rule</label><select id="sc-rule"><option value="wa_marine">Washington, WAC 173-201A-210</option><option value="ca_new_coastal">California coast, Thermal Plan</option><option value="ca_enclosed_bay">California enclosed bay, Thermal Plan</option><option value="or_marine">Oregon, OAR 340-041-0028(7) (verify)</option><option value="custom">Other (1.0 °C placeholder)</option></select></div>
+              <div class="ctl"><label for="sc-rule">Screening rule</label><select id="sc-rule"><option value="custom" selected>No limit set for this location</option><option value="wa_marine">Washington, WAC 173-201A-210</option><option value="ca_new_coastal">California coast, Thermal Plan</option><option value="ca_enclosed_bay">California enclosed bay, Thermal Plan</option><option value="or_marine">Oregon, OAR 340-041-0028(7)</option></select></div>
               <div class="ctl"><label for="sc-mode">Design</label><select id="sc-mode"><option value="outfall">Pumped outfall with diffuser</option><option value="pod">Submerged pod, passive hull cooling (screening only)</option></select></div>
               <details class="sc-more">
                 <summary>More design and water inputs</summary>
@@ -199,7 +182,7 @@ OBSERVE = r'''
     <div class="wrap">
       <h2 id="obs-method-h">How this page works</h2>
       <div class="cols">
-        <div><h3>Streams</h3><p>Many open-ocean cams come from <a href="https://explore.org/livecams/oceans/" rel="noopener">explore.org Oceans</a> and play here through YouTube's privacy-enhanced player. Others keep their own players. Aquariums, surface views and scheduled clips are labelled. Streams restart under new ids, so an entry can break between nightly checks.</p></div>
+        <div><h3>Streams</h3><p>Many open-ocean cams come from <a href="https://explore.org/livecams/oceans/" rel="noopener">explore.org Oceans</a> and play here through YouTube's privacy-enhanced player. Others keep their own players. Aquariums, surface views and scheduled clips are labelled. Some streams move to new links. We check nightly. If a camera fails, pick another.</p></div>
         <div><h3>Ocean data</h3><p>Sea temperature, currents and sea level come from Open-Meteo Marine. Heat stress comes from NOAA Coral Reef Watch. Tide predictions come from NOAA CO-OPS and Fisheries and Oceans Canada. Nothing loads until you open this page.</p></div>
         <div><h3>Heat model</h3><p>The EPA’s PLUMES 2.0 near- and far-field mixing (<a href="https://www.epa.gov/hydrowq/PLUMES2" rel="noopener">EPA 600/B-24/339</a>), rebuilt so it runs in the browser. Full controls and verification live in the <a href="#/lab/sim-plumes">Lab</a>.</p></div>
         <div><h3>What it is not</h3><p>Screening, not a permit decision. Species thresholds marked as placeholders need literature or veterinary input before they are relied on.</p></div>
@@ -247,7 +230,7 @@ PLUMES_LAB = r'''
                     <label>Stop near field at<select id="pl-max_rise_fall"><option value="0">First trap level</option><option value="1">Maximum rise</option><option value="2">Second trap level</option><option value="3">Maximum fall</option></select></label>
                     <label>Aspiration coefficient<input id="pl-aspiration" type="number" step="any"></label>
                     <label>Forced-entrainment scale<input id="pl-forced_scale" type="number" step="any"></label>
-                    <label class="wide">Rule<select id="pl-rule"><option value="">None</option><option value="wa_marine">Washington</option><option value="ca_new_coastal">California coast</option><option value="or_marine">Oregon (verify)</option></select></label>
+                    <label class="wide">Rule<select id="pl-rule"><option value="">None</option><option value="wa_marine">Washington</option><option value="ca_new_coastal">California coast</option><option value="or_marine">Oregon ocean and bays</option></select></label>
                   </form>
                   <div class="pl-actions"><button type="button" class="btn glow sm" id="pl-run">Run model</button><button type="button" class="btn line sm" id="pl-dl-txt">Download text</button><button type="button" class="btn line sm" id="pl-dl-json">Download scenario</button></div>
                   <p class="small muted" id="pl-msg" role="status" style="margin-top:.6rem"></p>
@@ -271,7 +254,8 @@ def _refresh_vision_panel(html: str) -> str:
     """Swap the vision model <details> even on an already-patched page."""
     new, n = re.subn(
         r"<details(?:\s+open)?\s*>\s*<summary>Use a fish detector instead of motion</summary>.*?</details>"
-        r"|<details(?:\s+open)?\s*>\s*<summary>Detection model \(bundled \+ optional upload\)</summary>.*?</details>",
+        r"|<details(?:\s+open)?\s*>\s*<summary>Detection model(?: \(bundled \+ optional upload\))?</summary>.*?</details>"
+        r"|<details(?:\s+open)?\s*>\s*<summary>Options</summary>.*?</details>",
         VISION_DETAILS,
         html,
         count=1,
@@ -470,6 +454,13 @@ def patch(html: str) -> str:
         sub(r"</head>", f"{MARK}\n</head>", "head end")
         if 'href="css/learn.css"' not in html:
             html = html.replace('href="css/observe.css">', 'href="css/observe.css">\n<link rel="stylesheet" href="css/learn.css">', 1)
+    if "maplibre-gl.css" not in html:
+        html = html.replace(
+            'href="css/observe.css">',
+            'href="css/observe.css">\n'
+            '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css" crossorigin="anonymous">',
+            1,
+        )
     if 'data-nav="observe"' not in html:
         sub(r'(<nav class="primary" aria-label="Audiences">\s*)', r'\1<a href="#/observe" data-nav="observe" class="nav-live">Live ocean</a>\n      <a href="#/learn" data-nav="learn">Learn</a>\n      ', "primary nav")
     if 'href="#/observe">Live ocean</a>' not in html and 'href="#/observe">Open</a>' not in html:
@@ -488,6 +479,7 @@ def patch(html: str) -> str:
         'from plumes2py import reference_example, run\nres = run(reference_example(), rule="wa_marine")   # PLUMES 2.0 rebuild</pre>\n          '
         r"\1", "use-the-code block")
     scripts = ('<script>window.AG_RELAY = window.AG_RELAY || null; /* e.g. "https://ag-relay.fly.dev" once relay/ is deployed */</script>\n'
+               '<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>\n'
                '<script src="js/plumes2.js"></script>\n<script src="js/ocean-data.js"></script>\n<script src="js/vision.js"></script>\n'
                '<script src="js/observatory.js"></script>\n<script src="js/plumes-lab.js"></script>\n<script src="js/learn.js"></script>\n')
     sub(r"(<script>window\.AGU\.start\(\);</script>)", scripts + r"\1", "start call")

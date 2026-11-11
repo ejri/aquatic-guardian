@@ -298,7 +298,14 @@
     var off = 0, fin = $("#flowdash-in"), fout = $("#flowdash-out");
     if (!U.reduced) U.loop($("#xsec"), function (dt) { off -= dt * 40; fin.setAttribute("stroke-dashoffset", off.toFixed(1)); fout.setAttribute("stroke-dashoffset", off.toFixed(1)); });
     var dl = inst().filter(function (x) { return x.deadline; })[0];
-    if (dl) { var days = Math.ceil((new Date(dl.deadline + "T23:59:59Z") - new Date()) / 86400000); $("#pub-countdown").textContent = days >= 0 ? days + " days left" : "Closed"; }
+    if (dl) {
+      var cd = $("#pub-countdown");
+      if (cd) {
+        var days = Math.ceil((new Date(dl.deadline + "T23:59:59Z") - new Date()) / 86400000);
+        cd.hidden = false;
+        cd.textContent = days >= 0 ? days + " days left" : "Closed";
+      }
+    }
     var LET = {
       us: "Dear [Representative],\n\nI am writing about the AI data centres being planned near our coast and rivers. Many are cooled with seawater or river water, drawing in fish, crabs and larvae and returning the water warmer.\n\nThe AI Data Center Moratorium Act (S.4214 / H.R.9442) already asks the Department of Energy to report data centres' \"thermal outputs\", but does not define them. Please support amendments that require facilities to report heat discharged to water, intake flow, and the animals killed at intakes, counted by species and life stage.\n\nModel text is published openly by Aquatic Guardian.\n\nSincerely,\n[Name]\n[Address]",
       eu: "Dear [MEP],\n\nThe Commission is consulting on binding minimum performance standards for data centres until 14 December 2026. Current EU reporting measures freshwater use, but not heat discharged to seas and rivers, or the animals drawn into cooling intakes.\n\nI ask you to support indicators for heat discharged to surface water and for intake flow and impingement, and to ensure the Cloud and AI Development Act's acceleration zones are screened under the Water Framework and Habitats Directives before designation.\n\nYours sincerely,\n[Name]\n[Address]",
@@ -415,8 +422,16 @@
       var pts = [], rise = [], allow = null;
       for (var dT = 2; dT <= 15.001; dT += 0.5) { var r = E.screen({ it_load_mw: mw, t_ambient_c: t, water_type: w, delta_t_k: dT }); pts.push([dT, r.flow_m3s]); rise.push([dT, r.near_field.delta_t_near_field_k]); allow = r.temperature_rule.allowed_increment_k; }
       var fmax = Math.max.apply(null, pts.map(function (p) { return p[1]; })) * 1.1, rmax = Math.max(allow * 1.3, Math.max.apply(null, rise.map(function (p) { return p[1]; })) * 1.15);
-      U.chart($("#trade-chart"), { x: { min: 2, max: 15, label: "Temperature rise across the heat exchanger (°C)" }, y: { min: 0, max: fmax, label: "Cooling flow (m³/s)" }, y2: { min: 0, max: rmax, label: "Surface rise (°C)" },
-        series: [{ pts: pts, color: "var(--accent)", width: 3 }, { pts: rise, color: "var(--gold)", width: 3, axis: "y2" }], hlines: [{ y: allow, axis: "y2", color: "var(--warn)", dash: "6 4", label: "allowed " + fmt(allow, 2) + " °C" }] });
+      var xAxis = { min: 2, max: 15, label: "ΔT across the heat exchanger (°C)" };
+      var flowEl = $("#trade-chart-flow") || $("#trade-chart");
+      var riseEl = $("#trade-chart-rise");
+      U.chart(flowEl, { x: xAxis, y: { min: 0, max: fmax, label: "Cooling flow (m³/s)" },
+        series: [{ pts: pts, color: "var(--accent)", width: 3 }] });
+      if (riseEl) {
+        U.chart(riseEl, { x: xAxis, y: { min: 0, max: rmax, label: "Screening surface rise (°C)" },
+          series: [{ pts: rise, color: "var(--gold)", width: 3 }],
+          hlines: [{ y: allow, color: "var(--warn)", dash: "6 4", label: "allowed " + fmt(allow, 2) + " °C" }] });
+      }
     }
     ["#ic-mw", "#ic-t", "#ic-w"].forEach(function (s) { $(s).addEventListener("input", compare); });
     compare();
